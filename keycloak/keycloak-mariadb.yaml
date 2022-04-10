@@ -1,0 +1,89 @@
+version: "3.7"
+
+services:
+  ### Keycloak ###
+  keycloak:
+    image: jboss/keycloak #${REPOSITORY:-nexus.systel.local:7777}/keycloak:custom
+    labels:
+      - fr.systel.env=${ENV:-dev}
+    # ports:
+    #   - 7600:7600
+    networks:
+      - platform
+      - private
+    volumes:
+      - keycloak-config:/etc/keycloak/
+    environment:
+      #- PROXY_ADDRESS_FORWARDING='true'
+      #IP address of this host, please make sure this IP can be accessed by the other Keycloak instances
+      #- JGROUPS_DISCOVERY_EXTERNAL_IP=192.168.200.121
+      #protocol
+      - JGROUPS_DISCOVERY_PROTOCOL=JDBC_PING
+      - JGROUPS_DISCOVERY_PROPERTIES=datasource_jndi_name=java:jboss/datasources/KeycloakDS,info_writer_sleep_time=500,initialize_sql="CREATE TABLE IF NOT EXISTS JGROUPSPING ( own_addr varchar(200) NOT NULL, cluster_name varchar(200) NOT NULL, created timestamp default current_timestamp, ping_data BYTEA, constraint PK_JGROUPSPING PRIMARY KEY (own_addr, cluster_name))"
+      #- JGROUPS_DISCOVERY_PROTOCOL=dns.DNS_PING
+      #- JGROUPS_DISCOVERY_PROPERTIES=dns_query=keycloak.${DOMAIN}
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_LOGLEVEL=DEBUG
+      - ROOT_LOGLEVEL=DEBUG
+      - DB_VENDOR=mariadb
+      - DB_ADDR=mariadb
+      - DB_PORT=3306
+      - DB_DATABASE=keycloak
+      - DB_USER=keycloak
+      - DB_PASSWORD=password
+      - DOMAIN=${DOMAIN}
+    # extra_hosts:
+    #   - "keycloak.dev.lan:192.168.200.101"
+    # dns:
+    #   - 8.8.8.8
+    #   - 172.18.0.5
+    #   - 172.18.0.6
+    # dns_search:
+    #   - keycloak.dev.lan
+    deploy:
+      mode: replicated
+      replicas: 3
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.keycloak.rule=Host(`keycloak.${DOMAIN}`)
+        - traefik.http.services.keycloak.loadbalancer.server.port=8080
+      placement:
+        constraints: [node.role == worker]
+
+  ### Keycloak database
+  keycloak-db:
+    image: mariadb
+    ports:
+      - 3306:3306
+    networks:
+      #- platform
+      - private
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=keycloak
+      - MYSQL_USER=keycloak
+      - MYSQL_PASSWORD=password
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints: [node.role == worker]
+
+networks:
+  platform:
+    name: env-${ENV_NETWORK:-01}
+    external: true
+  private:
+    name: keycloak-net
+    driver: overlay
+    driver_opts:
+      encrypted: "true"
+
+volumes:
+  keycloak-config:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/data/keycloak/config

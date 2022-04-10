@@ -1,0 +1,192 @@
+# https://www.jaegertracing.io/docs/1.16/deployment/
+version: "3.7"
+
+services:
+  jaeger-elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    networks:
+      - private
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - cluster.name=jaeger-elastic-cluster
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: on-failure
+    healthcheck:
+      test: [
+          stack
+          "CMD-SHELL",
+          "curl --silent --fail localhost:9200/_cluster/health || exit 1",
+        ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      resources:
+        limits:
+          memory: 2048M
+        reservations:
+          memory: 1024M
+      restart_policy:
+        condition: on-failure
+
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector:1.17.1
+    # Internal ES
+    command:
+      [
+        "--es.server-urls=http://jaeger-elastic:9200",
+        "--es.num-shards=1",
+        "--es.num-replicas=0",
+        "--log-level=error",
+      ]
+    # # External ES
+    # command:
+    #   [
+    #     "--es.server-urls=http://elastic-master:9200",
+    #     "--es.num-shards=1",
+    #     "--es.num-replicas=0",
+    #     "--log-level=error",
+    #   ]
+    ports:
+      - 14269:14269 # /metrics https://www.jaegertracing.io/docs/1.16/monitoring/
+      - 14268:14268
+      - 14267:14267
+      - 9411:9411
+    networks:
+      - public # for metrics
+      - private
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+    depends_on:
+      - jeager-elastic
+    restart: on-failure
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == worker
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 32M
+        reservations:
+          memory: 16M
+
+  jaeger-agent:
+    image: jaegertracing/jaeger-agent:1.17.1
+    hostname: jaeger-agent
+    command: ["--collector.host-port=jaeger-collector:14267"]
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 14271:14271 # /metrics https://www.jaegertracing.io/docs/1.16/monitoring/
+    networks:
+      - public # for metrics and tracing spans
+      - private
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+    depends_on:
+      - jaeger-collector
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 32M
+        reservations:
+          memory: 16M
+
+  jaeger-dashboard:
+    image: jaegertracing/jaeger-query:1.17.1
+    # Internal ES
+    command:
+      [
+        "--es.server-urls=http://jaeger-elastic:9200",
+        "--span-storage.type=elasticsearch",
+        "--log-level=debug",
+      ]
+    # # External ES
+    # command:
+    #   [
+    #     "--es.server-urls=http://elastic-master:9200",
+    #     "--span-storage.type=elasticsearch",
+    #     "--log-level=debug",
+    #   ]
+    environment:
+      - SPAN_STORAGE_TYPE=elasticsearch
+    ports:
+      # - 16686:16686  # /api/* endpoints and Jaeger UI at /
+      - 16687:16687 # Healthcheck at / and metrics at /metrics
+    networks:
+      - public
+      - private
+    configs:
+      - source: jaeger-htpasswd
+        target: /etc/jaeger/htpasswd
+    depends_on:
+      - jaeger-agent
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          memory: 64M
+        reservations:
+          memory: 32M
+      labels:
+        # Traefik v2.x
+        # https://docs.traefik.io/providers/docker/
+        - traefik.enable=true
+
+        # Jaeger Dashboard (HTTP)
+        # https://www.jaegertracing.io/docs/1.16/deployment/#query-service-ui
+        # /api/* endpoints and Jaeger UI at /
+        - traefik.http.routers.jaeger.rule=Host(`jaeger.${DOMAIN:-swarm.local}`)
+        # # Dashboard authentication (using middlewares basic auth)
+        # # openssl passwd -apr1 jaegeradm
+        # - traefik.http.routers.jaeger.middlewares=jaeger-auth
+        # - traefik.http.middlewares.jaeger-auth.basicauth.usersfile=/etc/jaeger/htpasswd
+        # # HTTPS
+        # - traefik.http.routers.jaeger.entrypoints=https
+        # - traefik.http.routers.jaeger.tls=true
+        # - traefik.http.routers.jaeger.tls.certresolver=letsencrypt
+        - traefik.http.services.jaeger.loadbalancer.server.port=16686
+        - traefik.http.services.jaeger.loadbalancer.healthcheck.path=/
+        - traefik.http.services.jaeger.loadbalancer.healthcheck.port=16687
+
+volumes:
+  elasticsearch-data:
+    driver: local
+
+networks:
+  public:
+    name: traefik-net
+    external: true
+  private:
+    name: tracing-net
+    driver: overlay
+
+configs:
+  jaeger-htpasswd:
+    file: ./config/htpasswd

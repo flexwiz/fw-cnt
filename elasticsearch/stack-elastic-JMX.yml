@@ -1,0 +1,218 @@
+############### stack-elastic ############### 
+### Variables d'environnement (? optionnelles, valeur par défaut / ! obligatoire)
+#  ?  DOMAIN                = Nom de domaine pour traefik (systel.swarm par défaut)
+#  ?  ELASTIC_VERSION       = Version de la stack Elastic (7.6.1 par défaut)
+#  ?  ENV_TZ                = Timezone (Europe/Paris par défaut)
+
+### Resource needed : 3 Gb RAM
+
+version: "3.7"
+
+services:
+################################################################################
+################################### ELK STACK ##################################
+################################################################################
+  elastic-master:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.6.1}
+    healthcheck :
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:9200 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      - fr.systel.env=global
+      - fr.systel.namespace=elastic
+    environment:
+      TZ: ${ENV_TZ:-Europe/Paris}
+      node.name: "elastic-master"
+      discovery.seed_hosts: "elastic-data1,elastic-data2"
+      cluster.initial_master_nodes: "elastic-master,elastic-data1,elastic-data2"
+      ELASTIC_PASSWORD: ${ELASTICSEARCH_PASSWORD:-changeme}
+      #xpack.security.enabled: "true"
+      #xpack.monitoring.collection.enabled: "true"
+      #xpack.license.self_generated.type: trial
+      node.master: "true"
+      node.data: "false"
+      node.ingest: "true"
+      cluster.remote.connect: "false"
+      cluster.name: docker-swarm-cluster
+      network.host: 0.0.0.0
+      ES_JAVA_OPTS: -Xms1g -Xmx1g -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9020 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.rmi.port=9020 -Djava.rmi.server.hostname=172.17.5.200 -Des.networkaddress.cache.ttl=10 -Des.networkaddress.cache.negative.ttl=5
+    ports:
+      - target: 9020
+        published: 9020
+        protocol: tcp
+        mode: host
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - public
+      - env-01
+      - env-02
+      - env-03
+      - env-04
+      - env-05
+      - env-06
+      - env-07
+      - env-08
+      - env-09
+      - env-10
+    volumes:
+      - esmaster:/usr/share/elasticsearch/data
+    deploy:
+      mode: 'replicated'
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 30s
+      placement:
+        constraints: [node.hostname == staging-manager-01]
+      labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-net
+      - traefik.http.routers.elastic-master.rule=Host(`elastic.${DOMAIN:-systel.swarm}`)
+      - traefik.http.routers.elastic-master.service=elastic-master
+      - traefik.http.services.elastic-master.loadbalancer.server.port=9200
+      - traefik.http.routers.elastic-ingest.rule=Host(`elastic-ingest.${DOMAIN:-systel.swarm}`)
+      - traefik.http.routers.elastic-ingest.service=elastic-ingest
+      - traefik.http.services.elastic-ingest.loadbalancer.server.port=9300
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 1G
+
+  elastic-data1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.6.1}
+    healthcheck :
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:9200 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - elastic-master
+    labels:
+      - fr.systel.env=global
+      - fr.systel.namespace=elastic
+    environment:
+      TZ: ${ENV_TZ:-Europe/Paris}
+      node.name: "elastic-data1"
+      discovery.seed_hosts: "elastic-master,elastic-data2"
+      cluster.initial_master_nodes: "elastic-master,elastic-data1,elastic-data2"
+      node.master: "true"
+      node.data: "true"
+      node.ingest: "false"
+      cluster.remote.connect: "false"
+      cluster.name: docker-swarm-cluster
+      network.host: 0.0.0.0
+      ES_JAVA_OPTS: -Xms1g -Xmx1g -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9021 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.rmi.port=9021 -Djava.rmi.server.hostname=172.17.5.211 -Des.networkaddress.cache.ttl=10 -Des.networkaddress.cache.negative.ttl=5
+    ports:
+      - target: 9021
+        published: 9021
+        protocol: tcp
+        mode: host
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - public
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+    deploy:
+      placement:
+        constraints: [node.hostname == staging-worker-01]
+      mode: 'replicated'
+      replicas: 1
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 1G
+
+  elastic-data2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-7.6.1}
+    healthcheck :
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:9200 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - elastic-master
+    labels:
+      - fr.systel.env=global
+      - fr.systel.namespace=elastic
+    environment:
+      TZ: ${ENV_TZ:-Europe/Paris}
+      node.name: "elastic-data2"
+      discovery.seed_hosts: "elastic-master,elastic-data1"
+      cluster.initial_master_nodes: "elastic-master,elastic-data1,elastic-data2"
+      node.master: "true"
+      node.data: "true"
+      node.ingest: "false"
+      cluster.remote.connect: "false"
+      cluster.name: docker-swarm-cluster
+      network.host: 0.0.0.0
+      ES_JAVA_OPTS: -Xms1g -Xmx1g -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9022 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.rmi.port=9022 -Djava.rmi.server.hostname=172.17.5.212 -Des.networkaddress.cache.ttl=10 -Des.networkaddress.cache.negative.ttl=5
+    ports:
+      - target: 9022
+        published: 9022
+        protocol: tcp
+        mode: host
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - public
+    volumes:
+      - esdata2:/usr/share/elasticsearch/data
+    deploy:
+      placement:
+        constraints: [node.hostname == staging-worker-02]
+      mode: 'replicated'
+      replicas: 1
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 1G
+
+################################################################################
+################################# CONFIGURATION ################################
+################################################################################
+
+volumes:
+    esmaster:
+    esdata1:
+    esdata2:
+
+networks:
+  public:
+    name: traefik-net
+    external: true
+  env-01:
+    external: true
+  env-02:
+    external: true
+  env-03:
+    external: true
+  env-04:
+    external: true
+  env-05:
+    external: true
+  env-06:
+    external: true
+  env-07:
+    external: true
+  env-08:
+    external: true
+  env-09:
+    external: true
+  env-10:
+    external: true

@@ -17,6 +17,9 @@ requires:
   - configs: ["minio"]
     path: ./minio
     activeProfiles: *local_and_cloud_profiles
+  - configs: ["sftp"]
+    path: ./sftp
+    activeProfiles: *local_and_cloud_profiles
 
 profiles:
   - name: dev

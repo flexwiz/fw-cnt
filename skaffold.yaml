@@ -14,6 +14,9 @@ requires:
   - configs: ["redis"]
     path: ./redis
     activeProfiles: *local_and_cloud_profiles
+  - configs: ["minio"]
+    path: ./minio
+    activeProfiles: *local_and_cloud_profiles
 
 profiles:
   - name: dev

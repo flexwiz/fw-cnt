@@ -1,0 +1,30 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: common-tools
+
+requires:
+  - configs: ["postgres"]
+    path: ./postgres
+    activeProfiles: &local_and_cloud_profiles
+      - name: dev
+        activatedBy: [dev]
+      - name: dev-gcp
+        activatedBy: [dev-gcp]
+
+profiles:
+  - name: dev
+    build:
+      local:
+        concurrency: 0
+        useBuildkit: true
+    activation:
+      - kubeContext: minikube
+  - name: dev-gcp
+    build:
+      googleCloudBuild:
+        workerPool: projects/ezloc-dev/locations/europe-west1/workerPools/worker-dev-pool
+        projectId: ezloc-dev
+        concurrency: 0
+    activation:
+      - kubeContext: gke_ezloc-dev_europe-west1-b_ezloc-dev-k8s-cluster

@@ -11,6 +11,9 @@ requires:
         activatedBy: [dev]
       - name: dev-gcp
         activatedBy: [dev-gcp]
+  - configs: ["redis"]
+    path: ./redis
+    activeProfiles: *local_and_cloud_profiles
 
 profiles:
   - name: dev

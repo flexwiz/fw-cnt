@@ -1,0 +1,33 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: redis
+profiles:
+  - name: dev
+    activation:
+      - kubeContext: minikube
+    deploy: &redis_deploy
+      helm:
+        releases:
+          - name: redis
+            repo: https://charts.bitnami.com/bitnami
+            remoteChart: redis
+            version: 18.7.0
+            setValues:
+              architecture: standalone
+              auth.enabled: false
+    portForward: &redis_port_forward
+      - resourceType: service
+        resourceName: redis-master
+        port: 6379
+        localPort: 6379
+
+  - name: dev-gcp
+    deploy: *redis_deploy
+    portForward: *redis_port_forward
+    build:
+      googleCloudBuild:
+        projectId: "ezloc-dev"
+        concurrency: 0
+    activation:
+      - kubeContext: gke_ezloc-dev_europe-west1-b_ezloc-dev-k8s-cluster

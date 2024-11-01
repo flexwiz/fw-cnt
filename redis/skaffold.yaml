@@ -27,7 +27,7 @@ profiles:
     portForward: *redis_port_forward
     build:
       googleCloudBuild:
-        projectId: "ezloc-dev"
+        projectId: ezloc-dev
         concurrency: 0
     activation:
       - kubeContext: gke_ezloc-dev_europe-west1-b_ezloc-dev-k8s-cluster

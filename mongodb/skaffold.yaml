@@ -1,0 +1,67 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: mongodb
+profiles:
+  - name: dev
+    activation:
+      - kubeContext: minikube
+    build:
+      tagPolicy:
+        sha256: {}
+      artifacts:
+        - image: ntdtfr/mongodb-jobs
+          context: .
+          docker:
+            dockerfile: ./Dockerfile
+
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+
+    deploy: &mongodb_deploy
+      kubectl: {}
+      helm:
+        releases:
+          - name: mongodb
+            repo: https://charts.bitnami.com/bitnami
+            remoteChart: mongodb
+            version: 12.1.16
+            setValues:
+              image.tag: 4.4-debian-10
+              replicaCount: 1
+              arbiter.enabled: false
+              architecture: replicaset
+              useStatefulSet: true
+              livenessProbe.enabled: false
+              readinessProbe.enabled: false
+              persistence:
+                size: 15Gi
+              auth:
+                enabled: false
+
+    portForward: &mongodb_port_forward
+      - resourceType: service
+        resourceName: mongodb-headless
+        port: 27017
+        localPort: 27017
+
+  - name: dev-gcp
+    build:
+      tagPolicy:
+        sha256: {}
+      googleCloudBuild:
+        workerPool: projects/ezloc-dev/locations/europe-west1/workerPools/worker-dev-pool
+        projectId: ezloc-dev
+        concurrency: 0
+      artifacts:
+        - image: ntdtfr/mongodb-jobs
+          context: .
+          kaniko:
+            dockerfile: ./Dockerfile
+            cache: {}
+    manifests: *manifests
+    deploy: *mongodb_deploy
+    portForward: *mongodb_port_forward
+    activation:
+      - kubeContext: gke_ezloc-dev_europe-west1-b_ezloc-dev-k8s-cluster

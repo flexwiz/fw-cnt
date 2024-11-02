@@ -4,21 +4,24 @@ metadata:
   name: common-tools
 
 requires:
-  - configs: ["postgres"]
-    path: ./postgres
+  - configs: ["keycloak"]
+    path: ./keycloak
     activeProfiles: &local_and_cloud_profiles
       - name: dev
         activatedBy: [dev]
       - name: dev-gcp
         activatedBy: [dev-gcp]
+  - configs: ["minio"]
+    path: ./minio
+    activeProfiles: *local_and_cloud_profiles
   - configs: ["mongodb"]
     path: ./mongodb
     activeProfiles: *local_and_cloud_profiles
+  - configs: ["postgres"]
+    path: ./postgres
+    activeProfiles: *local_and_cloud_profiles
   - configs: ["redis"]
     path: ./redis
-    activeProfiles: *local_and_cloud_profiles
-  - configs: ["minio"]
-    path: ./minio
     activeProfiles: *local_and_cloud_profiles
   - configs: ["sftp"]
     path: ./sftp

@@ -1,0 +1,65 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: keycloak
+
+profiles:
+  - name: dev
+    build:
+      tagPolicy:
+        sha256: {}
+      artifacts:
+        - image: ntdtfr/keycloak
+          context: .
+          docker:
+            dockerfile: Dockerfile.dev
+      local:
+        useBuildkit: true
+        concurrency: 0
+    deploy: &deploy
+      helm:
+        releases:
+          - name: keycloak-postgres
+            # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
+            # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
+            repo: https://charts.bitnami.com/bitnami
+            version: 12.6.0
+            remoteChart: postgresql
+            setValues:
+              #image.tag: 13.6.0-debian-10-r89
+              image.debug: true
+              primary.extraEnvVars:
+                - name: POSTGRESQL_WAL_LEVEL
+                  value: logical
+              global.postgresql.auth.postgresPassword: "password"
+              primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: keycloak
+        port: 9000
+        localPort: 9000
+    activation:
+      - kubeContext: minikube
+
+  - name: dev-gcp
+    build:
+      tagPolicy:
+        sha256: {}
+      googleCloudBuild:
+        workerPool: projects/ezloc-dev/locations/europe-west1/workerPools/worker-dev-pool
+        projectId: ezloc-dev
+        concurrency: 0
+      artifacts:
+        - image: eu.gcr.io/ezloc/dev/keycloak
+          kaniko:
+            dockerfile: Dockerfile.dev
+            cache: {}
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+    activation:
+      - kubeContext: gke_saqara-development_europe-west1-b_saqara-development-k8s

@@ -1,0 +1,24 @@
+name: Pull Requests - Labeling
+
+on:
+  pull_request:
+    branches: [main]
+    types:
+      [
+        opened,
+        edited,
+        synchronize,
+        review_request_removed,
+        ready_for_review,
+        review_requested,
+      ]
+
+jobs:
+  pull-request-labeler:
+    name: Pull Request - Automatic Labeler
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: srvaroa/labeler@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

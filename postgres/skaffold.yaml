@@ -21,6 +21,7 @@ profiles:
                   value: logical
               global.postgresql.auth.postgresPassword: "password"
               primary.initdb.scripts.init\.sql: "
+                CREATE DATABASE keycloak;
                 CREATE DATABASE ezloc;
                 CREATE DATABASE ezloc-immo;"
     portForward: &postgres_port_forward

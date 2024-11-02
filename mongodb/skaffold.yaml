@@ -55,7 +55,7 @@ profiles:
         projectId: ezloc-dev
         concurrency: 0
       artifacts:
-        - image: ntdtfr/mongodb-jobs
+        - image: eu.gcr.io/ezloc/dev/mongodb-jobs
           context: .
           kaniko:
             dockerfile: ./Dockerfile

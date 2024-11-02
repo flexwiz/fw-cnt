@@ -1,0 +1,76 @@
+version: 1
+
+labels:
+- label: "pending"
+  mergeable: false
+
+- label: "lgtm"
+  mergeable: true
+
+- label: "size/XS"
+  size-above: 0
+  size-below: 9
+
+- label: "size/S"
+  size-above: 10
+  size-below: 29
+
+- label: "size/M"
+  size-above: 30
+  size-below: 99
+
+- label: "size/L"
+  size-above: 100
+  size-below: 499
+
+- label: "size/XL"
+  size-above: 500
+  size-below: 999
+
+- label: "size/XXL"
+  size-above: 1000
+
+- label: "area/configuration"
+  files:
+  - ".*.env"
+  - ".eslintignore"
+  - ".eslintrc.json"
+  - ".gitignore"
+  - "commitlint.config.js"
+  - "jest.config.js"
+  - "lerna.json"
+  - "tsconfig.*"
+
+- label: "area/packages"
+  files:
+  - ".*package.json"
+
+- label: "area/dependencies"
+  files:
+  - "packages/*"
+
+- label: "area/actions"
+  files:
+  - ".github/workflows/*"
+
+- label: "area/docker"
+  files:
+  - ".*Dockerfile"
+  - "docker-compose.yml"
+
+- label: "area/services"
+  files:
+  - "services/*"
+
+- label: "area/migrations"
+  files:
+  - "databases/*"
+
+- label: "area/kube-manifests"
+  files:
+  - "k8s/*"
+
+- label: "area/documentation"
+  files:
+  - ".*.md"
+  - "docs/*"

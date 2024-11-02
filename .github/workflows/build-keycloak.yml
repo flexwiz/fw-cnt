@@ -5,11 +5,11 @@ on:
 #    types: [published]
   workflow_dispatch:
   push:
-    branches: [main]
+    branches: [master]
     paths:
-      - ./theme/ntdt/**
-      - ./Dockerfile
-      - .github/workflows/build-keycloak.yml
+      - ./keycloak/theme/ntdt/**
+      - ./keycloak/Dockerfile
+      - .github/workflows/keycloak/build-keycloak.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:

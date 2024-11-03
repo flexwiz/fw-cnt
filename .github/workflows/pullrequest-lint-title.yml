@@ -2,7 +2,7 @@ name: Pull Requests - Lint Title
 
 on:
   pull_request:
-    branches: [main, production]
+    branches: [master]
     types: [opened, edited, synchronize]
 
 jobs:

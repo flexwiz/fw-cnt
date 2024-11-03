@@ -2,7 +2,7 @@ name: Pull Requests - Labeling
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
     types:
       [
         opened,

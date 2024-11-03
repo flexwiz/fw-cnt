@@ -1,0 +1,17 @@
+name: Commit Check
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Validate Conventional Commits
+        uses: amannn/action-semantic-pull-request@v3
+        with:
+          types: "feat, fix, chore, docs, style, refactor, perf, test, ci, build"

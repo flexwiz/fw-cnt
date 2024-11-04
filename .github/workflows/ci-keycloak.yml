@@ -1,4 +1,4 @@
-name: Build and Publish Keycloak Docker image
+name: Continuous Integration for Keycloak
 
 on:
 #  release:
@@ -7,9 +7,9 @@ on:
   push:
     branches: [master]
     paths:
-      - ./keycloak/theme/ntdt/**
-      - ./keycloak/Dockerfile
-      - .github/workflows/keycloak/build-keycloak.yml
+      - keycloak/theme/**
+      - keycloak/Dockerfile
+      - .github/workflows/ci-keycloak.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:

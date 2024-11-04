@@ -1,0 +1,25 @@
+name: Validate Conventional Commits
+
+on:
+  push:
+    branches:
+      - master
+      - 'feature/*'
+      - 'fix/*'
+  pull_request:
+    branches:
+      - master
+      - 'feature/*'
+      - 'fix/*'
+
+jobs:
+  validate-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Validate Conventional Commits
+        uses: amannn/action-commitlint@v5
+        with:
+          configFile: './.github/workflows/commit-lint.config.js'

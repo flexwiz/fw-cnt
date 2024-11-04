@@ -1,4 +1,5 @@
-name: Validate Conventional Commits
+# Validate Conventional Commits
+name: Commit Message Linter
 
 on:
   push:
@@ -31,9 +32,23 @@ jobs:
       # The --from=HEAD~10 and --to=HEAD flags specify the commit range to check 
       # (you can adjust this to fit your use case, e.g., only the last commit or the entire PR).
       - name: Run commitlint
+        id: commitlint
+        continue-on-error: true  # Allow failure to handle result
         run: npx commitlint --from=HEAD~10 --to=HEAD
 
       - name: Validate Conventional Commits
         uses: amannn/action-commitlint@v5
         with:
           configFile: './.github/workflows/commit-lint.config.js'
+
+      - name: Comment on PR if commitlint fails
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "⚠️ **Commit message check failed**\n\nPlease ensure your commit messages follow the Conventional Commits format."
+            })

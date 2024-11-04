@@ -3,6 +3,9 @@ name: Check Markdown Links
 on:
   push:
     branches: [master]
+    paths:
+      - "**/*.md"
+      - "README.md"
 
 jobs:
   check-links:
@@ -14,5 +17,8 @@ jobs:
       - name: Install markdown-link-check
         run: npm install -g markdown-link-check
 
-      - name: Check links
+      - name: Check links for README.md
         run: markdown-link-check README.md
+
+      - name: Check links for all Markdown files
+        run: markdown-link-check "**/*.md"

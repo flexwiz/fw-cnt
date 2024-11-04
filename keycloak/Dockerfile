@@ -11,6 +11,6 @@ FROM quay.io/keycloak/keycloak:25.0.4 AS production
 COPY themes/ntdt                                           /opt/keycloak/themes/ntdt
 COPY themes/base/login/confidentiality.ftl                 /opt/keycloak/themes/base/login
 
-COPY --from=build /build/target/confidentiality.jar        /opt/keycloak/providers
+COPY --from=build /build/target/*.jar                      /opt/keycloak/providers
 
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]

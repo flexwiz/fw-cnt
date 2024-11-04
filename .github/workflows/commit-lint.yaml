@@ -19,6 +19,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install commitlint
+        run: npm install @commitlint/{config-conventional,cli}
+
       - name: Validate Conventional Commits
         uses: amannn/action-commitlint@v5
         with:

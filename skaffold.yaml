@@ -4,13 +4,16 @@ metadata:
   name: common-tools
 
 requires:
-  - configs: ["keycloak"]
-    path: ./keycloak
+  - configs: ["artifactory"]
+    path: ./artifactory
     activeProfiles: &local_and_cloud_profiles
       - name: dev
         activatedBy: [dev]
       - name: dev-gcp
         activatedBy: [dev-gcp]
+  - configs: ["keycloak"]
+    path: ./keycloak
+    activeProfiles: *local_and_cloud_profiles
   - configs: ["minio"]
     path: ./minio
     activeProfiles: *local_and_cloud_profiles
@@ -38,8 +41,8 @@ profiles:
   - name: dev-gcp
     build:
       googleCloudBuild:
-        workerPool: projects/ezloc-dev/locations/europe-west1/workerPools/worker-dev-pool
-        projectId: ezloc-dev
+        workerPool: projects/ntdt-dev/locations/europe-west1/workerPools/worker-dev-pool
+        projectId: ntdt-dev
         concurrency: 0
     activation:
-      - kubeContext: gke_ezloc-dev_europe-west1-b_ezloc-dev-k8s-cluster
+      - kubeContext: gke_ntdt-dev_europe-west1-b_ntdt-dev-k8s-cluster

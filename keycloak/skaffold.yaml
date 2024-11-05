@@ -54,7 +54,7 @@ profiles:
         projectId: ntdt-dev
         concurrency: 0
       artifacts:
-        - image: eu.gcr.io/ezloc/dev/keycloak
+        - image: eu.gcr.io/ntdt/dev/keycloak
           kaniko:
             dockerfile: Dockerfile.dev
             cache: {}

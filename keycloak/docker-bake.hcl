@@ -14,6 +14,8 @@ group "default" {
 
 target "image" {
   inherits = ["docker-metadata-action"]
+  context = "."
+  dockerfile = "./Dockerfile"  // Path to your Dockerfile
 }
 
 target "image-local" {

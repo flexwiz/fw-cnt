@@ -58,9 +58,11 @@ jobs:
             ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
             ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=match,pattern=(.*)-r,group=1
-            type=ref,event=pr
-            type=edge
+            # dynamically set the branch name and sha as a custom tag
+            type=raw,value=25.0.4-{{branch}}-{{sha}}
+            # type=match,pattern=(.*)-r,group=1
+            # type=ref,event=pr
+            # type=edge
           labels: |
             org.opencontainers.image.title=Keycloak
             org.opencontainers.image.description=Keycloak component

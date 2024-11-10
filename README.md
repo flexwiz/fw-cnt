@@ -1,5 +1,7 @@
 # Common Tools
 
+[![CI for Keycloak](https://github.com/ntdtfr/common-tools/actions/workflows/build-keycloak.yml/badge.svg?branch=master)](https://github.com/ntdtfr/common-tools/actions/workflows/build-keycloak.yml)
+
 ## Prerequisites
 
 To be able to use these `common-tools` with minikube, k3d, kind or another Kubernetes tools, you need to install the following tools:

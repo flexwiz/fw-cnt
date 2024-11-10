@@ -1,53 +1,81 @@
+## more info https://github.com/crazy-max/ghaction-github-labeler
 version: 1
 
 labels:
 - label: "pending"
   mergeable: false
 
-- label: "lgtm"
-  mergeable: true
+- name: "bot"
+  color: "69cde9"
+  description: ""
 
-- label: "size/XS"
-  size-above: 0
-  size-below: 9
+- name: "good first issue"
+  color: "7057ff"
+  description: ""
 
-- label: "size/S"
-  size-above: 10
-  size-below: 29
+- name: "help wanted"
+  color: "4caf50"
+  description: ""
 
-- label: "size/M"
-  size-above: 30
-  size-below: 99
+- name: "area/ci"
+  color: "ed9ca9"
+  description: ""
 
-- label: "size/L"
-  size-above: 100
-  size-below: 499
+- name: "area/dockerfile"
+  color: "03a9f4"
+  description: ""
 
-- label: "size/XL"
-  size-above: 500
-  size-below: 999
+- name: "kind/bug"
+  color: "b60205"
+  description: ""
 
-- label: "size/XXL"
-  size-above: 1000
+- name: "kind/dependencies"
+  color: "0366d6"
+  description: ""
 
-- label: "area/configuration"
-  files:
-  - ".*.env"
-  - ".eslintignore"
-  - ".eslintrc.json"
-  - ".gitignore"
-  - "commitlint.config.js"
-  - "jest.config.js"
-  - "lerna.json"
-  - "tsconfig.*"
+- name: "kind/docs"
+  color: "c5def5"
+  description: ""
 
-- label: "area/packages"
-  files:
-  - ".*package.json"
+- name: "kind/duplicate"
+  color: "cccccc"
+  description: ""
 
-- label: "area/dependencies"
-  files:
-  - "packages/*"
+- name: "kind/enhancement"
+  color: "0054ca"
+  description: ""
+
+- name: "kind/invalid"
+  color: "e6e6e6"
+  description: ""
+
+- name: "kind/upstream"
+  color: "fbca04"
+  description: ""
+
+- name: "kind/wontfix"
+  color: "ffffff"
+  description: ""
+
+- name: "status/automerge"
+  color: "8f4fbc"
+  description: ""
+
+- name: "status/needs-investigation"
+  color: "e6625b"
+  description: ""
+
+- name: "status/needs-more-info"
+  color: "795548"
+  description: "0"
+
+- name: "status/stale"
+  color: "237da0"
+  description: ""
+
+- name: "status/triage"
+  color: "dde4b7"
+  description: ""
 
 - label: "area/actions"
   files:
@@ -55,18 +83,18 @@ labels:
 
 - label: "area/docker"
   files:
-  - "**/.*Dockerfile"
-  - "**/docker-compose.yml"
+    - "**/.*Dockerfile"
+    - "**/docker-compose.yml"
 
 - label: "area/migrations"
   files:
-  - "**/databases/*"
+    - "**/databases/*"
 
 - label: "area/kube-manifests"
   files:
-  - "**/k8s/*"
+    - "**/k8s/*"
 
 - label: "area/documentation"
   files:
-  - "**/*.md"
-  - "**/docs/*"
+    - "**/*.md"
+    - "**/docs/*"

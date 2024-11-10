@@ -29,7 +29,7 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   DOCKERHUB_REGISTRY: docker.io/ntdtfr
-  GITHUB_REGISTRY: ghcr.io/crazy-max
+  GITHUB_REGISTRY: ghcr.io/nntran
   IMAGE_NAME: keycloak
 
 jobs:

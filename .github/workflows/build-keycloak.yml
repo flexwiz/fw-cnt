@@ -10,19 +10,19 @@ on:
       - 'master'
     tags:
       - '*'
-    paths-ignore:
-      - '**.md'
+    # paths-ignore:
+    #   - '**.md'
     paths:
       - keycloak/theme/**
       - keycloak/Dockerfile
       - .github/workflows/buid-keycloak.yml
   pull_request:
-    paths-ignore:
-      - '**.md'
+    # paths-ignore:
+    #   - '**.md'
     paths:
       - keycloak/theme/**
       - keycloak/Dockerfile
-      - .github/workflows/build-keycloak.yml
+      - .github/workflows/buid-keycloak.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:

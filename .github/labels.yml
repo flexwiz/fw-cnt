@@ -55,22 +55,18 @@ labels:
 
 - label: "area/docker"
   files:
-  - ".*Dockerfile"
-  - "docker-compose.yml"
-
-- label: "area/services"
-  files:
-  - "services/*"
+  - "**/.*Dockerfile"
+  - "**/docker-compose.yml"
 
 - label: "area/migrations"
   files:
-  - "databases/*"
+  - "**/databases/*"
 
 - label: "area/kube-manifests"
   files:
-  - "k8s/*"
+  - "**/k8s/*"
 
 - label: "area/documentation"
   files:
-  - ".*.md"
-  - "docs/*"
+  - "**/*.md"
+  - "**/docs/*"

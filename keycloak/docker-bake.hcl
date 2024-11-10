@@ -1,7 +1,8 @@
 # https://docs.docker.com/build/bake/
 
 variable "DEFAULT_TAG" {
-  default = "docker.io/ntdtfr/keycloak:latest"
+  # default = "docker.io/ntdtfr/keycloak:latest"
+  default = "keycloak:latest"
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition

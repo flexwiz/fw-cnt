@@ -18,12 +18,12 @@ group "default" {
 target "image" {
   inherits = ["docker-metadata-action"]
   context = "."
-  dockerfile = "./keycloak/Dockerfile"  // Path to your Dockerfile
+  dockerfile = "./Dockerfile"  // Path to your Dockerfile
 }
 
 target "image-dev" {
   inherits = ["image"]
-  dockerfile = "./keycloak/Dockerfile.dev"  // Path to your Dockerfile
+  dockerfile = "./Dockerfile.dev"  // Path to your Dockerfile
   output = ["type=docker"]
 }
 

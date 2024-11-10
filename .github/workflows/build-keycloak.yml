@@ -15,6 +15,7 @@ on:
     paths:
       - keycloak/theme/**
       - keycloak/Dockerfile
+      - keycloak/docker-bake.hcl
       - .github/workflows/buid-keycloak.yml
   pull_request:
     # paths-ignore:
@@ -22,11 +23,12 @@ on:
     paths:
       - keycloak/theme/**
       - keycloak/Dockerfile
+      - keycloak/docker-bake.hcl
       - .github/workflows/buid-keycloak.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  DOCKERHUB_REGISTRY: ntdtfr
+  DOCKERHUB_REGISTRY: docker.io/ntdtfr
   GITHUB_REGISTRY: ghcr.io/crazy-max
   IMAGE_NAME: keycloak
 

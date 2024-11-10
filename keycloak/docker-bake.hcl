@@ -1,5 +1,7 @@
+# https://docs.docker.com/build/bake/
+
 variable "DEFAULT_TAG" {
-  default = "keycloak:local"
+  default = "docker.io/ntdtfr/keycloak:latest"
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition
@@ -9,17 +11,18 @@ target "docker-metadata-action" {
 
 // Default target if none specified
 group "default" {
-  targets = ["image-local"]
+  targets = ["image-dev"]
 }
 
 target "image" {
   inherits = ["docker-metadata-action"]
   context = "."
-  dockerfile = "./Dockerfile"  // Path to your Dockerfile
+  dockerfile = "Dockerfile"  // Path to your Dockerfile
 }
 
-target "image-local" {
+target "image-dev" {
   inherits = ["image"]
+  dockerfile = "Dockerfile.dev"  // Path to your Dockerfile
   output = ["type=docker"]
 }
 

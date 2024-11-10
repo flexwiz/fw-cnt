@@ -18,12 +18,12 @@ group "default" {
 target "image" {
   inherits = ["docker-metadata-action"]
   context = "."
-  dockerfile = "Dockerfile"  // Path to your Dockerfile
+  dockerfile = "./keycloak/Dockerfile"  // Path to your Dockerfile
 }
 
 target "image-dev" {
   inherits = ["image"]
-  dockerfile = "Dockerfile.dev"  // Path to your Dockerfile
+  dockerfile = "./keycloak/Dockerfile.dev"  // Path to your Dockerfile
   output = ["type=docker"]
 }
 
@@ -33,9 +33,9 @@ target "image-all" {
     "linux/amd64",
     "linux/arm/v6",
     "linux/arm/v7",
-    "linux/arm64",
-    "linux/386",
-    "linux/ppc64le",
-    "linux/s390x"
+    "linux/arm64"
+    # "linux/386",
+    # "linux/ppc64le",
+    # "linux/s390x"
   ]
 }

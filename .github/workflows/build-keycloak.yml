@@ -32,11 +32,6 @@ env:
   GITHUB_REGISTRY: ghcr.io/nntran
   IMAGE_NAME: keycloak
 
-# Change default working directory
-defaults:
- run:
-  working-directory: keycloak
-
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -49,7 +44,7 @@ jobs:
       - name: Create matrix
         id: platforms
         run: |
-          echo "matrix=$(docker buildx bake image-all --file docker-bake.hcl --print | jq -cr '.target."image-all".platforms')" >>${GITHUB_OUTPUT}
+          echo "matrix=$(docker buildx bake image-all --file ./keycloak/docker-bake.hcl --print | jq -cr '.target."image-all".platforms')" >>${GITHUB_OUTPUT}
 
       - name: Show matrix
         run: |
@@ -135,7 +130,7 @@ jobs:
         id: bake
         uses: docker/bake-action@v5  # https://github.com/docker/bake-action
         with:
-          #workdir: ./keycloak
+          workdir: ./keycloak
           files: |
             docker-bake.hcl
             /tmp/bake-meta.json

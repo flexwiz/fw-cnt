@@ -6,12 +6,12 @@ on:
     branches:
       - master
       - 'feature/*'
-      - 'fix/*'
+      - 'hotfixe/*'
   pull_request:
     branches:
       - master
       - 'feature/*'
-      - 'fix/*'
+      - 'hotfixe/*'
 
 env:
   NODE_VERSION: '23'                # set this to the node version to use
@@ -30,8 +30,8 @@ jobs:
           cache: 'npm'
 
       - name: Install commitlint
-        #run: npm install @commitlint/{config-conventional,cli}
-        run: npm install -g @commitlint/config-conventional @commitlint/cli
+        run: npm install @commitlint/{config-conventional,cli}
+        #run: npm install -g @commitlint/config-conventional @commitlint/cli
 
       # The --from=HEAD~10 and --to=HEAD flags specify the commit range to check
       # (you can adjust this to fit your use case, e.g., only the last commit or the entire PR).

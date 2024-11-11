@@ -12,11 +12,11 @@ on:
       - '*'
     # paths-ignore:
     #   - '**.md'
-    # paths:
-    #   - keycloak/theme/**
-    #   - keycloak/Dockerfile
-    #   - keycloak/docker-bake.hcl
-    #   - .github/workflows/buid-keycloak.yml
+    paths:
+      - keycloak/theme/**
+      - keycloak/Dockerfile
+      - keycloak/docker-bake.hcl
+      - .github/workflows/buid-keycloak.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'

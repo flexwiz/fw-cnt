@@ -35,7 +35,7 @@ env:
 # Change default working directory
 defaults:
  run:
-  working-directory: ./keycloak
+  working-directory: keycloak
 
 jobs:
   prepare:

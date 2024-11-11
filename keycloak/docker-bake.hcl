@@ -1,8 +1,7 @@
 # https://docs.docker.com/build/bake/
 
 variable "DEFAULT_TAG" {
-  # default = "docker.io/ntdtfr/keycloak:latest"
-  default = "keycloak:latest"
+  default = "docker.io/ntdtfr/keycloak:25.0.4"
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition
@@ -17,13 +16,14 @@ group "default" {
 
 target "image" {
   inherits = ["docker-metadata-action"]
-  context = "."
-  dockerfile = "./Dockerfile"  // Path to your Dockerfile
+  context = "./"
+  dockerfile = "./Dockerfile"
 }
 
+# docker buildx bake image-dev
 target "image-dev" {
   inherits = ["image"]
-  dockerfile = "./Dockerfile.dev"  // Path to your Dockerfile
+  dockerfile = "./Dockerfile.dev"
   output = ["type=docker"]
 }
 

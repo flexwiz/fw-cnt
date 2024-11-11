@@ -33,7 +33,7 @@ jobs:
         #run: npm install @commitlint/{config-conventional,cli}
         run: npm install -g @commitlint/config-conventional @commitlint/cli
 
-      # The --from=HEAD~10 and --to=HEAD flags specify the commit range to check 
+      # The --from=HEAD~10 and --to=HEAD flags specify the commit range to check
       # (you can adjust this to fit your use case, e.g., only the last commit or the entire PR).
       - name: Run commitlint
         id: commitlint
@@ -41,9 +41,10 @@ jobs:
         run: npx commitlint --from=HEAD~10 --to=HEAD
 
       - name: Validate Conventional Commits
-        uses: amannn/action-commitlint@v5
+        uses: webiny/action-conventional-commits@v1.3.0
         with:
-          configFile: './.github/workflows/commit-lint.config.js'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Optional, for private repositories.
+          allowed-commit-types: "feat,fix,chore,docs,style,refactor,test,perf" # Optional, set if you want a subset of commit types to be allowed.
 
       - name: Comment on PR if commitlint fails
         if: failure()

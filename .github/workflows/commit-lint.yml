@@ -23,22 +23,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: ${{ env.NODE_VERSION }}
+      #     cache: 'npm'
 
-      - name: Install commitlint
-        run: npm install @commitlint/{config-conventional,cli}
-        #run: npm install -g @commitlint/config-conventional @commitlint/cli
+      # - name: Install commitlint
+      #   run: npm install @commitlint/{config-conventional,cli}
+      #   #run: npm install -g @commitlint/config-conventional @commitlint/cli
 
-      # The --from=HEAD~10 and --to=HEAD flags specify the commit range to check
-      # (you can adjust this to fit your use case, e.g., only the last commit or the entire PR).
-      - name: Run commitlint
-        id: commitlint
-        continue-on-error: true  # Allow failure to handle result
-        run: npx commitlint --from=HEAD~10 --to=HEAD
+      # # The --from=HEAD~10 and --to=HEAD flags specify the commit range to check
+      # # (you can adjust this to fit your use case, e.g., only the last commit or the entire PR).
+      # - name: Run commitlint
+      #   id: commitlint
+      #   continue-on-error: true  # Allow failure to handle result
+      #   run: npx commitlint --from=HEAD~10 --to=HEAD
 
       - name: Validate Conventional Commits
         uses: webiny/action-conventional-commits@v1.3.0

@@ -1,0 +1,61 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: superset
+
+profiles:
+  - name: dev
+    build:
+      tagPolicy:
+        sha256: {}
+      artifacts:
+        - image: ntdtfr/superset
+          context: .
+          docker:
+            dockerfile: Dockerfile.dev
+      local:
+        useBuildkit: true
+        concurrency: 0
+    deploy: &deploy
+      # helm:
+      #   releases:
+      #     - name: superset
+      #       repo: https://apache.github.io/superset
+      #       version: "0.12.9"
+      #       remoteChart: superset
+      #       valuesFiles:
+      #         - k8s/superset-helm-values.yaml
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - k8s/charts/postgresql/templates/*.yaml
+        - k8s/charts/postgresql/templates/primary/*.yaml
+        - k8s/charts/redis/templates/*.yaml
+        - k8s/charts/redis/templates/master/*.yaml
+        - k8s/templates/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: superset
+        port: 8088
+        localPort: 8088
+    activation:
+      - kubeContext: minikube
+
+  - name: dev-gcp
+    build:
+      tagPolicy:
+        sha256: {}
+      googleCloudBuild:
+        workerPool: projects/ezloc/locations/europe-west1/workerPools/worker-development-pool
+        projectId: ezloc
+        concurrency: 0
+      artifacts:
+        - image: ntdtfr/superset
+          kaniko:
+            dockerfile: Dockerfile.dev
+            cache: {}
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+    activation:
+      - kubeContext: gke_ezloc_europe-west1-b_ezloc-dev-cluster

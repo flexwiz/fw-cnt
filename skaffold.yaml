@@ -29,6 +29,9 @@ requires:
   - configs: ["sftp"]
     path: ./sftp
     activeProfiles: *local_and_cloud_profiles
+  - configs: ["superset"]
+    path: ./superset
+    activeProfiles: *local_and_cloud_profiles
 
 profiles:
   - name: dev

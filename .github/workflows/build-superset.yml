@@ -57,7 +57,7 @@ jobs:
             ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             # dynamically set the branch name and sha as a custom tag
-            type=raw,value=25.0.4-{{branch}}-{{sha}}
+            type=raw,value=4.0.1-{{branch}}-{{sha}}
             # type=match,pattern=(.*)-r,group=1
             # type=ref,event=pr
             # type=edge

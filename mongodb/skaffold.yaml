@@ -51,8 +51,8 @@ profiles:
       tagPolicy:
         sha256: {}
       googleCloudBuild:
-        workerPool: projects/ntdt-dev/locations/europe-west1/workerPools/worker-dev-pool
-        projectId: ntdt-dev
+        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
+        projectId: ntdt
         concurrency: 0
       artifacts:
         - image: eu.gcr.io/ntdt/dev/mongodb-jobs
@@ -64,4 +64,4 @@ profiles:
     deploy: *mongodb_deploy
     portForward: *mongodb_port_forward
     activation:
-      - kubeContext: gke_ntdt-dev_europe-west1-b_ntdt-dev-k8s-cluster
+      - kubeContext: europe-west9-b_ntdt-development-europe-west9-b_ntdt-development-k8s-cluster

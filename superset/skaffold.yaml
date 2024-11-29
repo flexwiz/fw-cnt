@@ -46,7 +46,7 @@ profiles:
       tagPolicy:
         sha256: {}
       googleCloudBuild:
-        workerPool: projects/ezloc/locations/europe-west1/workerPools/worker-development-pool
+        workerPool: projects/ezloc/locations/europe-west9/workerPools/worker-development-pool
         projectId: ezloc
         concurrency: 0
       artifacts:
@@ -58,4 +58,4 @@ profiles:
     manifests: *manifests
     portForward: *portForward
     activation:
-      - kubeContext: gke_ezloc_europe-west1-b_ezloc-dev-cluster
+      - kubeContext: gke_ezloc_europe-west9-b_ezloc-dev-cluster

@@ -26,10 +26,10 @@ profiles:
 
   - name: dev-gcp
     activation:
-      - kubeContext: gke_ntdt-dev_europe-west1-b_ntdt-dev-k8s-cluster
+      - kubeContext: gke_ntdt_europe-west9-b_ntdt-development-k8s-cluster
     build:
       googleCloudBuild:
-        projectId: ntdt-dev
+        projectId: ntdt
     deploy:
       helm:
         releases:

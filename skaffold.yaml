@@ -44,8 +44,8 @@ profiles:
   - name: dev-gcp
     build:
       googleCloudBuild:
-        workerPool: projects/ntdt-dev/locations/europe-west1/workerPools/worker-dev-pool
-        projectId: ntdt-dev
+        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
+        projectId: ntdt
         concurrency: 0
     activation:
-      - kubeContext: gke_ntdt-dev_europe-west1-b_ntdt-dev-k8s-cluster
+      - kubeContext: gke_ntdt_europe-west9-b_ntdt-development-k8s-cluster

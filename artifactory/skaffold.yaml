@@ -1,35 +1,30 @@
 apiVersion: skaffold/v4beta5
 kind: Config
 metadata:
-  name: minio
+  name: artifactory
 profiles:
   - name: dev
     activation:
       - kubeContext: minikube
-    deploy: &minio_deploy
+    deploy: &artifactory_deploy
       helm:
         releases:
-          - name: minio
-            repo: https://charts.bitnami.com/bitnami
-            version: 12.1.10
-            remoteChart: minio
-            setValues:
-              auth.rootUser: "admin"
-              auth.rootPassword: "password"
-              defaultBuckets: 'datas:private public download upload images ntdt-data-bucket'
-    portForward: &minio_port_forward
+          - name: artifactory
+            # https://github.com/jfrog/helm-charts/tree/master/charts/jfrog-artifactory-oss
+            # https://artifacthub.io/packages/helm/jfrog/artifactory-oss
+            repo: https://charts.jfrog.io
+            remoteChart: artifactory-oss
+            valuesFiles:
+              - ./k8s/artifactory-values.yaml
+    portForward: &artifactory_port_forward
       - resourceType: service
-        resourceName: minio
-        port: 9000
-        localPort: 9000
-      - resourceType: service
-        resourceName: minio
-        port: 9001
-        localPort: 9001
+        resourceName: artifactory
+        port: 8080
+        localPort: 8080
 
   - name: dev-gcp
-    deploy: *minio_deploy
-    portForward: *minio_port_forward
+    deploy: *artifactory_deploy
+    portForward: *artifactory_port_forward
     build:
       googleCloudBuild:
         projectId: "ntdt"

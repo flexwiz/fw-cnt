@@ -1,7 +1,7 @@
 # https://docs.docker.com/build/bake/
 
 variable "DEFAULT_TAG" {
-  default = "docker.io/ntdtfr/keycloak:25.0.4"
+  default = "docker.io/flexwiz/keycloak:25.0.4"
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition

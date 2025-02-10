@@ -36,7 +36,7 @@ profiles:
     portForward: *postgres_port_forward
     build:
       googleCloudBuild:
-        projectId: "ntdt"
+        projectId: ezloc-dev
         concurrency: 0
     activation:
-      - kubeContext: gke_ntdt-development_europe-west9-b_ntdt-development-k8s-cluster
+      - kubeContext: gke_ezloc-dev_europe-west9-b_k8s-cluster

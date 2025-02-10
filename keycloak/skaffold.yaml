@@ -10,7 +10,7 @@ profiles:
       tagPolicy:
         sha256: {}
       artifacts:
-        - image: ntdtfr/keycloak
+        - image: flexwiz/keycloak
           context: .
           docker:
             dockerfile: Dockerfile.dev
@@ -21,7 +21,7 @@ profiles:
       helm:
         releases:
           - name: keycloak-postgres
-            namespace: ntdt
+            namespace: default
             # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
             # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
             repo: https://charts.bitnami.com/bitnami
@@ -36,7 +36,7 @@ profiles:
               global.postgresql.auth.postgresPassword: "password"
               primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
       kubectl:
-        defaultNamespace: ntdt
+        defaultNamespace: default
     manifests: &manifests
       rawYaml:
         - k8s/*.yaml
@@ -53,11 +53,11 @@ profiles:
       tagPolicy:
         sha256: {}
       googleCloudBuild:
-        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
-        projectId: ntdt
+        workerPool: projects/ezloc-dev/locations/europe-west9/workerPools/development-pool
+        projectId: ezloc-dev
         concurrency: 0
       artifacts:
-        - image: eu.gcr.io/ntdt/dev/keycloak
+        - image: flexwiz/keycloak
           kaniko:
             dockerfile: Dockerfile.dev
             cache: {}
@@ -65,4 +65,4 @@ profiles:
     manifests: *manifests
     portForward: *portForward
     activation:
-      - kubeContext: europe-west9-b_ntdt-development-europe-west9-b_ntdt-development-k8s-cluster
+      - kubeContext: europe-west9-b_ezloc-dev-europe-west9-b_k8s-cluster

@@ -1,7 +1,7 @@
 # https://docs.docker.com/build/bake/
 
 variable "DEFAULT_TAG" {
-  default = "docker.io/ntdtfr/superset:4.0.1"
+  default = "docker.io/flexwiz/superset:4.0.1"
 }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition

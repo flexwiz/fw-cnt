@@ -27,7 +27,7 @@ profiles:
     portForward: *artifactory_port_forward
     build:
       googleCloudBuild:
-        projectId: "ntdt"
+        projectId: ezloc-dev
         concurrency: 0
     activation:
-      - kubeContext: europe-west9-b_ntdt-development-europe-west9-b_ntdt-development-k8s-cluster
+      - kubeContext: europe-west9-b_ezloc-dev-europe-west9-b_k8s-cluster

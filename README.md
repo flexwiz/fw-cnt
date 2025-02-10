@@ -1,6 +1,6 @@
 # Common Tools
 
-[![CI for Keycloak](https://github.com/ntdtfr/common-tools/actions/workflows/build-keycloak.yml/badge.svg?branch=master)](https://github.com/ntdtfr/common-tools/actions/workflows/build-keycloak.yml)
+[![CI for Keycloak](https://github.com/flexwiz/common-tools/actions/workflows/build-keycloak.yml/badge.svg?branch=master)](https://github.com/flexwiz/common-tools/actions/workflows/build-keycloak.yml)
 
 ## Prerequisites
 
@@ -60,5 +60,5 @@ skaffold run --port-forward=user -m postgres,redis  # Run postgres & redis modul
 requires:
   - configs: ["common-tools"]
     git:
-      repo: git@github.com:ntdtfr/common-tools.git
+      repo: git@github.com:flexwiz/common-tools.git
 ```

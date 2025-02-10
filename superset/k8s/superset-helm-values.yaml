@@ -186,7 +186,7 @@ extraConfigMountPath: "/app/configs"
 image:
   # repository: apachesuperset.docker.scarf.sh/apache/superset
   # tag: ~
-  repository: ntdtfr/superset
+  repository: flexwiz/superset
   tag: latest
   pullPolicy: IfNotPresent
 

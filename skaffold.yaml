@@ -44,8 +44,8 @@ profiles:
   - name: dev-gcp
     build:
       googleCloudBuild:
-        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
-        projectId: ntdt
+        workerPool: projects/ezloc-dev/locations/europe-west9/workerPools/development-pool
+        projectId: flexwiz-dev
         concurrency: 0
     activation:
-      - kubeContext: gke_ntdt_europe-west9-b_ntdt-development-k8s-cluster
+      - kubeContext: gke_ezloc-dev_europe-west9-b_k8s-cluster

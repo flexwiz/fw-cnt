@@ -26,7 +26,7 @@ on:
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  DOCKERHUB_REGISTRY: docker.io/ntdtfr
+  DOCKERHUB_REGISTRY: docker.io/flexwiz
   GITHUB_REGISTRY: ghcr.io/nntran
   IMAGE_NAME: superset
 

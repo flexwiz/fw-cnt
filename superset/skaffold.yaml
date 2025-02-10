@@ -9,7 +9,7 @@ profiles:
       tagPolicy:
         sha256: {}
       artifacts:
-        - image: ntdtfr/superset
+        - image: flexwiz/superset
           context: .
           docker:
             dockerfile: Dockerfile.dev
@@ -46,11 +46,11 @@ profiles:
       tagPolicy:
         sha256: {}
       googleCloudBuild:
-        workerPool: projects/ezloc/locations/europe-west9/workerPools/worker-development-pool
-        projectId: ezloc
+        workerPool: projects/ezloc-dev/locations/europe-west9/workerPools/worker-development-pool
+        projectId: ezloc-dev
         concurrency: 0
       artifacts:
-        - image: ntdtfr/superset
+        - image: flexwiz/superset
           kaniko:
             dockerfile: Dockerfile.dev
             cache: {}
@@ -58,4 +58,4 @@ profiles:
     manifests: *manifests
     portForward: *portForward
     activation:
-      - kubeContext: gke_ezloc_europe-west9-b_ezloc-dev-cluster
+      - kubeContext: gke_ezloc-dev_europe-west9-b_k8s-cluster

@@ -54,11 +54,11 @@ skaffold run --port-forward=user -m postgres           # Run postgres module + p
 skaffold run --port-forward=user -m postgres,redis  # Run postgres & redis module + port-forward postgres & redis
 ```
 
-- Reference this repository from another one (ex: `api-gateway`, `ms-immo`), using the `requires` section in your `skaffold.yaml`
+- Reference this repository from another one (ex: `api-gateway`) using the `requires` section in your `skaffold.yaml`
 
 ```yaml
 requires:
-  - configs: ["common-tools"]
+  - configs: ["tools"]
     git:
-      repo: git@github.com:flexwiz/common-tools.git
+      repo: git@github.com:flexwiz/tools.git
 ```

@@ -147,7 +147,7 @@ jobs:
         # https://github.com/docker/bake-action
         uses: docker/bake-action@v6
         with:
-          workdir: ./superset
+          # workdir: ./superset
           files: |
             ./superset/docker-bake.hcl
             cwd://${{ runner.temp }}/bake-meta.json

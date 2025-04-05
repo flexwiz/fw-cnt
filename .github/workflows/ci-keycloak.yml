@@ -149,7 +149,7 @@ jobs:
         # https://github.com/docker/bake-action
         uses: docker/bake-action@v6
         with:
-          workdir: ./keycloak
+          # workdir: ./keycloak
           files: |
             ./keycloak/docker-bake.hcl
             cwd://${{ runner.temp }}/bake-meta.json

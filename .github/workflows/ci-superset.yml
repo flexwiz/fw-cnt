@@ -1,4 +1,4 @@
-name: CI for Keycloak
+name: Superset CI
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,30 +7,28 @@ concurrency:
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
     tags:
-      - '*'
+      - 'v*'
     # paths-ignore:
     #   - '**.md'
     paths:
-      - keycloak/theme/**
-      - keycloak/Dockerfile
-      - keycloak/docker-bake.hcl
-      - .github/workflows/buid-keycloak.yml
+      - superset/Dockerfile
+      - superset/docker-bake.hcl
+      - .github/workflows/ci-superset.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - keycloak/theme/**
-      - keycloak/Dockerfile
-      - keycloak/docker-bake.hcl
-      - .github/workflows/buid-keycloak.yml
+      - superset/Dockerfile
+      - superset/docker-bake.hcl
+      - .github/workflows/ci-superset.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  DOCKERHUB_REGISTRY: docker.io/flexwiz
-  GITHUB_REGISTRY: ghcr.io/nntran
-  IMAGE_NAME: keycloak
+  DOCKER_REGISTRY: docker.io  # ghcr.io
+  DOCKER_IMAGE_NAME: ntdtfr/superset # nntran/superset
+  DOCKER_BAKE_TARGET: production
 
 jobs:
   prepare:
@@ -44,39 +42,45 @@ jobs:
       - name: Create matrix
         id: platforms
         run: |
-          echo "matrix=$(docker buildx bake image-all --file ./keycloak/docker-bake.hcl --print | jq -cr '.target."image-all".platforms')" >>${GITHUB_OUTPUT}
+          echo "matrix=$(docker buildx bake ${{ env.DOCKER_BAKE_TARGET }} --file ./superset/docker-bake.hcl --print | jq -cr '.target."${{ env.DOCKER_BAKE_TARGET }}".platforms')" >>${GITHUB_OUTPUT}
 
       - name: Show matrix
         run: |
           echo ${{ steps.platforms.outputs.matrix }}
 
-      - name: Docker meta
+      # https://github.com/docker/metadata-action#bake-definition
+      - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
-            ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.DOCKER_IMAGE_NAME }}
           tags: |
-            # dynamically set the branch name and sha as a custom tag
-            type=raw,value=25.0.4-{{branch}}-{{sha}}
-            # type=match,pattern=(.*)-r,group=1
-            # type=ref,event=pr
-            # type=edge
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,format=short # 7 characters
+          # tags: |
+          #   # dynamically set the branch name and sha as a custom tag
+          #   type=raw,value={{branch}}-{{sha}}
+          #   type=match,pattern=(.*)-r,group=1
+          #   type=ref,event=pr
+          #   type=edge
           labels: |
-            org.opencontainers.image.title=Keycloak
-            org.opencontainers.image.description=Keycloak component
+            org.opencontainers.image.title=Superset
+            org.opencontainers.image.description=Superset component
             org.opencontainers.image.vendor=ntdt
 
       - name: Rename meta bake definition file
         run: |
-          mv "${{ steps.meta.outputs.bake-file }}" "/tmp/bake-meta.json"
+          mv "${{ steps.meta.outputs.bake-file }}" "${{ runner.temp }}/bake-meta.json"
 
       - name: Upload meta bake definition
         uses: actions/upload-artifact@v4
         with:
           name: bake-meta
-          path: /tmp/bake-meta.json
+          path: ${{ runner.temp }}/bake-meta.json
           if-no-files-found: error
           retention-days: 1
 
@@ -84,6 +88,10 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - prepare
+    timeout-minutes: 20  # Timeout after 20 minutes
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
@@ -111,54 +119,64 @@ jobs:
         with:
           buildkitd-flags: "--debug"
 
-      - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
+          #registry: ${{ env.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       # - name: Login to GHCR
-      #   if: github.event_name != 'pull_request'
       #   uses: docker/login-action@v3
       #   with:
       #     registry: ghcr.io
       #     username: ${{ github.repository_owner }}
       #     password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
-        id: bake
-        uses: docker/bake-action@v5  # https://github.com/docker/bake-action
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: buildx
         with:
-          workdir: ./keycloak
+          buildkitd-flags: "--debug"
+
+      - name: Build image with Bake
+        id: bake
+        # https://github.com/docker/bake-action
+        uses: docker/bake-action@v6
+        with:
+          workdir: ./superset
           files: |
-            docker-bake.hcl
-            /tmp/bake-meta.json
-          targets: image
+            ./docker-bake.hcl
+            cwd://${{ runner.temp }}/bake-meta.json
+          builder: ${{ steps.buildx.outputs.name }}
+          targets: ${{ env.DOCKER_BAKE_TARGET }}
           set: |
             *.tags=
             *.platform=${{ matrix.platform }}
             *.cache-from=type=gha,scope=build-${{ env.PLATFORM }}
             *.cache-to=type=gha,scope=build-${{ env.PLATFORM }}
-            *.output=type=image,"name=${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}",push-by-digest=true,name-canonical=true,push=${{ github.event_name != 'pull_request' }}
+            *.output=type=image,name=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
-          mkdir -p /tmp/digests
-          digest="${{ fromJSON(steps.bake.outputs.metadata).image['containerimage.digest'] }}"
-          touch "/tmp/digests/${digest#sha256:}"
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ fromJSON(steps.bake.outputs.metadata).production['containerimage.digest'] }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
           name: digests-${{ env.PLATFORM }}
-          path: /tmp/digests/*
+          path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
 
   merge:
     runs-on: ubuntu-latest
-    if: github.event_name != 'pull_request'
+    # if: github.event_name != 'pull_request'
     needs:
       - build
     steps:
@@ -166,21 +184,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: bake-meta
-          path: /tmp
+          path: ${{ runner.temp }}
 
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
-          path: /tmp/digests
+          path: ${{ runner.temp }}/digests
           pattern: digests-*
           merge-multiple: true
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
+          #registry: ${{ env.DOCKER_REGISTRY }}
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
@@ -191,16 +207,16 @@ jobs:
       #     username: ${{ github.repository_owner }}
       #     password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Create manifest list and push
-        working-directory: /tmp/digests
+        working-directory: ${{ runner.temp }}/digests
         run: |
-          docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}")) | "-t " + .) | join(" ")' /tmp/bake-meta.json) \
-            $(printf '${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
-          # docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}")) | "-t " + .) | join(" ")' /tmp/bake-meta.json) \
-          #   $(printf '${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
+          docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.DOCKER_IMAGE_NAME }}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/bake-meta.json) \
+              $(printf '${{ env.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
 
       - name: Inspect image
         run: |
-          tag=$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' /tmp/bake-meta.json)
-          docker buildx imagetools inspect ${{ env.DOCKERHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:${tag}
-          # docker buildx imagetools inspect ${{ env.GITHUB_REGISTRY }}/${{ env.IMAGE_NAME }}:${tag}
+          tag=$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/bake-meta.json)
+          docker buildx imagetools inspect ${{ env.DOCKER_IMAGE_NAME }}:${tag}

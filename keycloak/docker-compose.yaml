@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   keycloak:
@@ -7,32 +5,34 @@ services:
     # image: quay.io/keycloak/keycloak:25.0.4
     # command: "start-dev --import-realm"
     # restart: unless-stopped
-    build: 
+    build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+      target: development
     #command: "--import-realm"
     depends_on:
-      - keycloak-postgres
+      - keycloak-db
     environment:
-      DB_ADDR: keycloak-postgres
-      DB_USER: keycloak
-      DB_PASSWORD: keycloak
-      DB_VENDOR: postgres
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KC_HOSTNAME: localhost
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_HTTP_PORT: 9000
       KC_HTTP_RELATIVE_PATH: /auth
     ports:
-      - "9000:9000"
-    #volumes:
-    #   - ./import:/opt/keycloak/data/import
-    #   - ./export:/opt/keycloak/data/export
-    #   - ./themes/ntdt:/opt/keycloak/themes/ntdt
-    #   - ./themes/base/login/confidentiality.ftl:/opt/keycloak/themes/base/login/confidentiality.ftl
+      - "8280:9000"
+      - "8243:8443"
+    volumes:
+      - ./import:/opt/keycloak/data/import
+      - ./export:/opt/keycloak/data/export
+      - ./themes:/opt/keycloak/themes
     #   - ./deployments:/opt/keycloak/standalone/deployments
 
-  keycloak-postgres:
-    container_name: keycloak-postgres
+  keycloak-db:
+    container_name: keycloak-db
     image: postgres:13
     restart: unless-stopped
     environment:

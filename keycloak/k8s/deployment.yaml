@@ -22,11 +22,11 @@ spec:
             [
               "sh",
               "-c",
-              "until pg_isready -h postgres-postgresql -p 5432; do echo waiting for database; sleep 2; done;",
+              "until pg_isready -h keycloak-postgres-postgresql -p 5432; do echo waiting for database; sleep 2; done;",
             ]
       containers:
         - name: keycloak
-          image: flexwiz/keycloak
+          image: ntdtfr/keycloak
           #args: ["--import-realm"]
           env:
             # See https://www.keycloak.org/server/all-config
@@ -38,15 +38,15 @@ spec:
             - name: KC_DB
               value: "postgres"
             - name: KC_DB_URL_HOST
-              value: "postgres-postgresql"
+              value: "keycloak-postgres-postgresql"
             - name: KC_DB_URL_PORT
               value: "5432"
             - name: KC_DB_URL_DATABASE
               value: "keycloak"
             - name: KC_DB_USERNAME
-              value: "postgres"
+              value: "keycloak"
             - name: KC_DB_PASSWORD
-              value: "password"
+              value: "keycloak"
             - name: KC_HTTP_PORT
               value: "9000"
             - name: KC_HOSTNAME_STRICT

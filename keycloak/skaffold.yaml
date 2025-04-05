@@ -5,15 +5,16 @@ metadata:
   name: keycloak
 
 profiles:
-  - name: dev
+  - name: minikube
     build:
       tagPolicy:
         sha256: {}
       artifacts:
-        - image: flexwiz/keycloak
+        - image: ntdtfr/keycloak
           context: .
           docker:
-            dockerfile: Dockerfile.dev
+            dockerfile: Dockerfile
+            target: development
       local:
         useBuildkit: true
         concurrency: 0
@@ -44,25 +45,27 @@ profiles:
       - resourceType: service
         resourceName: keycloak
         port: 9000
-        localPort: 9000
+        localPort: 8280
     activation:
       - kubeContext: minikube
 
-  - name: dev-gcp
+  - name: gke
     build:
       tagPolicy:
         sha256: {}
       googleCloudBuild:
-        workerPool: projects/ezloc-dev/locations/europe-west9/workerPools/development-pool
-        projectId: ezloc-dev
+        workerPool: projects/ezloc/locations/europe-west9/workerPools/development-pool
+        projectId: ezloc-02
         concurrency: 0
       artifacts:
-        - image: flexwiz/keycloak
+        - image: ntdtfr/keycloak
+          context: .
           kaniko:
-            dockerfile: Dockerfile.dev
+            dockerfile: Dockerfile
+            target: development
             cache: {}
     deploy: *deploy
     manifests: *manifests
     portForward: *portForward
     activation:
-      - kubeContext: europe-west9-b_ezloc-dev-europe-west9-b_k8s-cluster
+      - kubeContext: europe-west9-b_ezloc-02-europe-west9-b_development-cluster

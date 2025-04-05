@@ -34,18 +34,18 @@ requires:
     activeProfiles: *local_and_cloud_profiles
 
 profiles:
-  - name: dev
+  - name: minikube
     build:
       local:
         concurrency: 0
         useBuildkit: true
     activation:
       - kubeContext: minikube
-  - name: dev-gcp
+  - name: gke
     build:
       googleCloudBuild:
-        workerPool: projects/ezloc-dev/locations/europe-west9/workerPools/development-pool
-        projectId: flexwiz-dev
+        workerPool: projects/ezloc/locations/europe-west9/workerPools/development-pool
+        projectId: ezloc-02
         concurrency: 0
     activation:
-      - kubeContext: gke_ezloc-dev_europe-west9-b_k8s-cluster
+      - kubeContext: gke_ezloc-02_europe-west9-b_development-cluster

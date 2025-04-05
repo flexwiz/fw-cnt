@@ -149,7 +149,7 @@ jobs:
         with:
           workdir: ./superset
           files: |
-            ./docker-bake.hcl
+            ./superset/docker-bake.hcl
             cwd://${{ runner.temp }}/bake-meta.json
           builder: ${{ steps.buildx.outputs.name }}
           targets: ${{ env.DOCKER_BAKE_TARGET }}

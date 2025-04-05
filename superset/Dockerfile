@@ -1,16 +1,8 @@
 ARG VER=4.0.1
 
-FROM apache/superset:${VER} AS production
+FROM apache/superset:${VER} AS base
 
 WORKDIR /app
-
-# https://www.restack.io/docs/superset-knowledge-apache-superset-config-guide
-# https://superset.apache.org/docs/configuration/configuring-superset
-ENV SUPERSET_CUSTOM_PATH="/app/superset/custom" \
-    SUPERSET_CONFIG_PATH="/app/superset/custom/superset_config.py"
-
-RUN mkdir -p ${SUPERSET_CUSTOM_PATH}
-COPY --chown=superset:superset conf/superset_config.py ${SUPERSET_CUSTOM_PATH}/superset_config.py
 
 # ADD logo
 COPY --chown=superset:superset assets/images/logo.png /app/superset/static/assets/images/logo.png
@@ -30,3 +22,29 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # Switching back to using the `superset` user
 USER superset
+
+###
+### Stage 2: Development
+FROM base AS development
+
+# https://www.restack.io/docs/superset-knowledge-apache-superset-config-guide
+# https://superset.apache.org/docs/configuration/configuring-superset
+ENV SUPERSET_CUSTOM_PATH="/app/superset/custom" \
+    SUPERSET_CONFIG_PATH="/app/superset/custom/superset_config.py"
+
+RUN mkdir -p ${SUPERSET_CUSTOM_PATH}
+COPY --chown=superset:superset conf/superset_config_dev.py ${SUPERSET_CUSTOM_PATH}/superset_config.py
+
+
+###
+### Stage 2: Production
+FROM base AS production
+
+# https://www.restack.io/docs/superset-knowledge-apache-superset-config-guide
+# https://superset.apache.org/docs/configuration/configuring-superset
+ENV SUPERSET_CUSTOM_PATH="/app/superset/custom" \
+    SUPERSET_CONFIG_PATH="/app/superset/custom/superset_config.py"
+
+RUN mkdir -p ${SUPERSET_CUSTOM_PATH}
+COPY --chown=superset:superset conf/superset_config.py ${SUPERSET_CUSTOM_PATH}/superset_config.py
+

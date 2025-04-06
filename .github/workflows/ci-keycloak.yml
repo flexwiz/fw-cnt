@@ -131,6 +131,7 @@ jobs:
         uses: docker/bake-action@v6
         with:
           source: ${{ env.SOURCE_DIR }}
+          workdir: ${{ env.SOURCE_DIR }}
           files: |
             ${{ env.DOCKER_BAKE_FILE }}
             cwd://${{ runner.temp }}/bake-meta.json

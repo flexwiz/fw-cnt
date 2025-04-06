@@ -63,8 +63,8 @@ jobs:
             type=ref,event=pr
             type=sha,format=short # 7 characters
           labels: |
-            org.opencontainers.image.title=Keycloak
-            org.opencontainers.image.description=Keycloak component
+            org.opencontainers.image.title=Superset
+            org.opencontainers.image.description=Superset component
             org.opencontainers.image.vendor=ntdt
 
       - name: Rename meta bake definition file

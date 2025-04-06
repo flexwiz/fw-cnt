@@ -60,7 +60,7 @@ jobs:
         with:
           images: ${{ env.DOCKER_IMAGE_NAME }}
           tags: |
-            type=raw,value=${{ env.KEYCLOAK_VERSION }},suffix=-{{branch}}
+            type=raw,value=${{ env.KEYCLOAK_VERSION }}
             type=ref,event=branch,prefix=${{ env.KEYCLOAK_VERSION }}-
             type=ref,event=pr,prefix=${{ env.KEYCLOAK_VERSION }}-
             type=sha,format=short,prefix=${{ env.KEYCLOAK_VERSION }}- # sha short = 7 characters

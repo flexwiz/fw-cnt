@@ -132,7 +132,7 @@ jobs:
         with:
           workdir: ${{ env.WORKING_DIR }}
           files: |
-            ${{ env.DOCKER_BAKE_FILE }}
+            ${{ env.WORKING_DIR }}/${{ env.DOCKER_BAKE_FILE }}
             cwd://${{ runner.temp }}/bake-meta.json
           builder: ${{ steps.buildx.outputs.name }}
           targets: ${{ env.DOCKER_BAKE_TARGET }}

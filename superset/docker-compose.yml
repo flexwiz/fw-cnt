@@ -35,8 +35,8 @@ x-superset-volumes: &superset-volumes
 
 x-common-build: &common-build
   context: .
-  dockerfile: ./Dockerfile.dev
-  target: dev
+  dockerfile: ./Dockerfile
+  target: development
   cache_from:
     - apache/superset-cache:3.10-slim-bookworm
 

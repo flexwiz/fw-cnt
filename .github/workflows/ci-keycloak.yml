@@ -1,0 +1,199 @@
+name: Keycloak CI
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+    # paths-ignore:
+    #   - '**.md'
+    paths:
+      - keycloak/theme/**
+      - keycloak/Dockerfile
+      - keycloak/docker-bake.hcl
+      - .github/workflows/ci-keycloak.yml
+  pull_request:
+    # paths-ignore:
+    #   - '**.md'
+    paths:
+      - keycloak/theme/**
+      - keycloak/Dockerfile
+      - keycloak/docker-bake.hcl
+      - .github/workflows/ci-keycloak.yml
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  SOURCE_DIR: ./keycloak
+  DOCKER_REGISTRY: docker.io  # ghcr.io
+  DOCKER_IMAGE_NAME: ntdtfr/keycloak # nntran/keycloak
+  DOCKER_BAKE_FILE: docker-bake.hcl
+  DOCKER_BAKE_TARGET: production
+
+jobs:
+  docker-prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.platforms.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create matrix
+        id: platforms
+        run: |
+          echo "matrix=$(docker buildx bake ${{ env.DOCKER_BAKE_TARGET }} --file ${{ env.SOURCE_DIR }}/${{ env.DOCKER_BAKE_FILE }} --print | jq -cr '.target."${{ env.DOCKER_BAKE_TARGET }}".platforms')" >>${GITHUB_OUTPUT}
+
+      - name: Show matrix
+        run: |
+          echo ${{ steps.platforms.outputs.matrix }}
+
+      # https://github.com/docker/metadata-action#bake-definition
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.DOCKER_IMAGE_NAME }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha,format=short # 7 characters
+          labels: |
+            org.opencontainers.image.title=Keycloak
+            org.opencontainers.image.description=Keycloak component
+            org.opencontainers.image.vendor=ntdt
+
+      - name: Rename meta bake definition file
+        run: |
+          mv "${{ steps.meta.outputs.bake-file }}" "${{ runner.temp }}/bake-meta.json"
+
+      - name: Upload meta bake definition
+        uses: actions/upload-artifact@v4
+        with:
+          name: bake-meta
+          path: ${{ runner.temp }}/bake-meta.json
+          if-no-files-found: error
+          retention-days: 1
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs:
+      - docker-prepare
+    timeout-minutes: 20  # Timeout after 20 minutes
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJson(needs.docker-prepare.outputs.matrix) }}
+    steps:
+      - name: Prepare
+        run: |
+          platform=${{ matrix.platform }}
+          echo "PLATFORM=${platform//\//-}" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download meta bake definition
+        uses: actions/download-artifact@v4
+        with:
+          name: bake-meta
+          path: ${{ runner.temp }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          #registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: buildx
+        with:
+          buildkitd-flags: "--debug"
+
+      - name: Build image with Bake
+        id: bake
+        # https://github.com/docker/bake-action
+        uses: docker/bake-action@v6
+        with:
+          source: .
+          workdir: ${{ env.SOURCE_DIR }}
+          files: |
+            ${{ env.DOCKER_BAKE_FILE }}
+            cwd://${{ runner.temp }}/bake-meta.json
+          builder: ${{ steps.buildx.outputs.name }}
+          targets: ${{ env.DOCKER_BAKE_TARGET }}
+          set: |
+            *.tags=
+            *.platform=${{ matrix.platform }}
+            *.cache-from=type=gha,scope=build-${{ env.PLATFORM }}
+            *.cache-to=type=gha,scope=build-${{ env.PLATFORM }}
+            *.output=type=image,name=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p ${{ runner.temp }}/digests
+          digest="${{ fromJSON(steps.bake.outputs.metadata).production['containerimage.digest'] }}"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ env.PLATFORM }}
+          path: ${{ runner.temp }}/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  docker-push:
+    runs-on: ubuntu-latest
+    needs:
+      - docker-build
+    # if: github.event_name != 'pull_request'
+    steps:
+    - name: Download meta bake definition
+      uses: actions/download-artifact@v4
+      with:
+        name: bake-meta
+        path: ${{ runner.temp }}
+
+    - name: Download digests
+      uses: actions/download-artifact@v4
+      with:
+        path: ${{ runner.temp }}/digests
+        pattern: digests-*
+        merge-multiple: true
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v3
+      with:
+        #registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Create manifest list and push
+      working-directory: ${{ runner.temp }}/digests
+      run: |
+        docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.DOCKER_IMAGE_NAME }}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/bake-meta.json) \
+            $(printf '${{ env.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
+
+    - name: Inspect image
+      run: |
+        tag=$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/bake-meta.json)
+        docker buildx imagetools inspect ${{ env.DOCKER_IMAGE_NAME }}:${tag}

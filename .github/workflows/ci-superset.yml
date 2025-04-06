@@ -128,7 +128,7 @@ jobs:
         # https://github.com/docker/bake-action
         uses: docker/bake-action@v6
         with:
-          source: ${{ env.SOURCE_DIR }}
+          source: .
           workdir: ${{ env.SOURCE_DIR }}
           files: |
             ${{ env.DOCKER_BAKE_FILE }}

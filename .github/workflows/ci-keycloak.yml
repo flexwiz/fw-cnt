@@ -28,11 +28,11 @@ on:
 
 # Environment variables available to all jobs and steps in this workflow
 env:
+  SOURCE_DIR: keycloak
   DOCKER_REGISTRY: docker.io  # ghcr.io
   DOCKER_IMAGE_NAME: ntdtfr/keycloak # nntran/keycloak
   DOCKER_BAKE_FILE: docker-bake.hcl
   DOCKER_BAKE_TARGET: production
-  WORKING_DIR: ./keycloak
 
 jobs:
   docker-prepare:
@@ -46,7 +46,7 @@ jobs:
       - name: Create matrix
         id: platforms
         run: |
-          echo "matrix=$(docker buildx bake ${{ env.DOCKER_BAKE_TARGET }} --file ${{ env.WORKING_DIR }}/${{ env.DOCKER_BAKE_FILE }} --print | jq -cr '.target."${{ env.DOCKER_BAKE_TARGET }}".platforms')" >>${GITHUB_OUTPUT}
+          echo "matrix=$(docker buildx bake ${{ env.DOCKER_BAKE_TARGET }} --file ${{ env.SOURCE_DIR }}/${{ env.DOCKER_BAKE_FILE }} --print | jq -cr '.target."${{ env.DOCKER_BAKE_TARGET }}".platforms')" >>${GITHUB_OUTPUT}
 
       - name: Show matrix
         run: |
@@ -130,9 +130,9 @@ jobs:
         # https://github.com/docker/bake-action
         uses: docker/bake-action@v6
         with:
-          workdir: ${{ env.WORKING_DIR }}
+          source: ${{ env.SOURCE_DIR }}
           files: |
-            ${{ env.WORKING_DIR }}/${{ env.DOCKER_BAKE_FILE }}
+            ${{ env.DOCKER_BAKE_FILE }}
             cwd://${{ runner.temp }}/bake-meta.json
           builder: ${{ steps.buildx.outputs.name }}
           targets: ${{ env.DOCKER_BAKE_TARGET }}

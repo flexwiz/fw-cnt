@@ -6,32 +6,32 @@ metadata:
 requires:
   - configs: ["artifactory"]
     path: ./artifactory
-    activeProfiles: &local_and_cloud_profiles
-      - name: dev
-        activatedBy: [dev]
-      - name: dev-gcp
-        activatedBy: [dev-gcp]
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
   - configs: ["keycloak"]
     path: ./keycloak
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
   - configs: ["minio"]
     path: ./minio
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
   - configs: ["mongodb"]
     path: ./mongodb
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
   - configs: ["postgres"]
     path: ./postgres
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
   - configs: ["redis"]
     path: ./redis
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
   - configs: ["sftp"]
     path: ./sftp
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
   - configs: ["superset"]
     path: ./superset
-    activeProfiles: *local_and_cloud_profiles
+    activeProfiles: *profiles
 
 profiles:
   - name: minikube
@@ -41,7 +41,7 @@ profiles:
         useBuildkit: true
     activation:
       - kubeContext: minikube
-  - name: gke
+  - name: gcp
     build:
       googleCloudBuild:
         workerPool: projects/ezloc/locations/europe-west9/workerPools/development-pool

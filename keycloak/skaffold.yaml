@@ -4,6 +4,11 @@ kind: Config
 metadata:
   name: keycloak
 
+requires:
+  # Postgres is required to run Keycloak
+  - configs: ["postgres"]
+    path: ../postgres
+
 profiles:
   - name: minikube
     build:
@@ -15,27 +20,30 @@ profiles:
           docker:
             dockerfile: Dockerfile
             target: development
+            # buildArgs:
+            #   KEYCLOAK_VERSION: 25.0.4
       local:
         useBuildkit: true
         concurrency: 0
     deploy: &deploy
-      helm:
-        releases:
-          - name: keycloak-postgres
-            namespace: default
-            # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
-            # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
-            repo: https://charts.bitnami.com/bitnami
-            version: 12.6.0
-            remoteChart: postgresql
-            setValues:
-              #image.tag: 13.6.0-debian-10-r89
-              image.debug: true
-              primary.extraEnvVars:
-                - name: POSTGRESQL_WAL_LEVEL
-                  value: logical
-              global.postgresql.auth.postgresPassword: "password"
-              primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
+      # Don't need to use helm, just include postgres config in the requires:
+      # helm:
+      #   releases:
+      #     - name: postgres
+      #       namespace: default
+      #       # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
+      #       # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
+      #       repo: https://charts.bitnami.com/bitnami
+      #       version: 12.6.0
+      #       remoteChart: postgresql
+      #       setValues:
+      #         #image.tag: 13.6.0-debian-10-r89
+      #         image.debug: true
+      #         primary.extraEnvVars:
+      #           - name: POSTGRESQL_WAL_LEVEL
+      #             value: logical
+      #         global.postgresql.auth.postgresPassword: "password"
+      #         primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
       kubectl:
         defaultNamespace: default
     manifests: &manifests

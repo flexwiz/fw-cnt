@@ -21,6 +21,11 @@ target "base" {
   context = "."
   dockerfile = "Dockerfile"
   platforms = ["linux/amd64", "linux/arm64"]
+  labels = {
+    org.opencontainers.image.title=Keycloak
+    org.opencontainers.image.description=Keycloak component
+    org.opencontainers.image.vendor=ntdt
+  }
 }
 
 // Development target

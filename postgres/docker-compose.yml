@@ -2,9 +2,9 @@ services:
 
   postgresql:
     env_file:
-      - path: docker/.env # default
+      - path: .env # default
         required: true
-      - path: docker/.env-local # optional override
+      - path: .env-local # optional override
         required: false
     image: postgres:15.4
     container_name: postgresql

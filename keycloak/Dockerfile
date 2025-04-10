@@ -36,14 +36,18 @@ FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS keycloak-build
 WORKDIR /opt/keycloak
 
 # Copy Keycloak themes to the image
-COPY --chown=keycloak:keycloak themes/base/login/confidentiality.ftl        ./themes/base/login
-COPY --chown=keycloak:keycloak themes/ntdt                                  ./themes/ntdt
+# COPY --chown=keycloak:keycloak themes/base/login/confidentiality.ftl        ./themes/base/login
+# COPY --chown=keycloak:keycloak themes/ntdt                                  ./themes/ntdt
+
+# COPY --chown=keycloak:keycloak ./conf/cache-ispn-jdbc-ping.xml ./conf/cache-ispn-jdbc-ping.xml
+# RUN curl -sL https://github.com/aerogear/keycloak-metrics-spi/releases/download/2.5.3/keycloak-metrics-spi-2.5.3.jar -o /opt/keycloak/providers/keycloak-metrics-spi-2.5.3.jar
 
 # Copy Keycloak extension from build stage to the image
-COPY --chown=keycloak:keycloak --chmod=644 --from=maven-build /build/target/*.jar ./providers
+# COPY --chown=keycloak:keycloak --chmod=644 --from=maven-build /build/target/*.jar ./providers
 
 # for demonstration purposes only, please make sure to use proper certificates in production instead
 RUN keytool -genkeypair -storepass password -storetype PKCS12 -keyalg RSA -keysize 2048 -dname "CN=server" -alias server -ext "SAN:c=DNS:localhost,IP:127.0.0.1" -keystore conf/server.keystore
+
 RUN /opt/keycloak/bin/kc.sh build
 
 ###
@@ -55,8 +59,10 @@ FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS keycloak-base
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 
-# Configure a database vendor
-ENV KC_DB=postgres
+# ENV KC_PROXY=edge
+# ENV KC_DB_URL_PROPERTIES=characterEncoding=UTF-8
+# ENV KC_TRANSACTION_XA_ENABLED=false
+# ENV KC_CACHE_CONFIG_FILE=cache-ispn-jdbc-ping.xml
 
 # Set working directory
 WORKDIR /opt/keycloak
@@ -72,11 +78,12 @@ FROM keycloak-base AS development
 WORKDIR /opt/keycloak
 
 # Copy local data to the image
-COPY --chown=keycloak:keycloak import ./data/import
-COPY --chown=keycloak:keycloak export ./data/export
+# COPY --chown=keycloak:keycloak import ./data/import
+# COPY --chown=keycloak:keycloak export ./data/export
 
 # Set entrypoint
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev", "--cache=local"]
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev"]
+# ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev", "--cache=local", "--import-realm"]
 
 ###
 ### Stage 5: Keycloak production image

@@ -16,7 +16,7 @@ on:
       - keycloak/theme/**
       - keycloak/Dockerfile
       - keycloak/docker-bake.hcl
-      - .github/workflows/ci-keycloak.yml
+      - .github/workflows/keycloak-ci.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'
@@ -24,7 +24,7 @@ on:
       - keycloak/theme/**
       - keycloak/Dockerfile
       - keycloak/docker-bake.hcl
-      - .github/workflows/ci-keycloak.yml
+      - .github/workflows/keycloak-ci.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:
@@ -64,10 +64,6 @@ jobs:
             type=ref,event=branch,prefix=${{ env.KEYCLOAK_VERSION }}-
             type=ref,event=pr,prefix=${{ env.KEYCLOAK_VERSION }}-
             type=sha,format=short,prefix=${{ env.KEYCLOAK_VERSION }}- # sha short = 7 characters
-          labels: |
-            org.opencontainers.image.title=Keycloak
-            org.opencontainers.image.description=Keycloak component
-            org.opencontainers.image.vendor=ntdt
 
       - name: Rename meta bake definition file
         run: |

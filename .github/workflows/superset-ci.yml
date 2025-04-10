@@ -15,14 +15,14 @@ on:
     paths:
       - superset/Dockerfile
       - superset/docker-bake.hcl
-      - .github/workflows/ci-superset.yml
+      - .github/workflows/superset-ci.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'
     paths:
       - superset/Dockerfile
       - superset/docker-bake.hcl
-      - .github/workflows/ci-superset.yml
+      - .github/workflows/superset-ci.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:

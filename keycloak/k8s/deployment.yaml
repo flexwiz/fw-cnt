@@ -22,7 +22,7 @@ spec:
             [
               "sh",
               "-c",
-              "until pg_isready -h keycloak-postgres-postgresql -p 5432; do echo waiting for database; sleep 2; done;",
+              "until pg_isready -h postgres-postgresql -p 5432; do echo waiting for database; sleep 2; done;",
             ]
       containers:
         - name: keycloak
@@ -34,11 +34,17 @@ spec:
               value: "admin"
             - name: KEYCLOAK_ADMIN_PASSWORD
               value: "admin"
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: "admin"
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: "admin"
             # DATABASE
             - name: KC_DB
               value: "postgres"
+            # - name: KC_DB_URL
+            #   value: "jdbc:postgresql://postgres-postgresql.default.svc.cluster.local/keycloak"
             - name: KC_DB_URL_HOST
-              value: "keycloak-postgres-postgresql"
+              value: "postgres-postgresql.default.svc.cluster.local"
             - name: KC_DB_URL_PORT
               value: "5432"
             - name: KC_DB_URL_DATABASE
@@ -51,8 +57,8 @@ spec:
               value: "9000"
             - name: KC_HOSTNAME_STRICT
               value: "false"
-            - name: KC_HOSTNAME_STRICT_BACKCHANNEL
-              value: "false"
+            # - name: KC_HOSTNAME_STRICT_BACKCHANNEL
+            #   value: "false"
             # Enables the HTTP listener
             - name: KC_HTTP_ENABLED
               value: "true"
@@ -60,11 +66,11 @@ spec:
             # The following parameter will re-introduce the /auth
             - name: KC_HTTP_RELATIVE_PATH
               value: "/auth"
-          ports:
-            - name: http
-              containerPort: 9000
-          readinessProbe:
-            httpGet:
-              # If the KC_HTTP_RELATIVE_PATH is disable, remove the /auth path from /auth/realms/master
-              path: /auth/realms/master
-              port: 9000
+          # ports:
+          #   - name: http
+          #     containerPort: 9000
+          # readinessProbe:
+          #   httpGet:
+          #     # If the KC_HTTP_RELATIVE_PATH is disable, remove the /auth path from /auth/realms/master
+          #     path: /auth/realms/master
+          #     port: 9000

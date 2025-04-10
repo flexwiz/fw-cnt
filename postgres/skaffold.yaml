@@ -3,10 +3,10 @@ kind: Config
 metadata:
   name: postgres
 profiles:
-  - name: dev
+  - name: minikube
     activation:
       - kubeContext: minikube
-    deploy: &postgres_deploy
+    deploy: &deploy
       helm:
         releases:
           - name: postgres
@@ -21,22 +21,22 @@ profiles:
                   value: logical
               global.postgresql.auth.postgresPassword: "password"
               primary.initdb.scripts.init\.sql: "
-                CREATE DATABASE demo;
                 CREATE DATABASE keycloak;
                 CREATE DATABASE ezloc;
                 CREATE DATABASE ezloc-immo;"
-    portForward: &postgres_port_forward
+            namespace: default
+    portForward: &portForward
       - resourceType: service
         resourceName: postgres-postgresql
         port: 5432
         localPort: 5432
 
-  - name: dev-gcp
-    deploy: *postgres_deploy
-    portForward: *postgres_port_forward
+  - name: gcp
+    deploy: *deploy
+    portForward: *portForward
     build:
       googleCloudBuild:
-        projectId: ezloc-dev
+        projectId: ezloc-02
         concurrency: 0
     activation:
-      - kubeContext: gke_ezloc-dev_europe-west9-b_k8s-cluster
+      - kubeContext: gke_ezloc-02_europe-west9-b_development-cluster

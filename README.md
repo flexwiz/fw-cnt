@@ -60,5 +60,5 @@ skaffold run --port-forward=user -m postgres,redis  # Run postgres & redis modul
 requires:
   - configs: ["tools"]
     git:
-      repo: git@github.com:flexwiz/tools.git
+      repo: git@github.com:ntdtfr/tools.git
 ```

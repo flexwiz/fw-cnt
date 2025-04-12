@@ -1,0 +1,15 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: ingress
+
+requires:
+  - configs: ["nginx"]
+    path: nginx
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+
+  # - configs: ["traefik"]
+  #   path: traefik
+  #   activeProfiles: *profiles

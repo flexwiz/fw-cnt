@@ -1,0 +1,34 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: sftp
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      helm:
+        releases:
+          - name: sftp
+            remoteChart: sftp
+            setValues:
+              configuration.Global.Chroot.Directory: "%h"
+              configuration.Global.Chroot.StartPath: out
+              configuration.Global.Directories.0: out
+              configuration.Users.0.Password: dev
+              configuration.Users.0.Username: dev
+            repo: https://emberstack.github.io/helm-charts
+    portForward: &portForward
+      - resourceType: service
+        resourceName: sftp
+        port: 22
+        localPort: 15000
+
+  - name: gcp
+    activation:
+      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+    build:
+      googleCloudBuild:
+        projectId: ntdt
+    deploy: *deploy
+    portForward: *portForward

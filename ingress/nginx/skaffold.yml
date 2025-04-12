@@ -1,0 +1,19 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: nginx
+
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    deploy:
+      kubectl: {}
+    manifests:
+      rawYaml:
+        - ./k8s/*.yml
+    portForward:
+      - resourceType: service
+        resourceName: nginx
+        port: 8080
+        localPort: 80

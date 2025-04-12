@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: storage
+
+requires:
+  - configs: ["minio"]
+    path: minio
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+
+  # - configs: ["sftp"]
+  #   path: sftp
+  #   activeProfiles: *profiles

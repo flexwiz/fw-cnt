@@ -1,0 +1,13 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: tracing
+
+requires:
+  - configs: ["jaeger"]
+    path: jaeger
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]

@@ -1,0 +1,37 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: databases
+
+requires:
+  - configs: ["cassandra"]
+    path: cassandra
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+
+  # - configs: ["duckdb"]
+  #   path: duckdb
+  #   activeProfiles: *profiles
+
+  - configs: ["elasticsearch"]
+    path: redis
+    activeProfiles: *profiles
+
+  # - configs: ["mysql"]
+  #   path: mysql
+  #   activeProfiles: *profiles
+
+  - configs: ["mongodb"]
+    path: mongodb
+    activeProfiles: *profiles
+
+  - configs: ["postgres"]
+    path: postgres
+    activeProfiles: *profiles
+
+  - configs: ["redis"]
+    path: redis
+    activeProfiles: *profiles

@@ -1,0 +1,54 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: postgres
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+    #   kubectl: {}
+    # manifests:
+    #   rawYaml:
+    #     - ./k8s/*.yaml
+    # portForward:
+    #   - resourceType: service
+    #     resourceName: postgres
+    #     port: 5432
+    #     localPort: 5432
+      helm:
+        releases:
+          - name: postgres
+            repo: https://charts.bitnami.com/bitnami
+            remoteChart: postgresql
+            version: 12.6.0
+            setValues:
+              image.tag: 13.6.0-debian-10-r89
+              image.debug: true
+              primary.extraEnvVars:
+                - name: POSTGRESQL_WAL_LEVEL
+                  value: logical
+              global.postgresql.auth.postgresPassword: "password"
+              primary.initdb.scripts.init\.sql: "
+                CREATE DATABASE keycloak;
+                CREATE DATABASE ezloc;
+                CREATE DATABASE ezloc-immo;"
+            namespace: default
+    portForward: &portForward
+      - resourceType: service
+        resourceName: postgres-postgresql
+        port: 5432
+        localPort: 5432
+
+  - name: gcp
+    activation:
+      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+    build:
+      googleCloudBuild:
+        projectId: ntdt
+        region: europe-west9
+        concurrency: 0
+    deploy: *deploy
+    #manifests: *manifests
+    portForward: *portForward
+

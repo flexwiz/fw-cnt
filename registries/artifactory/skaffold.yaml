@@ -1,0 +1,34 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: artifactory
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      helm:
+        releases:
+          - name: artifactory
+            # https://github.com/jfrog/helm-charts/tree/master/charts/jfrog-artifactory-oss
+            # https://artifacthub.io/packages/helm/jfrog/artifactory-oss
+            repo: https://charts.jfrog.io
+            remoteChart: artifactory-oss
+            valuesFiles:
+              - ./helm/values.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: artifactory
+        port: 8082
+        localPort: 8082
+
+  - name: gcp
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    build:
+      googleCloudBuild:
+        projectId: ntdt
+        concurrency: 0
+    deploy: *deploy
+    portForward: *portForward
+

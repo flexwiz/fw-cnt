@@ -1,0 +1,64 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: mongodb
+
+requires:
+  - configs: ["mongodb-seed-jobs"]
+    path: jobs/seed-job
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: mongodb
+        port: 27017
+        localPort: 27017
+    #   helm:
+    #     releases:
+    #       - name: mongodb
+    #         repo: https://charts.bitnami.com/bitnami
+    #         remoteChart: mongodb
+    #         version: 12.1.16
+    #         setValues:
+    #           image.tag: 4.4-debian-10
+    #           replicaCount: 1
+    #           arbiter.enabled: false
+    #           architecture: replicaset
+    #           useStatefulSet: true
+    #           livenessProbe.enabled: false
+    #           readinessProbe.enabled: false
+    #           persistence:
+    #             size: 5Gi
+    #           auth:
+    #             enabled: false
+    # portForward: &portForward
+    #   - resourceType: service
+    #     resourceName: mongodb-headless
+    #     port: 27017
+    #     localPort: 27017
+
+  - name: gcp
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    build:
+      googleCloudBuild:
+        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
+        projectId: ntdt
+        concurrency: 0
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+

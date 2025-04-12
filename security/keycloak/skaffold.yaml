@@ -1,0 +1,79 @@
+# https://skaffold.dev/docs/references/yaml/
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: keycloak
+
+requires:
+  # Postgres is required to run Keycloak
+  - configs: ["postgres"]
+    path: ../../databases/postgres
+
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    build:
+      tagPolicy:
+        sha256: {}
+      artifacts:
+        - image: keycloak
+          context: .
+          docker:
+            dockerfile: Dockerfile
+            target: development
+            # buildArgs:
+            #   KEYCLOAK_VERSION: 25.0.4
+      local:
+        useBuildkit: true
+        concurrency: 0
+    deploy: &deploy
+      # Don't need to use helm, just include postgres config in the requires:
+      # helm:
+      #   releases:
+      #     - name: postgres
+      #       namespace: default
+      #       # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
+      #       # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
+      #       repo: https://charts.bitnami.com/bitnami
+      #       version: 12.6.0
+      #       remoteChart: postgresql
+      #       setValues:
+      #         #image.tag: 13.6.0-debian-10-r89
+      #         image.debug: true
+      #         primary.extraEnvVars:
+      #           - name: POSTGRESQL_WAL_LEVEL
+      #             value: logical
+      #         global.postgresql.auth.postgresPassword: "password"
+      #         primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
+      kubectl:
+        defaultNamespace: default
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: keycloak
+        port: 8080
+        localPort: 8280
+
+  - name: gke
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    build:
+      tagPolicy:
+        sha256: {}
+      googleCloudBuild:
+        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
+        projectId: ezloc-02
+        concurrency: 0
+      artifacts:
+        - image: keycloak
+          context: .
+          kaniko:
+            dockerfile: Dockerfile
+            target: development
+            cache: {}
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward

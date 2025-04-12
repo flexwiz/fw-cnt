@@ -1,0 +1,39 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: monitoring-logging
+
+requires:
+  - configs: ["alertmanager"]
+    path: alertmanager
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+
+  - configs: ["grafana"]
+    path: grafana
+    activeProfiles: *profiles
+
+  # kube-state-metrics (for more Kubernetes metrics)
+  - configs: ["kube-state-metrics"]
+    path: kube-state-metrics
+    activeProfiles: *profiles
+
+  - configs: ["loki"]
+    path: loki
+    activeProfiles: *profiles
+
+  - configs: ["node-exporter"]
+    path: node-exporter
+    activeProfiles: *profiles
+
+  # Log collector for Loki
+  - configs: ["promtail"]
+    path: promtail
+    activeProfiles: *profiles
+
+  - configs: ["prometheus"]
+    path: prometheus
+    activeProfiles: *profiles

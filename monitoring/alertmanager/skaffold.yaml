@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: grafana
+  name: alertmanager
 
 profiles:
   - name: minikube
@@ -14,9 +14,9 @@ profiles:
         - k8s/*.yaml
     portForward: &portForward
       - resourceType: service
-        resourceName: grafana
-        port: 3000
-        localPort: 3000
+        resourceName: alertmanager
+        port: 9093
+        localPort: 9093
 
   - name: gcp
     activation:
@@ -29,7 +29,7 @@ profiles:
     #     projectId: ntdt
     #     concurrency: 0
     #   artifacts:
-    #     - image: grafana
+    #     - image: alertmanager
     #       kaniko:
     #         dockerfile: Dockerfile
     #         target: development

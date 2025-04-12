@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: grafana
+  name: kube-state-metrics
 
 profiles:
   - name: minikube
@@ -12,11 +12,6 @@ profiles:
     manifests: &manifests
       rawYaml:
         - k8s/*.yaml
-    portForward: &portForward
-      - resourceType: service
-        resourceName: grafana
-        port: 3000
-        localPort: 3000
 
   - name: gcp
     activation:
@@ -29,11 +24,10 @@ profiles:
     #     projectId: ntdt
     #     concurrency: 0
     #   artifacts:
-    #     - image: grafana
+    #     - image: kube-state-metrics
     #       kaniko:
     #         dockerfile: Dockerfile
     #         target: development
     #         cache: {}
     deploy: *deploy
     manifests: *manifests
-    portForward: *portForward

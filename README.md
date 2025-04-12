@@ -1,7 +1,7 @@
 # Common Tools
 
-[![Keycloak](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml/badge.svg?branch=main)](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml)
-[![Superset](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml/badge.svg?branch=main)](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml)
+[![Keycloak CI](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml)
+[![Superset CI](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml)
 
 ## Prerequisites
 

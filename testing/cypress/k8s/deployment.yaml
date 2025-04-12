@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cypress
+  namespace: cypress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cypress
+  template:
+    metadata:
+      labels:
+        app: cypress
+    spec:
+      containers:
+      - name: cypress
+        image: cypress/included:13.3.1
+        # image: cypress
+        command: ["tail", "-f", "/dev/null"]  # Keep container running
+        resources:
+          requests:
+            cpu: "1"
+            memory: "2Gi"
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+        volumeMounts:
+        - name: tests
+          mountPath: /e2e
+        - name: screenshots
+          mountPath: /screenshots
+        - name: videos
+          mountPath: /videos
+      volumes:
+      - name: tests
+        persistentVolumeClaim:
+          claimName: cypress-tests
+      - name: screenshots
+        persistentVolumeClaim:
+          claimName: cypress-screenshots
+      - name: videos
+        persistentVolumeClaim:
+          claimName: cypress-videos

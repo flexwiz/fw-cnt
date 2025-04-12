@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: nginx
+  name: ingress-nginx
 
 profiles:
   - name: minikube
@@ -12,8 +12,9 @@ profiles:
     manifests: &manifests
       rawYaml:
         - ./k8s/*.yaml
-    portForward: &portForward
-      - resourceType: service
-        resourceName: nginx
-        port: 8080
-        localPort: 80
+
+  - name: gcp
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    deploy: *deploy
+    manifests: *manifests

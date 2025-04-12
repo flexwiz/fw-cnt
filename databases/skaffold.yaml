@@ -12,9 +12,13 @@ requires:
       - name: gcp
         activatedBy: [gcp]
 
-  # - configs: ["duckdb"]
-  #   path: duckdb
-  #   activeProfiles: *profiles
+  - configs: ["cockroachdb"]
+    path: cockroachdb
+    activeProfiles: *profiles
+
+  - configs: ["duckdb"]
+    path: duckdb
+    activeProfiles: *profiles
 
   - configs: ["elasticsearch"]
     path: redis

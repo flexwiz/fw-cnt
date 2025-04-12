@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: krakend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: krakend

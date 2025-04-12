@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: artifactory
+  namespace: artifactory
+spec:
+  serviceName: artifactory
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artifactory
+  template:
+    metadata:
+      labels:
+        app: artifactory
+    spec:
+      initContainers:
+        - name: wait-postgres
+          image: postgres:15.4
+          command:
+            [
+              "sh",
+              "-c",
+              "until pg_isready -h artifactory-postgresql -p 5432; do echo waiting for database; sleep 2; done;",
+            ]
+      containers:
+      - name: artifactory
+        image: releases-docker.jfrog.io/jfrog/artifactory-oss:7.71.5
+        ports:
+        - containerPort: 8081
+          name: http
+        - containerPort: 8082
+          name: https
+        env:
+        - name: JF_SHARED_DATABASE_TYPE
+          value: "postgresql"
+        - name: JF_SHARED_DATABASE_URL
+          value: "jdbc:postgresql://artifactory-postgresql:5432/artifactory"
+        - name: JF_SHARED_DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-database-creds
+              key: username
+        - name: JF_SHARED_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-database-creds
+              key: password
+        - name: JF_ROUTER_ENTRYPOINTS_EXTERNALPORT
+          value: "443"
+        resources:
+          requests:
+            memory: "4Gi"
+            cpu: "1000m"
+          limits:
+            memory: "8Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: artifactory-data
+          mountPath: /opt/jfrog/artifactory/var
+        readinessProbe:
+          httpGet:
+            path: /artifactory/api/system/ping
+            port: 8081
+          initialDelaySeconds: 180
+          periodSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: /artifactory/api/system/ping
+            port: 8081
+          initialDelaySeconds: 300
+          periodSeconds: 10
+          failureThreshold: 10
+  volumeClaimTemplates:
+  - metadata:
+      name: artifactory-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "standard"
+      resources:
+        requests:
+          storage: 100Gi

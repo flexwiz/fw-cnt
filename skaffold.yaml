@@ -44,6 +44,10 @@ requires:
     path: storage
     activeProfiles: *profiles
 
-  - configs: ["tracing"]
-    path: storage
+  - configs: ["testing"]
+    path: testing
     activeProfiles: *profiles
+
+  # - configs: ["tracing"]
+  #   path: tracing
+  #   activeProfiles: *profiles

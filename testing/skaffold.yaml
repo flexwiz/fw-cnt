@@ -1,17 +1,13 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: message-brokers
+  name: testing
 
 requires:
-  - configs: ["rabbitmq"]
-    path: rabbitmq
+  - configs: ["cypress"]
+    path: cypress
     activeProfiles: &profiles
       - name: minikube
         activatedBy: [minikube]
       - name: gcp
         activatedBy: [gcp]
-
-  - configs: ["kafka"]
-    path: kafka
-    activeProfiles: *profiles

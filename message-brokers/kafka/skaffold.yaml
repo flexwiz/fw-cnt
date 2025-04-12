@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: traefik
+  name: kafka
 
 profiles:
   - name: minikube
@@ -11,17 +11,20 @@ profiles:
       kubectl: {}
     manifests: &manifests
       rawYaml:
-        - ./k8s/*.yaml
+        - k8s/*.yaml
     portForward: &portForward
       - resourceType: service
-        resourceName: traefik-admin
-        namespace: traefik
-        port: 8080
-        localPort: 8080
+        resourceName: kafka
+        port: 9092
+        localPort: 9092
 
   - name: gcp
     activation:
-      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+    build:
+      googleCloudBuild:
+        projectId: ntdt-development
+        concurrency: 0
     deploy: *deploy
     manifests: *manifests
     portForward: *portForward

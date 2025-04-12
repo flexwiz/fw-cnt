@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artifactory-postgresql
+  namespace: artifactory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artifactory-postgresql
+  template:
+    metadata:
+      labels:
+        app: artifactory-postgresql
+    spec:
+      containers:
+      - name: postgresql
+        image: postgres:15.4
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-database-creds
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: artifactory-database-creds
+              key: password
+        - name: POSTGRES_DB
+          value: artifactory
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - containerPort: 5432
+          name: postgresql
+        volumeMounts:
+        - name: postgresql-data
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      volumes:
+      - name: postgresql-data
+        persistentVolumeClaim:
+          claimName: artifactory-postgresql-data
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: artifactory-postgresql-data
+  namespace: artifactory
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artifactory-postgresql
+  namespace: artifactory
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: artifactory-postgresql

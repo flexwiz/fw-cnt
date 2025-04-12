@@ -12,6 +12,6 @@ requires:
       - name: gcp
         activatedBy: [gcp]
 
-  # - configs: ["sftp"]
-  #   path: sftp
-  #   activeProfiles: *profiles
+  - configs: ["sftp"]
+    path: sftp
+    activeProfiles: *profiles

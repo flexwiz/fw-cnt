@@ -2,6 +2,7 @@ apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
   name: sftp
+
 profiles:
   - name: minikube
     activation:

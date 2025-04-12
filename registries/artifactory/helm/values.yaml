@@ -19,13 +19,13 @@ artifactory:
       # tag:
     ## Uncomment the following resources definitions or pass them from command line
     ## to control the cpu and memory resources allocated by the Kubernetes cluster
-    resources: {}
-    #  requests:
-    #    memory: "1Gi"
-    #    cpu: "500m"
-    #  limits:
-    #    memory: "4Gi"
-    #    cpu: "1"
+    resources:
+     requests:
+       memory: "1Gi"
+       cpu: "500m"
+     limits:
+       memory: "4Gi"
+       cpu: "1"
     ## The following Java options are passed to the java process running Artifactory.
     ## You should set them according to the resources set above.
     ## IMPORTANT: Make sure resources.limits.memory is at least 1G more than Xmx.

@@ -19,8 +19,8 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: artifactory
-        port: 8080
-        localPort: 8080
+        port: 8082
+        localPort: 8082
 
   - name: gcp
     activation:

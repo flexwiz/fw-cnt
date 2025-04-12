@@ -16,11 +16,11 @@ profiles:
   - name: minikube
     activation:
       - kubeContext: minikube
+    deploy: &deploy
+      kubectl: {}
     manifests: &manifests
       rawYaml:
         - k8s/*.yaml
-    deploy: &deploy
-      kubectl: {}
     portForward: &portForward
       - resourceType: service
         resourceName: mongodb
@@ -58,7 +58,7 @@ profiles:
         workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
         projectId: ntdt
         concurrency: 0
-    manifests: *manifests
     deploy: *deploy
+    manifests: *manifests
     portForward: *portForward
 

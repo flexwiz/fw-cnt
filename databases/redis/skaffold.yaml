@@ -1,4 +1,4 @@
-apiVersion: skaffold/v4beta5
+apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
   name: redis
@@ -7,6 +7,10 @@ profiles:
     activation:
       - kubeContext: minikube
     deploy: &deploy
+    #   kubectl: {}
+    # manifests: &manifests
+    #   rawYaml:
+    #     - k8s/*.yaml
       helm:
         releases:
           - name: redis
@@ -30,5 +34,6 @@ profiles:
         projectId: ntdt
         concurrency: 0
     deploy: *deploy
+    # manifests: &manifests
     portForward: *portForward
 

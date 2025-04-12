@@ -16,26 +16,30 @@ requires:
     path: databases
     activeProfiles: *profiles
 
-  # - configs: ["ingress"]
-  #   path: ingress
-  #   activeProfiles: *profiles
+  - configs: ["ingress"]
+    path: ingress
+    activeProfiles: *profiles
 
-  # - configs: ["message-brokers"]
-  #   path: message-brokers
-  #   activeProfiles: *profiles
+  - configs: ["message-brokers"]
+    path: message-brokers
+    activeProfiles: *profiles
 
-  # - configs: ["monitoring-logging"]
-  #   path: monitoring
-  #   activeProfiles: *profiles
+  - configs: ["monitoring"]
+    path: monitoring
+    activeProfiles: *profiles
 
-  # - configs: ["registries"]
-  #   path: registries
-  #   activeProfiles: *profiles
+  - configs: ["registries"]
+    path: registries
+    activeProfiles: *profiles
 
-  # - configs: ["security"]
-  #   path: security
-  #   activeProfiles: *profiles
+  - configs: ["security"]
+    path: security
+    activeProfiles: *profiles
 
-  # - configs: ["storage"]
-  #   path: storage
-  #   activeProfiles: *profiles
+  - configs: ["storage"]
+    path: storage
+    activeProfiles: *profiles
+
+  - configs: ["tracing"]
+    path: storage
+    activeProfiles: *profiles

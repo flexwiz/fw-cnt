@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: api-gateway
+
+requires:
+  - configs: ["krakend"]
+    path: krakend
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+
+  # - configs: ["kong"]
+  #   path: kong
+  #   activeProfiles: *profiles

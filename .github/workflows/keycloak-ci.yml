@@ -13,22 +13,22 @@ on:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - keycloak/theme/**
-      - keycloak/Dockerfile
-      - keycloak/docker-bake.hcl
+      - security/keycloak/theme/**
+      - security/keycloak/Dockerfile
+      - security/keycloak/docker-bake.hcl
       - .github/workflows/keycloak-ci.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - keycloak/theme/**
-      - keycloak/Dockerfile
-      - keycloak/docker-bake.hcl
+      - security/keycloak/theme/**
+      - security/keycloak/Dockerfile
+      - security/keycloak/docker-bake.hcl
       - .github/workflows/keycloak-ci.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  SOURCE_DIR: ./keycloak
+  SOURCE_DIR: ./security/keycloak
   KEYCLOAK_VERSION: 26.1.4
   DOCKER_REGISTRY: docker.io  # ghcr.io
   DOCKER_IMAGE_NAME: ntdtfr/keycloak # nntran/keycloak

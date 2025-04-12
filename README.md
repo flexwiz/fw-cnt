@@ -1,6 +1,7 @@
 # Common Tools
 
-[![CI for Keycloak](https://github.com/flexwiz/common-tools/actions/workflows/build-keycloak.yml/badge.svg?branch=master)](https://github.com/flexwiz/common-tools/actions/workflows/build-keycloak.yml)
+[![Keycloak](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml/badge.svg?branch=main)](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml)
+[![Superset](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml/badge.svg?branch=main)](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml)
 
 ## Prerequisites
 

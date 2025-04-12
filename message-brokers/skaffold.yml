@@ -9,6 +9,8 @@ requires:
     activeProfiles: &profiles
       - name: minikube
         activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
 
   # - configs: ["kafka"]
   #   path: kafka

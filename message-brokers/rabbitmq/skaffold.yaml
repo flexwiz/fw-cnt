@@ -7,12 +7,12 @@ profiles:
   - name: minikube
     activation:
       - kubeContext: minikube
-    deploy:
+    deploy: &deploy
       kubectl: {}
-    manifests:
+    manifests: &manifests
       rawYaml:
-        - ./k8s/*.yml
-    portForward:
+        - k8s/*.yaml
+    portForward: &portForward
       - resourceType: service
         resourceName: rabbitmq
         port: 15672
@@ -33,7 +33,7 @@ profiles:
     #     projectId: ntdt
     #     concurrency: 0
     #   artifacts:
-    #     - image: ntdtfr/rabbitmq
+    #     - image: rabbitmq
     #       kaniko:
     #         dockerfile: Dockerfile
     #         target: development

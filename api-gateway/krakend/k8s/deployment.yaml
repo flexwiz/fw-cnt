@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: krakend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: krakend
+  template:
+    metadata:
+      labels:
+        app: krakend
+    spec:
+      containers:
+      - name: krakend
+        image: krakend
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            memory: "256Mi"        # Maximum memory allowed
+            cpu: "200m"            # Maximum CPU allowed (200 milliCPU)
+          requests:
+            memory: "128Mi"        # Initial memory request
+            cpu: "100m"            # Initial CPU request
+        livenessProbe:
+          httpGet:
+            path: /__health        # The path to check for the liveness probe
+            port: 8080             # The port to check on
+          initialDelaySeconds: 30  # Wait this many seconds before starting the probe
+          periodSeconds: 15        # Check the probe every 10 seconds
+        readinessProbe:
+          httpGet:
+            path: /__health        # The path to check for the readiness probe
+            port: 8080             # The port to check on
+          initialDelaySeconds: 15  # Wait this many seconds before starting the probe
+          periodSeconds: 5         # Check the probe every 5 seconds
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/krakend
+      volumes:
+      - name: config-volume
+        configMap:
+          name: krakend-config

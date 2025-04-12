@@ -1,0 +1,15 @@
+{
+  "version": 3,
+  "endpoints": [
+    {
+      "endpoint": "/api/v1/orders",
+      "method": "GET",
+      "backend": [
+        {
+          "url_pattern": "/orders",
+          "host": ["http://order-service:3000"]
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,10 @@ requires:
       - name: gcp
         activatedBy: [gcp]
 
+  - configs: ["api-gateway"]
+    path: api-gateway
+    activeProfiles: *profiles
+
   - configs: ["databases"]
     path: databases
     activeProfiles: *profiles

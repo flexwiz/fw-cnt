@@ -1,0 +1,29 @@
+# Global Mesh Configuration
+apiVersion: networking.istio.io/v1beta1
+kind: MeshConfig
+metadata:
+  name: istio-global-config
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+spec:
+  accessLogFile: /dev/stdout
+  enableAutoMtls: true
+  defaultConfig:
+    holdApplicationUntilProxyStarts: true
+    concurrency: 2
+    tracing:
+      sampling: 100.0
+    terminationDrainDuration: 30s
+  extensionProviders:
+  - name: zipkin
+    zipkin:
+      service: zipkin.istio-system.svc.cluster.local
+      port: 9411
+  - name: prometheus
+    prometheus:
+      service: prometheus.istio-system.svc.cluster.local
+      port: 9090
+  outboundTrafficPolicy:
+    mode: ALLOW_ANY

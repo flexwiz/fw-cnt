@@ -3,6 +3,6 @@ kind: Namespace
 metadata:
   name: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
     istio-injection: disabled  # Avoid injection if Istio is also present

@@ -5,8 +5,8 @@ metadata:
   name: linkerd-controller-api
   namespace: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
 spec:
   type: ClusterIP
   ports:
@@ -26,8 +26,8 @@ metadata:
   name: linkerd-web
   namespace: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
 spec:
   type: ClusterIP
   ports:

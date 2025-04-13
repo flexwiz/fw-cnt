@@ -4,8 +4,8 @@ metadata:
   name: traefik-data
   namespace: traefik
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway
 spec:
   accessModes:
     - ReadWriteOnce

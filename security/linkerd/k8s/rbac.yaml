@@ -3,9 +3,10 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: linkerd-controller
+  namespace: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
 rules:
 - apiGroups: [""]
   resources: ["pods", "services", "endpoints", "nodes"]

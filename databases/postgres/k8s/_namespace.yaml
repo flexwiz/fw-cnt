@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: postgres
   labels:
-    type: middleware
-    tier: database
+    tier: storage
+    type: database

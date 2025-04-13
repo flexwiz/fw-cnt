@@ -1,0 +1,9 @@
+# Ingress Gateway Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: gateway

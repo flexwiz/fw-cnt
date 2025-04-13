@@ -1,0 +1,9 @@
+# Create a namespace for Istio components
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: istio-system
+  labels:
+    tier: middleware
+    type: gateway
+    istio-injection: disabled  # No injection in control plane

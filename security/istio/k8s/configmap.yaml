@@ -1,0 +1,37 @@
+# ConfigMap for Istiod
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio-config
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+data:
+  mesh: |
+    accessLogFile: /dev/stdout
+    enableTracing: true
+    defaultConfig:
+      tracing:
+        zipkin:
+          address: zipkin.istio-system:9411
+      concurrency: 2
+      statsdUdpAddress: istio-statsd-prom-bridge:9125
+    enableEnvoyAccessLogService: false
+    protocolDetectionTimeout: 5s
+    rootNamespace: istio-system
+    trustDomain: cluster.local
+    ingressService: istio-ingressgateway
+    ingressClass: istio
+    ingressControllerMode: "STRICT"
+    enableAutoMtls: true
+    outboundTrafficPolicy:
+      mode: ALLOW_ANY
+    defaultServiceExportTo:
+    - "*"
+    defaultVirtualServiceExportTo:
+    - "*"
+    defaultDestinationRuleExportTo:
+    - "*"
+  meshNetworks: |
+    networks: {}

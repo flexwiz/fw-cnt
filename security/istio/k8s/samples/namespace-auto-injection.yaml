@@ -1,0 +1,7 @@
+# Namespace label for auto-injection example
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+  labels:
+    istio-injection: enabled

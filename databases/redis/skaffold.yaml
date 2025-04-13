@@ -7,22 +7,24 @@ profiles:
     activation:
       - kubeContext: minikube
     deploy: &deploy
-    #   kubectl: {}
-    # manifests: &manifests
-    #   rawYaml:
-    #     - k8s/*.yaml
-      helm:
-        releases:
-          - name: redis
-            repo: https://charts.bitnami.com/bitnami
-            remoteChart: redis
-            version: 18.7.0
-            setValues:
-              architecture: standalone
-              auth.enabled: false
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+      # helm:
+      #   releases:
+      #     - name: redis
+      #       repo: https://charts.bitnami.com/bitnami
+      #       remoteChart: redis
+      #       version: 18.7.0
+      #       setValues:
+      #         architecture: standalone
+      #         auth.enabled: false
+      #       namespace: redis
     portForward: &portForward
       - resourceType: service
-        resourceName: redis-master
+        resourceName: redis
+        namespace: redis
         port: 6379
         localPort: 6379
 
@@ -34,6 +36,5 @@ profiles:
         projectId: ntdt
         concurrency: 0
     deploy: *deploy
-    # manifests: &manifests
+    manifests: *manifests
     portForward: *portForward
-

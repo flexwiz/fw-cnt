@@ -4,12 +4,13 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:
-  type: LoadBalancer
+  # type: LoadBalancer
+  type: NodePort
   ports:
     - name: http
       port: 80

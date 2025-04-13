@@ -2,10 +2,15 @@ apiVersion: v1
 kind: Service
 metadata:
   name: redis
-spec:
-  selector:
+  namespace: redis
+  labels:
+    tier: storage
+    type: cache
     app: redis
+spec:
   type: ClusterIP
   ports:
   - port: 6379
     targetPort: 6379
+  selector:
+    app: redis

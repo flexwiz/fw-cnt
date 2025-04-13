@@ -4,10 +4,11 @@ metadata:
   name: kong-proxy
   namespace: kong
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway
 spec:
-  type: LoadBalancer
+  # type: LoadBalancer
+  type: NodePort
   ports:
   - name: proxy
     port: 80
@@ -24,8 +25,8 @@ metadata:
   name: kong-admin
   namespace: kong
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway
 spec:
   type: ClusterIP
   ports:

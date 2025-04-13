@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: ingress-kong
+  name: kong-ingress
 
 profiles:
   - name: minikube

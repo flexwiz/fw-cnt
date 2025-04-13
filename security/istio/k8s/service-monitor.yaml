@@ -1,0 +1,16 @@
+# Service Monitor for Prometheus Operator integration
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: istio-component-monitor
+  namespace: istio-system
+spec:
+  selector:
+    matchLabels:
+      istio: pilot
+  namespaceSelector:
+    matchNames:
+    - istio-system
+  endpoints:
+  - port: http-monitoring
+    interval: 15s

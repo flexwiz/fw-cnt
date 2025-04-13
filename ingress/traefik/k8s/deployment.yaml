@@ -4,8 +4,8 @@ metadata:
   name: traefik
   namespace: traefik
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway
     app: traefik
     version: v3.3.5
 spec:

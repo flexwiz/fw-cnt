@@ -21,13 +21,13 @@ profiles:
     #     concurrency: 0
     deploy: &deploy
       kubectl: {}
-        #defaultNamespace: security
     manifests: &manifests
       rawYaml:
         - ./k8s/*.yaml
     portForward: &portForward
       - resourceType: service
-        resourceName: keycloak
+        resourceName: linkerd
+        namespace: linkerd
         port: 8084
         localPort: 8280
 
@@ -50,3 +50,4 @@ profiles:
     #         cache: {}
     deploy: *deploy
     manifests: *manifests
+    portForward: *portForward

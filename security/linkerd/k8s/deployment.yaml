@@ -5,10 +5,10 @@ metadata:
   name: linkerd-controller
   namespace: linkerd
   labels:
-    type: security
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
 spec:
-  replicas: 3
+  replicas: 1 # should be 3 in production
   selector:
     matchLabels:
       app: linkerd-controller
@@ -67,8 +67,8 @@ metadata:
   name: linkerd-web
   namespace: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
 spec:
   replicas: 1
   selector:

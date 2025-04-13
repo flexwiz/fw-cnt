@@ -1,0 +1,29 @@
+# Init for automatic istio injection
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: istio-sidecar-injector
+  labels:
+    tier: middleware
+    type: service-mesh
+    app: sidecar-injector
+spec:
+  webhooks:
+  - name: sidecar-injector.istio.io
+    clientConfig:
+      service:
+        name: istiod
+        namespace: istio-system
+        path: "/inject"
+      caBundle: "" # This should be filled by the Istio operator or during installation
+    rules:
+    - operations: ["CREATE"]
+      apiGroups: [""]
+      apiVersions: ["v1"]
+      resources: ["pods"]
+    failurePolicy: Fail
+    sideEffects: None
+    admissionReviewVersions: ["v1beta1", "v1"]
+    namespaceSelector:
+      matchLabels:
+        istio-injection: enabled

@@ -1,0 +1,16 @@
+# Istio Sidecar Configuration
+apiVersion: networking.istio.io/v1beta1
+kind: Sidecar
+metadata:
+  name: default-sidecar
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+spec:
+  egress:
+  - hosts:
+    - "./*"
+    - "istio-system/*"
+  outboundTrafficPolicy:
+    mode: ALLOW_ANY

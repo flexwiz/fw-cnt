@@ -5,8 +5,8 @@ metadata:
   name: postgres
   namespace: postgres
   labels:
-    type: middleware
-    tier: database
+    tier: storage
+    type: database
 spec:
   serviceName: postgres
   replicas: 1

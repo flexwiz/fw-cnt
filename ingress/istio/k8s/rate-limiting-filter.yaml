@@ -1,0 +1,34 @@
+# Rate Limiting Configuration
+apiVersion: networking.istio.io/v1beta1
+kind: EnvoyFilter
+metadata:
+  name: ratelimit-filter
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: gateway
+spec:
+  workloadSelector:
+    labels:
+      app: istio-ingressgateway
+  configPatches:
+  - applyTo: HTTP_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: INSERT_BEFORE
+      value:
+        name: envoy.filters.http.ratelimit
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.http.ratelimit.v3.RateLimit
+          domain: istio-ratelimit
+          failure_mode_deny: false
+          rate_limit_service:
+            grpc_service:
+              envoy_grpc:
+                cluster_name: rate_limit_service
+            transport_api_version: V3

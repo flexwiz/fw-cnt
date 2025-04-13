@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: keycloak
   labels:
-    type: middleware
-    tier: authentication
+    tier: middleware
+    type: security

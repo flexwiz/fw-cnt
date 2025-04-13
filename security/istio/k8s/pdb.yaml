@@ -1,0 +1,14 @@
+# PodDisruptionBudget for Istiod
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: istiod
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: istiod

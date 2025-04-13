@@ -1,0 +1,47 @@
+# Telemetry Configuration
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: default-telemetry
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+spec:
+  tracing:
+  - providers:
+    - name: zipkin
+    randomSamplingPercentage: 100.0
+  metrics:
+  - providers:
+    - name: prometheus
+    overrides:
+    - match:
+        metric: REQUEST_COUNT
+      disabled: false
+    - match:
+        metric: REQUEST_DURATION
+      disabled: false
+    - match:
+        metric: REQUEST_SIZE
+      disabled: false
+    - match:
+        metric: RESPONSE_SIZE
+      disabled: false
+    - match:
+        metric: TCP_SENT_BYTES
+      disabled: false
+    - match:
+        metric: TCP_RECEIVED_BYTES
+      disabled: false
+    - match:
+        metric: TCP_CONNECTIONS_OPENED
+      disabled: false
+    - match:
+        metric: TCP_CONNECTIONS_CLOSED
+      disabled: false
+  accessLogging:
+  - providers:
+    - name: envoy
+    filter:
+      expression: "response.code >= 400"

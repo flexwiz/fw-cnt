@@ -5,5 +5,5 @@ metadata:
   name: linkerd-controller
   namespace: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh

@@ -4,8 +4,8 @@ metadata:
   name: postgres-pvc
   namespace: postgres
   labels:
-    type: middleware
-    tier: database
+    tier: storage
+    type: database
 spec:
   accessModes:
     - ReadWriteOnce

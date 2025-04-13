@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: kong
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway

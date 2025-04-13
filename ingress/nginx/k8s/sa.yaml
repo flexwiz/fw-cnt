@@ -4,5 +4,5 @@ metadata:
   name: nginx-ingress-serviceaccount
   namespace: ingress-nginx
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway

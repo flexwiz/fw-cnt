@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: traefik
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway

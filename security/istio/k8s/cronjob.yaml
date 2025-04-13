@@ -1,0 +1,33 @@
+# Backup CronJob for Istio configuration
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: istio-config-backup
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+spec:
+  schedule: "0 1 * * *"  # Daily at 1 AM
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: istiod
+          containers:
+          - name: kubectl
+            image: bitnami/kubectl:1.28.2
+            command:
+            - /bin/sh
+            - -c
+            - |
+              kubectl get virtualservices,destinationrules,gateways,serviceentries,authorizationpolicies,peerauthentications,envoyfilters,sidecars --all-namespaces -o yaml > /backup/istio-config-$(date +%Y%m%d).yaml
+            volumeMounts:
+            - name: backup-volume
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-volume
+            persistentVolumeClaim:
+              claimName: istio-backup-pvc

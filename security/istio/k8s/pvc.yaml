@@ -1,0 +1,15 @@
+# PVC for Istio configuration backups
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: istio-backup-pvc
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

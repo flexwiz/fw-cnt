@@ -3,5 +3,5 @@ kind: Namespace
 metadata:
   name: ingress-nginx
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway

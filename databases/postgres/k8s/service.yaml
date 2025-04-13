@@ -4,8 +4,8 @@ metadata:
   name: postgres
   namespace: postgres
   labels:
-    type: middleware
-    tier: database
+    tier: storage
+    type: database
 spec:
   type: ClusterIP
   ports:

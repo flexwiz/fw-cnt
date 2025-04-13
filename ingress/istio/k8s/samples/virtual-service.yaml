@@ -1,0 +1,28 @@
+# Example VirtualService
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: example-virtualservice
+  namespace: istio-system
+  labels:
+    tier: backend
+    type: microservice
+spec:
+  hosts:
+  - "example.com"
+  gateways:
+  - default-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api
+    route:
+    - destination:
+        host: api-service.default.svc.cluster.local
+        port:
+          number: 80
+  - route:
+    - destination:
+        host: web-service.default.svc.cluster.local
+        port:
+          number: 80

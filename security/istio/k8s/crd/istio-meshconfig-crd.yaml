@@ -1,0 +1,382 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: meshconfigs.mesh.istio.io
+  labels:
+    app: istio-pilot
+    release: istio
+    istio: mesh-config
+spec:
+  group: mesh.istio.io
+  names:
+    kind: MeshConfig
+    listKind: MeshConfigList
+    plural: meshconfigs
+    singular: meshconfig
+    categories:
+      - istio-io
+      - mesh-config-istio-io
+  scope: Cluster
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                # Mesh-wide configuration settings
+                enableTracing:
+                  type: boolean
+                  description: "Enables tracing across the service mesh"
+                accessLogFile:
+                  type: string
+                  description: "File path for the mesh-wide access log"
+                accessLogFormat:
+                  type: string
+                  description: "Format for the access log entries"
+                accessLogEncoding:
+                  type: string
+                  enum:
+                    - TEXT
+                    - JSON
+                  description: "Encoding for the access log (text or JSON)"
+                disablePolicyChecks:
+                  type: boolean
+                  description: "Disables mixer policy checks"
+                mixerCheckServer:
+                  type: string
+                  description: "Address of the Mixer check server"
+                mixerReportServer:
+                  type: string
+                  description: "Address of the Mixer report server"
+                proxyListenPort:
+                  type: integer
+                  description: "Port on which the Envoy proxy listens for HTTP/1.1 connections"
+                proxyHttpPort:
+                  type: integer
+                  description: "Port on which the Envoy proxy listens for HTTP/1.0 connections"
+                connectTimeout:
+                  type: string
+                  description: "Connection timeout for sidecar connections to endpoints"
+                protocolDetectionTimeout:
+                  type: string
+                  description: "Timeout for automatic protocol detection"
+                ingressControllerMode:
+                  type: string
+                  enum:
+                    - OFF
+                    - DEFAULT
+                    - STRICT
+                  description: "Mode for the ingress controller"
+                ingressService:
+                  type: string
+                  description: "Name of the Kubernetes service to act as the ingress for the mesh"
+                ingressClass:
+                  type: string
+                  description: "Name of the ingress class to use for automatic gateway configuration"
+
+                # Trust domain configuration
+                trustDomain:
+                  type: string
+                  description: "The trust domain to use for identities"
+                trustDomainAliases:
+                  type: array
+                  items:
+                    type: string
+                  description: "Alias trust domains for backward compatibility"
+
+                # CA settings
+                caCertificates:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      pem:
+                        type: string
+                      spiffeBundleUrl:
+                        type: string
+                      certSigners:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            genericCertificateSigner:
+                              type: object
+                              properties:
+                                url:
+                                  type: string
+                                certChain:
+                                  type: string
+                                privateKey:
+                                  type: string
+                                requestTimeout:
+                                  type: string
+                  description: "Mesh root certificate configuration"
+
+                # Certificate settings
+                certificates:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      secretName:
+                        type: string
+                      dnsNames:
+                        type: array
+                        items:
+                          type: string
+                  description: "Mesh certificate configuration"
+
+                # Default proxy configuration
+                defaultConfig:
+                  type: object
+                  properties:
+                    configPath:
+                      type: string
+                    binaryPath:
+                      type: string
+                    serviceCluster:
+                      type: string
+                    drainDuration:
+                      type: string
+                    parentShutdownDuration:
+                      type: string
+                    discoveryAddress:
+                      type: string
+                    proxyAdminPort:
+                      type: integer
+                    concurrency:
+                      type: integer
+                    proxyStatsMatcher:
+                      type: object
+                      properties:
+                        inclusionRegexps:
+                          type: array
+                          items:
+                            type: string
+                        inclusionPrefixes:
+                          type: array
+                          items:
+                            type: string
+                        inclusionSuffixes:
+                          type: array
+                          items:
+                            type: string
+                    terminationDrainDuration:
+                      type: string
+                    envoyAccessLogService:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        tlsSettings:
+                          type: object
+                        tcpKeepalive:
+                          type: object
+                    envoyMetricsService:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                        tlsSettings:
+                          type: object
+                        tcpKeepalive:
+                          type: object
+                    controlPlaneAuthPolicy:
+                      type: string
+                      enum:
+                        - NONE
+                        - MUTUAL_TLS
+                    statusPort:
+                      type: integer
+                    tracing:
+                      type: object
+                      properties:
+                        zipkin:
+                          type: object
+                          properties:
+                            address:
+                              type: string
+                        lightstep:
+                          type: object
+                          properties:
+                            address:
+                              type: string
+                            accessToken:
+                              type: string
+                        datadog:
+                          type: object
+                          properties:
+                            address:
+                              type: string
+                        stackdriver:
+                          type: object
+                          properties:
+                            maxTagLength:
+                              type: integer
+                  description: "Default configuration for all proxies in the mesh"
+
+                # Outbound traffic policy
+                outboundTrafficPolicy:
+                  type: object
+                  properties:
+                    mode:
+                      type: string
+                      enum:
+                        - ALLOW_ANY
+                        - REGISTRY_ONLY
+                  description: "Policy for handling traffic for services outside the mesh"
+
+                # Extension provider configuration
+                extensionProviders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      envoyExtAuthzHttp:
+                        type: object
+                        properties:
+                          service:
+                            type: string
+                          port:
+                            type: integer
+                          pathPrefix:
+                            type: string
+                          headersToUpstreamOnAllow:
+                            type: array
+                            items:
+                              type: string
+                          headersToDownstreamOnDeny:
+                            type: array
+                            items:
+                              type: string
+                          includeRequestHeadersInCheck:
+                            type: array
+                            items:
+                              type: string
+                          includeAdditionalHeadersInCheck:
+                            type: object
+                            additionalProperties:
+                              type: string
+                      envoyExtAuthzGrpc:
+                        type: object
+                        properties:
+                          service:
+                            type: string
+                          port:
+                            type: integer
+                      envoyHttpAls:
+                        type: object
+                        properties:
+                          service:
+                            type: string
+                          port:
+                            type: integer
+                          logFormat:
+                            type: object
+                            additionalProperties:
+                              type: string
+                      prometheus:
+                        type: object
+                        properties:
+                          port:
+                            type: integer
+                      zipkin:
+                        type: object
+                        properties:
+                          service:
+                            type: string
+                          port:
+                            type: integer
+                      opentelemetry:
+                        type: object
+                        properties:
+                          service:
+                            type: string
+                          port:
+                            type: integer
+                  description: "Configuration for extension providers"
+
+                # Additional settings
+                rootNamespace:
+                  type: string
+                  description: "Root namespace for global configuration resources"
+                localityLbSetting:
+                  type: object
+                  properties:
+                    enabled:
+                      type: boolean
+                    distribute:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                          to:
+                            type: object
+                            additionalProperties:
+                              type: integer
+                    failover:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          from:
+                            type: string
+                          to:
+                            type: array
+                            items:
+                              type: string
+                  description: "Locality load balancing settings"
+                defaultServiceExportTo:
+                  type: array
+                  items:
+                    type: string
+                  description: "Default visibility of services"
+                defaultVirtualServiceExportTo:
+                  type: array
+                  items:
+                    type: string
+                  description: "Default visibility of virtual services"
+                defaultDestinationRuleExportTo:
+                  type: array
+                  items:
+                    type: string
+                  description: "Default visibility of destination rules"
+                enableAutoMtls:
+                  type: boolean
+                  description: "Enables automatic mutual TLS between sidecars"
+                meshMTLS:
+                  type: object
+                  properties:
+                    minProtocolVersion:
+                      type: string
+                      enum:
+                        - TLS_AUTO
+                        - TLSv1_0
+                        - TLSv1_1
+                        - TLSv1_2
+                        - TLSv1_3
+                    maxProtocolVersion:
+                      type: string
+                      enum:
+                        - TLS_AUTO
+                        - TLSv1_0
+                        - TLSv1_1
+                        - TLSv1_2
+                        - TLSv1_3
+                  description: "Mesh-wide mutual TLS settings"
+              additionalProperties: true
+      additionalPrinterColumns:
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

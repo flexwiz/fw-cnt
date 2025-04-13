@@ -1,0 +1,291 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: telemetries.telemetry.istio.io
+  labels:
+    app: istio-pilot
+    release: istio
+    istio: telemetry
+spec:
+  group: telemetry.istio.io
+  names:
+    kind: Telemetry
+    listKind: TelemetryList
+    plural: telemetries
+    singular: telemetry
+    categories:
+      - istio-io
+      - telemetry-istio-io
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                selector:
+                  type: object
+                  properties:
+                    matchLabels:
+                      type: object
+                      additionalProperties:
+                        type: string
+                tracing:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      providers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                      randomSamplingPercentage:
+                        type: number
+                        format: double
+                      customTags:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            literal:
+                              type: object
+                              properties:
+                                value:
+                                  type: string
+                            environment:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                defaultValue:
+                                  type: string
+                            header:
+                              type: object
+                              properties:
+                                name:
+                                  type: string
+                                defaultValue:
+                                  type: string
+                metrics:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      providers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                      overrides:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            disabled:
+                              type: boolean
+                            tagOverrides:
+                              type: object
+                              additionalProperties:
+                                type: object
+                                properties:
+                                  operation:
+                                    type: string
+                                    enum:
+                                      - UPSERT
+                                      - REMOVE
+                                  value:
+                                    type: string
+                accessLogging:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      providers:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                      filter:
+                        type: object
+                        properties:
+                          expression:
+                            type: string
+              additionalProperties: true
+      additionalPrinterColumns:
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+---
+# Additional CRD for Telemetry Provider
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: telemetryproviders.telemetry.istio.io
+  labels:
+    app: istio-pilot
+    release: istio
+    istio: telemetry
+spec:
+  group: telemetry.istio.io
+  names:
+    kind: TelemetryProvider
+    listKind: TelemetryProviderList
+    plural: telemetryproviders
+    singular: telemetryprovider
+    categories:
+      - istio-io
+      - telemetry-istio-io
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                accessLogging:
+                  type: object
+                  properties:
+                    kafka:
+                      type: object
+                      properties:
+                        bootstrapServers:
+                          type: array
+                          items:
+                            type: string
+                        topic:
+                          type: string
+                        producerConfig:
+                          type: object
+                          additionalProperties:
+                            type: string
+                        encoding:
+                          type: string
+                          enum:
+                            - JSON
+                            - TEXT
+                    stackdriver:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                        projectId:
+                          type: string
+                        logInfo:
+                          type: object
+                          properties:
+                            customInfo:
+                              type: object
+                              additionalProperties:
+                                type: string
+                    opencensus:
+                      type: object
+                      properties:
+                        endpoint:
+                          type: string
+                        encoding:
+                          type: string
+                          enum:
+                            - TEXT
+                            - PROTO_TEXT
+                            - JSON
+                    prometheus:
+                      type: object
+                      properties:
+                        port:
+                          type: integer
+                        address:
+                          type: string
+                        enabled:
+                          type: boolean
+                metrics:
+                  type: object
+                  properties:
+                    stackdriver:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                        projectId:
+                          type: string
+                        pushInterval:
+                          type: string
+                          format: duration
+                        monitoringEndpoint:
+                          type: string
+                        tokenPath:
+                          type: string
+                    prometheus:
+                      type: object
+                      properties:
+                        port:
+                          type: integer
+                        address:
+                          type: string
+                        enabled:
+                          type: boolean
+                tracing:
+                  type: object
+                  properties:
+                    zipkin:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                    datadog:
+                      type: object
+                      properties:
+                        address:
+                          type: string
+                    stackdriver:
+                      type: object
+                      properties:
+                        enabled:
+                          type: boolean
+                        projectId:
+                          type: string
+                        maxTagLength:
+                          type: integer
+                        traceSpanBufferSize:
+                          type: integer
+                    opencensus:
+                      type: object
+                      properties:
+                        context:
+                          type: array
+                          items:
+                            type: string
+                            enum:
+                              - W3C_TRACE_CONTEXT
+                              - CLOUD_TRACE_CONTEXT
+                              - GRPC_BIN
+                              - B3
+                        endpoint:
+                          type: string
+                        exporterInsecure:
+                          type: boolean
+                        maxTagLength:
+                          type: integer
+              additionalProperties: true
+      additionalPrinterColumns:
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

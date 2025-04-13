@@ -1,0 +1,66 @@
+# Jaeger (Distributed Tracing)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger
+  namespace: istio-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger
+  template:
+    metadata:
+      labels:
+        app: jaeger
+    spec:
+      containers:
+      - name: jaeger
+        image: jaegertracing/all-in-one:1.46
+        env:
+        - name: COLLECTOR_ZIPKIN_HOST_PORT
+          value: ":9411"
+        - name: MEMORY_MAX_TRACES
+          value: "50000"
+        ports:
+        - containerPort: 16686
+          name: http-query
+        - containerPort: 9411
+          name: zipkin
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+
+---
+# Jaeger Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: jaeger-query
+  namespace: istio-system
+spec:
+  type: ClusterIP
+  ports:
+  - port: 16686
+    name: http-query
+  selector:
+    app: jaeger
+
+---
+# Zipkin-compatible port for Jaeger
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin
+  namespace: istio-system
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9411
+    name: port-9411
+  selector:
+    app: jaeger

@@ -4,18 +4,22 @@ metadata:
   name: ingress
 
 requires:
-  - configs: ["ingress-kong"]
-    path: kong
+  - configs: ["istio-ingress"]
+    path: istio
     activeProfiles: &profiles
       - name: minikube
         activatedBy: [minikube]
       - name: gcp
         activatedBy: [gcp]
 
-  - configs: ["ingress-nginx"]
+  - configs: ["kong-ingress"]
+    path: kong
+    activeProfiles: *profiles
+
+  - configs: ["nginx-ingress"]
     path: nginx
     activeProfiles: *profiles
 
-  - configs: ["traefik"]
+  - configs: ["traefik-ingress"]
     path: traefik
     activeProfiles: *profiles

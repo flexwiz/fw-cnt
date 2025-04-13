@@ -5,8 +5,8 @@ metadata:
   name: linkerd-control-plane
   namespace: linkerd
   labels:
-    type: middleware
-    tier: service-mesh
+    tier: middleware
+    type: service-mesh
 spec:
   podSelector:
     matchLabels:

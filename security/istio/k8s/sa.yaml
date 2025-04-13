@@ -1,0 +1,9 @@
+# Service Account for Istiod
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: istiod
+  namespace: istio-system
+  labels:
+    tier: middleware
+    type: service-mesh

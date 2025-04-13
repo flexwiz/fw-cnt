@@ -15,3 +15,7 @@ requires:
   - configs: ["linkerd"]
     path: linkerd
     activeProfiles: *profiles
+
+  - configs: ["istio"]
+    path: istio
+    activeProfiles: *profiles

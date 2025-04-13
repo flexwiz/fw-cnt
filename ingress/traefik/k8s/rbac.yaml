@@ -2,9 +2,10 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
+  namespace: traefik
   labels:
-    type: middleware
-    tier: ingress
+    tier: middleware
+    type: gateway
 rules:
   - apiGroups:
       - ""
@@ -38,6 +39,10 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
+  namespace: traefik
+  labels:
+    tier: middleware
+    type: gateway
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

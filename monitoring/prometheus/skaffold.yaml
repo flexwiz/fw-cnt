@@ -20,6 +20,7 @@ profiles:
       kubectl: {}
     manifests: &manifests
       rawYaml:
+        # - k8s/crd/*.yaml
         - k8s/*.yaml
     portForward: &portForward
       - resourceType: service

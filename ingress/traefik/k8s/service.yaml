@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: traefik
   namespace: traefik
+  labels:
+    type: middleware
+    tier: ingress
 spec:
   type: LoadBalancer
   ports:
@@ -20,6 +23,9 @@ kind: Service
 metadata:
   name: traefik-admin
   namespace: traefik
+  labels:
+    type: middleware
+    tier: ingress
 spec:
   type: ClusterIP
   ports:

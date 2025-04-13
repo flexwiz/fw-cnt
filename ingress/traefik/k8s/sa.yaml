@@ -3,3 +3,6 @@ kind: ServiceAccount
 metadata:
   name: traefik-ingress-controller
   namespace: traefik
+  labels:
+    type: middleware
+    tier: ingress

@@ -5,7 +5,7 @@ metadata:
   name: linkerd-controller-api
   namespace: linkerd
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 spec:
   type: ClusterIP
@@ -26,7 +26,7 @@ metadata:
   name: linkerd-web
   namespace: linkerd
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 spec:
   type: ClusterIP

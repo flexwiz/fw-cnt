@@ -4,7 +4,10 @@ metadata:
   name: traefik
   namespace: traefik
   labels:
+    type: middleware
+    tier: ingress
     app: traefik
+    version: v3.3.5
 spec:
   replicas: 2
   selector:

@@ -2,6 +2,9 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: traefik-ingress-controller
+  labels:
+    type: middleware
+    tier: ingress
 rules:
   - apiGroups:
       - ""

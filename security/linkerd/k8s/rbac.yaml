@@ -4,7 +4,7 @@ kind: ClusterRole
 metadata:
   name: linkerd-controller
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 rules:
 - apiGroups: [""]

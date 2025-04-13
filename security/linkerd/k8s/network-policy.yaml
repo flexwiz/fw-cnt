@@ -5,7 +5,7 @@ metadata:
   name: linkerd-control-plane
   namespace: linkerd
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 spec:
   podSelector:

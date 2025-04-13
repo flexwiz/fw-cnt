@@ -3,6 +3,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: traefik-data
   namespace: traefik
+  labels:
+    type: middleware
+    tier: ingress
 spec:
   accessModes:
     - ReadWriteOnce

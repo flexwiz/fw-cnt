@@ -67,7 +67,7 @@ metadata:
   name: linkerd-web
   namespace: linkerd
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 spec:
   replicas: 1

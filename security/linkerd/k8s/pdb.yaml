@@ -5,7 +5,7 @@ metadata:
   name: linkerd-controller
   namespace: linkerd
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 spec:
   minAvailable: 2

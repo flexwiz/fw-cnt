@@ -5,7 +5,7 @@ metadata:
   name: linkerd-config
   namespace: linkerd
   labels:
-    type: security
+    type: middleware
     tier: service-mesh
 data:
   config.yaml: |

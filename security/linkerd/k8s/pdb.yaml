@@ -1,0 +1,14 @@
+# PodDisruptionBudget for Linkerd Controller
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: linkerd-controller
+  namespace: linkerd
+  labels:
+    type: security
+    tier: service-mesh
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: linkerd-controller

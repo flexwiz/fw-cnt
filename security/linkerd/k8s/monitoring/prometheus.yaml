@@ -1,0 +1,44 @@
+# Prometheus (for metrics)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-prometheus
+  namespace: linkerd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: linkerd-prometheus
+  template:
+    metadata:
+      labels:
+        app: linkerd-prometheus
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.40.7
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--storage.tsdb.retention.time=15d"
+        ports:
+        - name: web
+          containerPort: 9090
+        resources:
+          requests:
+            cpu: 300m
+            memory: 1Gi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prometheus
+        - name: prometheus-data
+          mountPath: /prometheus
+      volumes:
+      - name: config-volume
+        configMap:
+          name: linkerd-prometheus-config
+      - name: prometheus-data
+        emptyDir: {}

@@ -1,0 +1,23 @@
+# HorizontalPodAutoscaler for Linkerd Controller
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: linkerd-controller
+  namespace: linkerd
+  labels:
+    type: security
+    tier: service-mesh
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: linkerd-controller
+  minReplicas: 3
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80

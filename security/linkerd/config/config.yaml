@@ -1,0 +1,17 @@
+proxy:
+  outboundPort: 4140
+  inboundPort: 4143
+  adminPort: 4191
+  resources:
+    requests:
+      cpu: 100m
+      memory: 64Mi
+    limits:
+      cpu: 300m
+      memory: 128Mi
+controllerLogLevel: info
+highAvailability: true
+tracing:
+  enabled: true
+prometheus:
+  enabled: true

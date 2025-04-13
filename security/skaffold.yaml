@@ -11,3 +11,7 @@ requires:
         activatedBy: [minikube]
       - name: gcp
         activatedBy: [gcp]
+
+  - configs: ["linkerd"]
+    path: linkerd
+    activeProfiles: *profiles

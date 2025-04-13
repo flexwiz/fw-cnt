@@ -1,0 +1,14 @@
+# PodMonitor for Linkerd Proxy metrics
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: linkerd-proxy
+  namespace: linkerd
+spec:
+  selector:
+    matchLabels:
+      linkerd.io/proxy-deployment: linkerd-controller
+  podMetricsEndpoints:
+  - port: admin-http
+    path: /metrics
+    interval: 15s

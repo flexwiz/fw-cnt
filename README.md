@@ -29,10 +29,19 @@ minikube start --cpus=8 --memory=16
 ### Clone the repository and deploy your favorite middleware tools stack
 
 ```bash
+# Clone with HTTPS
+git clone https://github.com/ntdtfr/tools.git && cd tools
+
+# or 
+
+# Clone with SSH
 git clone git@github.com:ntdtfr/tools.git && cd tools
 
-skaffold run -p minikube -m postgres            # Run postgres component
-skaffold run -p minikube -m postgres,redis      # Run postgres and redis components
+# Deploy PostgreSQL tool
+skaffold run -p minikube -m postgres
+
+# Deploy PostgreSQL and Redis tools
+skaffold run -p minikube -m postgres,redis
 ```
 
 ### How to deploy these tools into your custom projects ?

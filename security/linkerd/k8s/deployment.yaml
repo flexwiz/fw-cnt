@@ -1,0 +1,100 @@
+# Deployment for Linkerd Controller
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-controller
+  namespace: linkerd
+  labels:
+    type: security
+    tier: service-mesh
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: linkerd-controller
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: linkerd-controller
+    spec:
+      serviceAccountName: linkerd-controller
+      containers:
+      - name: controller
+        image: cr.l5d.io/linkerd/controller:stable-2.13.5
+        args:
+        - "controller"
+        ports:
+        - name: admin-http
+          containerPort: 9990
+        - name: public-api
+          containerPort: 8085
+        - name: proxy-api
+          containerPort: 8086
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 9990
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: 9990
+          initialDelaySeconds: 10
+        volumeMounts:
+        - name: config
+          mountPath: /etc/linkerd
+          readOnly: true
+      volumes:
+      - name: config
+        configMap:
+          name: linkerd-config
+---
+# Web UI Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-web
+  namespace: linkerd
+  labels:
+    type: security
+    tier: service-mesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: linkerd-web
+  template:
+    metadata:
+      labels:
+        app: linkerd-web
+    spec:
+      containers:
+      - name: web
+        image: cr.l5d.io/linkerd/web:stable-2.13.5
+        args:
+        - "-controller-namespace=linkerd"
+        - "-cluster-domain=cluster.local"
+        - "-api-addr=linkerd-controller-api.linkerd.svc.cluster.local:8085"
+        - "-grafana-addr=grafana.default.svc.cluster.local:3000"
+        - "-log-level=debug"
+        ports:
+        - name: http
+          containerPort: 8084
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 300m
+            memory: 256Mi

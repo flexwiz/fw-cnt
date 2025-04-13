@@ -1,0 +1,38 @@
+# Service for Linkerd Controller API
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-controller-api
+  namespace: linkerd
+  labels:
+    type: security
+    tier: service-mesh
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8085
+    targetPort: public-api
+  - name: admin-http
+    port: 9990
+    targetPort: admin-http
+  selector:
+    app: linkerd-controller
+---
+# Web UI Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-web
+  namespace: linkerd
+  labels:
+    type: security
+    tier: service-mesh
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8084
+    targetPort: 8084
+  selector:
+    app: linkerd-web

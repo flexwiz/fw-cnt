@@ -48,6 +48,7 @@ skaffold run -p minikube -m postgres,redis
 
 For example, you would like to include Redis in your project. You need to include this sample code into your `skaffold.yaml`:
 ```yaml
+requires:
   - configs: ["redis"]
     git:
       repo: https://github.com/ntdtfr/tools.git

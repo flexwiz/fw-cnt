@@ -4,13 +4,17 @@ metadata:
   name: security
 
 requires:
-  - configs: ["keycloak"]
-    path: keycloak
+  - configs: ["cert-manager"]
+    path: cert-manager
     activeProfiles: &profiles
       - name: minikube
         activatedBy: [minikube]
       - name: gcp
         activatedBy: [gcp]
+
+  - configs: ["keycloak"]
+    path: keycloak
+    activeProfiles: *profiles
 
   - configs: ["linkerd"]
     path: linkerd

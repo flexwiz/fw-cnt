@@ -1,0 +1,10 @@
+# cert-manager Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+  labels:
+    tier: middleware
+    type: security
+    app: cert-manager
+    istio-injection: disabled

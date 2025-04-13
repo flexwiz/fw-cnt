@@ -1,0 +1,58 @@
+# ClusterRole for cert-manager
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+  labels:
+    tier: middleware
+    type: security
+    app: cert-manager
+rules:
+  - apiGroups: ["cert-manager.io"]
+    resources: ["certificates", "certificates/status", "certificaterequests", "certificaterequests/status", "issuers", "issuers/status", "clusterissuers", "clusterissuers/status", "orders", "orders/status", "challenges", "challenges/status"]
+    verbs: ["create", "delete", "deletecollection", "patch", "update", "get", "list", "watch"]
+  - apiGroups: ["acme.cert-manager.io"]
+    resources: ["orders", "orders/status", "challenges", "challenges/status"]
+    verbs: ["create", "delete", "deletecollection", "patch", "update", "get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["secrets", "events", "configmaps", "services", "pods"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch", "update", "create", "delete", "patch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses/status"]
+    verbs: ["update"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources: ["endpointslices"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["route.openshift.io"]
+    resources: ["routes/custom-host"]
+    verbs: ["create"]
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["gateways", "httproutes"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["gateway.networking.k8s.io"]
+    resources: ["gateways/status", "httproutes/status"]
+    verbs: ["update"]
+
+---
+# ClusterRoleBinding for cert-manager
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+  labels:
+    tier: middleware
+    type: security
+    app: cert-manager
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cert-manager
+subjects:
+  - kind: ServiceAccount
+    name: cert-manager
+    namespace: cert-manager

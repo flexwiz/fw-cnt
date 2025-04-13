@@ -16,7 +16,7 @@ To be able to use these common `tools` with minikube, k3d, kind or another Kuber
 
 ## How to use skaffold ?
 
-### First you will need to start `minikube`:
+### First you will need to start `minikube`:
 
 ```bash
 # Basic kubernetes cluster to to start

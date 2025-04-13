@@ -3,6 +3,9 @@ kind: Service
 metadata:
   name: kong-proxy
   namespace: kong
+  labels:
+    type: middleware
+    tier: ingress
 spec:
   type: LoadBalancer
   ports:
@@ -20,6 +23,9 @@ kind: Service
 metadata:
   name: kong-admin
   namespace: kong
+  labels:
+    type: middleware
+    tier: ingress
 spec:
   type: ClusterIP
   ports:

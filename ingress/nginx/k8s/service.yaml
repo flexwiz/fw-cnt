@@ -4,6 +4,8 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
   labels:
+    type: middleware
+    tier: ingress
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:

@@ -27,8 +27,9 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: kong-admin
+        namespace: kong
         port: 8001
-        localPort: 8180
+        localPort: 8080
 
   - name: gcp
     activation:

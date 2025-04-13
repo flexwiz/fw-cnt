@@ -4,6 +4,8 @@ metadata:
   name: nginx-configuration
   namespace: ingress-nginx
   labels:
+    type: middleware
+    tier: ingress
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 ---
@@ -12,9 +14,15 @@ kind: ConfigMap
 metadata:
   name: tcp-services
   namespace: ingress-nginx
+  labels:
+    type: middleware
+    tier: ingress
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: udp-services
   namespace: ingress-nginx
+  labels:
+    type: middleware
+    tier: ingress

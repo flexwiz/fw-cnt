@@ -2,6 +2,7 @@
 
 [![Keycloak CI](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml)
 [![Superset CI](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml)
+[![Security Scanning](https://github.com/ntdtfr/tools/actions/workflows/security-scan.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/security-scan.yml)
 
 ## Prerequisites
 
@@ -49,9 +50,13 @@ For example, you would like to include Redis in your project. You need to includ
         activatedBy: [minikube]
 ```
 
-## Port forward mapping for some tools
+## Port forward mapping
+
+**Reserved ports:**
 
 - `8080`: Ingress controler web UI
 - `8180`: API Gateway
 - `8280`: Authentication/authorization provider (Keycloak)
 - `8380`: Service mesh web UI
+
+**No specific port used for other tools**

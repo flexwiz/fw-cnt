@@ -31,7 +31,7 @@ env:
   SOURCE_DIR: ./security/keycloak
   KEYCLOAK_VERSION: 26.1.4
   DOCKER_REGISTRY: docker.io  # ghcr.io
-  DOCKER_IMAGE_NAME: ntdtfr/keycloak # nntran/keycloak
+  DOCKER_REGISTRY_IMAGE: ntdtfr/keycloak # nntran/keycloak
   DOCKER_BAKE_FILE: docker-bake.hcl
   DOCKER_BAKE_TARGET: production
 
@@ -58,7 +58,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.DOCKER_IMAGE_NAME }}
+          images: ${{ env.DOCKER_REGISTRY_IMAGE }}
           tags: |
             type=raw,value=${{ env.KEYCLOAK_VERSION }}
             type=ref,event=branch,prefix=${{ env.KEYCLOAK_VERSION }}-
@@ -137,7 +137,7 @@ jobs:
             *.platform=${{ matrix.platform }}
             *.cache-from=type=gha,scope=build-${{ env.PLATFORM }}
             *.cache-to=type=gha,scope=build-${{ env.PLATFORM }}
-            *.output=type=image,name=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
+            *.output=type=image,name=${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
@@ -185,10 +185,10 @@ jobs:
     - name: Create manifest list and push
       working-directory: ${{ runner.temp }}/digests
       run: |
-        docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.DOCKER_IMAGE_NAME }}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/bake-meta.json) \
-            $(printf '${{ env.DOCKER_IMAGE_NAME }}@sha256:%s ' *)
+        docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.DOCKER_REGISTRY_IMAGE }}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/bake-meta.json) \
+            $(printf '${{ env.DOCKER_REGISTRY_IMAGE }}@sha256:%s ' *)
 
     - name: Inspect image
       run: |
         tag=$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/bake-meta.json)
-        docker buildx imagetools inspect ${{ env.DOCKER_IMAGE_NAME }}:${tag}
+        docker buildx imagetools inspect ${{ env.DOCKER_REGISTRY_IMAGE }}:${tag}

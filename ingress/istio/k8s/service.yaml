@@ -9,6 +9,7 @@ metadata:
     type: gateway
     app: istiod
 spec:
+  type: ClusterIP
   ports:
   - port: 15010
     name: grpc-xds

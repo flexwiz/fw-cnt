@@ -1,0 +1,41 @@
+name: Lint PR title
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, edited, synchronize]
+
+permissions:
+  pull-requests: read
+
+jobs:
+  validate-title:
+    name: Validate PR Title
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - uses: amannn/action-semantic-pull-request@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          # Configure which types are allowed (newline-delimited).
+          # Default: https://github.com/commitizen/conventional-commit-types
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+          scopes: |
+            core
+            ui
+            JIRA-\d+
+          requireScope: false
+          disallowScopes: |
+            release
+            [A-Z]+

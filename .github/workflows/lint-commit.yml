@@ -14,7 +14,7 @@ on:
       - 'hotfixe/*'
 
 env:
-  NODE_VERSION: '23'                # set this to the node version to use
+  NODE_VERSION: '22'                # set this to the node version to use
 
 jobs:
   validate-commit:

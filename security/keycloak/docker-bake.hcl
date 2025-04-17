@@ -9,7 +9,7 @@ variable "REGISTRY" {
 }
 
 variable "REPOSITORY" {
-  default = "ntdtfr/keycloak"
+  default = "flexwiz"
 }
 
 // Base target for shared configuration
@@ -21,18 +21,13 @@ target "base" {
   context = "."
   dockerfile = "Dockerfile"
   platforms = ["linux/amd64", "linux/arm64"]
-  labels = {
-    org.opencontainers.image.title=Keycloak
-    org.opencontainers.image.description=Keycloak component
-    org.opencontainers.image.vendor=sample
-  }
 }
 
 // Development target
 target "development" {
   inherits = ["base"]
   target = "development"
-  tags = ["${REGISTRY}/${REPOSITORY}:dev"]
+  tags = ["${REGISTRY}/${REPOSITORY}/keycloak:dev"]
 }
 
 // Production target

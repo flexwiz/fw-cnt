@@ -7,7 +7,7 @@ concurrency:
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     tags:
       - 'v*'
     # paths-ignore:
@@ -30,8 +30,8 @@ on:
 env:
   SOURCE_DIR: ./security/keycloak
   KEYCLOAK_VERSION: 26.1.4
-  DOCKER_REGISTRY: docker.io  # ghcr.io
-  DOCKER_REGISTRY_IMAGE: ntdtfr/keycloak # nntran/keycloak
+  DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
+  DOCKER_REGISTRY_IMAGE: ${{ vars.DOCKERHUB_REPOSITORY }}/keycloak
   DOCKER_BAKE_FILE: docker-bake.hcl
   DOCKER_BAKE_TARGET: production
 

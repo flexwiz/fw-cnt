@@ -7,7 +7,7 @@ concurrency:
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
     tags:
       - 'v*'
     # paths-ignore:
@@ -27,8 +27,8 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   SOURCE_DIR: ./analytics/superset
-  DOCKER_REGISTRY: docker.io  # ghcr.io
-  DOCKER_IMAGE_NAME: ntdtfr/superset # nntran/superset
+  DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
+  DOCKER_IMAGE_NAME: ${{ vars.DOCKERHUB_REPOSITORY }}/superset
   DOCKER_BAKE_FILE: docker-bake.hcl
   DOCKER_BAKE_TARGET: production
 

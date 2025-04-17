@@ -27,6 +27,7 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   SOURCE_DIR: ./analytics/superset
+  SUPERSET_VERSION: 4.0.1 # see Dockerfile
   DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
   DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -59,15 +60,19 @@ jobs:
         with:
           images: ${{ env.DOCKER_IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,format=short # 7 characters
+            type=raw,value=${{ env.SUPERSET_VERSION }}
+            type=ref,event=branch,prefix=${{ env.SUPERSET_VERSION }}-
+            type=ref,event=pr,prefix=${{ env.SUPERSET_VERSION }}-
+            type=sha,format=short,prefix=${{ env.SUPERSET_VERSION }}- # sha short = 7 characters
+            # type=semver,pattern={{version}}
+            # type=semver,pattern={{major}}.{{minor}}
+            # type=ref,event=branch
+            # type=ref,event=pr
+            # type=sha,format=short # 7 characters
           labels: |
             org.opencontainers.image.title=Superset
-            org.opencontainers.image.description=Superset component
-            org.opencontainers.image.vendor=sample
+            org.opencontainers.image.description=Custom Superset component for flexwiz.io
+            org.opencontainers.image.vendor=flexwiz.io
 
       - name: Rename meta bake definition file
         run: |

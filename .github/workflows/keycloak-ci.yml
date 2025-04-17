@@ -29,7 +29,7 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   SOURCE_DIR: ./security/keycloak
-  KEYCLOAK_VERSION: 26.1.4
+  KEYCLOAK_VERSION: 26.1.4 # see Dockerfile
   DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
   DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -66,6 +66,10 @@ jobs:
             type=ref,event=branch,prefix=${{ env.KEYCLOAK_VERSION }}-
             type=ref,event=pr,prefix=${{ env.KEYCLOAK_VERSION }}-
             type=sha,format=short,prefix=${{ env.KEYCLOAK_VERSION }}- # sha short = 7 characters
+          labels: |
+            org.opencontainers.image.title=Keycloak
+            org.opencontainers.image.description=Custom Keycloak component for flexwiz.io
+            org.opencontainers.image.vendor=flexwiz.io
 
       - name: Rename meta bake definition file
         run: |

@@ -9,7 +9,7 @@ variable "REGISTRY" {
 }
 
 variable "REPOSITORY" {
-  default = "ntdtfr/superset"
+  default = "flexwiz"
 }
 
 // Base target for shared configuration
@@ -27,7 +27,7 @@ target "base" {
 target "development" {
   inherits = ["base"]
   target = "development"
-  tags = ["${REGISTRY}/${REPOSITORY}:dev"]
+  tags = ["${REGISTRY}/${REPOSITORY}/superset:dev"]
 }
 
 // Production target

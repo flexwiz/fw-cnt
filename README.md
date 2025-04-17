@@ -44,7 +44,7 @@ The deployment architecture follows this approach with isolation in dedicated na
 │  │ Namespace   │    │  Namespace  │    │ Namespace   │  │
 │  │             │    │             │    │             │  │
 │  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │  │
-│  │ │Metabase │ │    │ │Metabase │ │    │ │Metabase │ │  │
+│  │ |Krakend  │ │    │ |Keycloak │ │    │ │Metabase │ │  │
 │  │ │  Pod    │ │    │ │  Pod    │ │    │ │  Pod    │ │  │
 │  │ └─────────┘ │    │ └─────────┘ │    │ └─────────┘ │  │
 │  │             │    │             │    │             │  │

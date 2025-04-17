@@ -10,7 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
 spec:
   rules:
-  - host: artifactory.ntdt.local
+  - host: artifactory.sample.local
     http:
       paths:
       - path: /
@@ -22,5 +22,5 @@ spec:
               number: 8081
   tls:
   - hosts:
-    - artifactory.ntdt.local
+    - artifactory.sample.local
     secretName: artifactory-tls-secret

@@ -1,4 +1,4 @@
-package fr.ntdt.keycloak.extension.confidentiality;
+package fr.sample.keycloak.extension.confidentiality;
 
 import org.keycloak.Config;
 import org.keycloak.authentication.RequiredActionFactory;

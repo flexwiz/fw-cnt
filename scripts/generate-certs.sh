@@ -4,11 +4,11 @@
 #
 # Parameters :
 #
-# ./generate-certs.sh "../../cluster/rancher" "rancher" "rancher.ntdt.fr"
-# ./generate-certs.sh "../../demo/rancher" "rancher" "rancher.ntdt.fr"
-# ./generate-certs.sh "../../cluster/kubernetes" "dashboard" "dashboard.k8s.ntdt.fr"
-# ./generate-certs.sh "../../cluster/swarm/portainer" "portainer" "portainer.swarm.ntdt.fr"
-# ./generate-certs.sh "../../cluster/swarm/traefik" "traefik" "traefik.swarm.ntdt.fr"
+# ./generate-certs.sh "../../cluster/rancher" "rancher" "rancher.sample.fr"
+# ./generate-certs.sh "../../demo/rancher" "rancher" "rancher.sample.fr"
+# ./generate-certs.sh "../../cluster/kubernetes" "dashboard" "dashboard.k8s.sample.fr"
+# ./generate-certs.sh "../../cluster/swarm/portainer" "portainer" "portainer.swarm.sample.fr"
+# ./generate-certs.sh "../../cluster/swarm/traefik" "traefik" "traefik.swarm.sample.fr"
 
 out_dir=$1
 certs_dir=$out_dir/certs
@@ -23,11 +23,11 @@ echo "===== Generate $app CA root..."
 
 mkdir -p $certs_dir
 cd $certs_dir
-# openssl req -x509 -nodes -days $ca_expire -newkey rsa:$ssl_size -keyout $app.key -out $app.crt -subj "C=FR/L=LRY/O=NTDT/OU=IT/CN=$cn"
+# openssl req -x509 -nodes -days $ca_expire -newkey rsa:$ssl_size -keyout $app.key -out $app.crt -subj "C=FR/L=LRY/O=sample/OU=IT/CN=$cn"
 
 openssl genrsa -out $app.key $ssl_size
 openssl rsa -in $app.key -out $app.key
-openssl req -sha256 -new -key $app.key -out $app.csr -subj "/C=FR/L=LRY/O=NTDT/OU=IT/CN=$fqdn"
+openssl req -sha256 -new -key $app.key -out $app.csr -subj "/C=FR/L=LRY/O=sample/OU=IT/CN=$fqdn"
 openssl x509 -req -sha256 -days $ca_expire -in $app.csr -signkey $app.key -out $app.crt
 
 

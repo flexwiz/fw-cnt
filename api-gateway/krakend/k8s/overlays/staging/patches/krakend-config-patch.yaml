@@ -1,3 +1,4 @@
+# overlays/staging/patches/krakend-config-patch.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,12 +9,12 @@ data:
       "version": 3,
       "endpoints": [
         {
-          "endpoint": "/api/v1/orders",
+          "endpoint": "/api/v1/sample",
           "method": "GET",
           "backend": [
             {
-              "url_pattern": "/orders",
-              "host": ["http://order-service:3000"]
+              "url_pattern": "/sample",
+              "host": ["http://sample-service:3000"]
             }
           ]
         }

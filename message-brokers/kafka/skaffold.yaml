@@ -23,7 +23,7 @@ profiles:
       - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
     build:
       googleCloudBuild:
-        projectId: ntdt-development
+        projectId: sample-development
         concurrency: 0
     deploy: *deploy
     manifests: *manifests

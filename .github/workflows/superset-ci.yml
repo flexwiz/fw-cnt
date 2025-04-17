@@ -65,7 +65,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=Superset
             org.opencontainers.image.description=Superset component
-            org.opencontainers.image.vendor=ntdt
+            org.opencontainers.image.vendor=sample
 
       - name: Rename meta bake definition file
         run: |

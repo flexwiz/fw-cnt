@@ -29,8 +29,8 @@ profiles:
     #   tagPolicy:
     #     sha256: {}
     #   googleCloudBuild:
-    #     workerPool: projects/ntdt/locations/europe-west9/workerPools/worker-development-pool
-    #     projectId: ntdt
+    #     workerPool: projects/sample/locations/europe-west9/workerPools/worker-development-pool
+    #     projectId: sample
     #     concurrency: 0
     #   artifacts:
     #     - image: rabbitmq
@@ -40,7 +40,7 @@ profiles:
     #         cache: {}
     build:
       googleCloudBuild:
-        projectId: ntdt-development
+        projectId: sample-development
         concurrency: 0
     deploy: *deploy
     manifests: *manifests

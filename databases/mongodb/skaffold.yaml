@@ -55,8 +55,8 @@ profiles:
       - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
     build:
       googleCloudBuild:
-        workerPool: projects/ntdt/locations/europe-west9/workerPools/development-pool
-        projectId: ntdt
+        workerPool: projects/sample/locations/europe-west9/workerPools/development-pool
+        projectId: sample
         concurrency: 0
     deploy: *deploy
     manifests: *manifests

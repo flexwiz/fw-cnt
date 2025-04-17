@@ -30,6 +30,6 @@ profiles:
       - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
     build:
       googleCloudBuild:
-        projectId: ntdt
+        projectId: sample
     deploy: *deploy
     portForward: *portForward

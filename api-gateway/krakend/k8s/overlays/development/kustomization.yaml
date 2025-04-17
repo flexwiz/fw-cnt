@@ -1,0 +1,21 @@
+# overlays/development/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: api-gateway
+
+commonLabels:
+  example.com/env: development
+
+resources:
+- ../../base
+
+patchesStrategicMerge:
+- patches/krakend-config-patch.yaml
+- patches/krakend-deployment-patch.yaml
+- patches/krakend-ingress-patch.yaml
+
+# secretGenerator:
+# - name: krakend-db-credentials
+#   envs:
+#   - secrets/db-credentials.env
+#   type: Opaque

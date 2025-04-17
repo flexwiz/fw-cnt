@@ -4,14 +4,22 @@ metadata:
   name: analytics
 
 requires:
+  - configs: ["metabase"]
+    path: metabase
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
+
   - configs: ["superset"]
     path: superset
-    activeProfiles: &profiles
-      - name: minikube
+    activeProfiles:
+      - name: development
         activatedBy: [minikube]
       - name: gcp
         activatedBy: [gcp]
-
-  # - configs: ["other"]
-  #   path: other
-  #   activeProfiles: *profiles

@@ -1,6 +1,8 @@
-ARG VER=4.0.1
+ARG VERSION=4.0.1
 
-FROM apache/superset:${VER} AS base
+###
+### Stage 1: Base
+FROM apache/superset:${VERSION} AS base
 
 WORKDIR /app
 
@@ -37,7 +39,7 @@ COPY --chown=superset:superset conf/superset_config_dev.py ${SUPERSET_CUSTOM_PAT
 
 
 ###
-### Stage 2: Production
+### Stage 3: Production
 FROM base AS production
 
 # https://www.restack.io/docs/superset-knowledge-apache-superset-config-guide

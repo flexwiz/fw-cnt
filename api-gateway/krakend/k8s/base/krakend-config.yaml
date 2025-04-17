@@ -1,0 +1,23 @@
+---
+# overlays/base/krakend-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: krakend-config
+data:
+  krakend.json: |
+    {
+      "version": 3,
+      "endpoints": [
+        {
+          "endpoint": "/api/v1/sample",
+          "method": "GET",
+          "backend": [
+            {
+              "url_pattern": "/sample",
+              "host": ["http://sample-service:3000"]
+            }
+          ]
+        }
+      ]
+    }

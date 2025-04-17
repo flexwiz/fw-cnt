@@ -17,7 +17,7 @@ profiles:
             setValues:
               auth.rootUser: "admin"
               auth.rootPassword: "password"
-              defaultBuckets: 'datas:private public download upload images ntdt-data-bucket'
+              defaultBuckets: 'datas:private public download upload images sample-data-bucket'
     portForward: &minio_portForward
       - resourceType: service
         resourceName: minio
@@ -33,7 +33,7 @@ profiles:
       - kubeContext: europe-west9-b_ntdt-development-europe-west9-b_k8s-development-cluster
     build:
       googleCloudBuild:
-        projectId: ntdt-development
+        projectId: sample-development
         concurrency: 0
     deploy: *minio_deploy
     portForward: *minio_portForward

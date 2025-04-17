@@ -37,7 +37,7 @@ WORKDIR /opt/keycloak
 
 # Copy Keycloak themes to the image
 # COPY --chown=keycloak:keycloak themes/base/login/confidentiality.ftl        ./themes/base/login
-# COPY --chown=keycloak:keycloak themes/ntdt                                  ./themes/ntdt
+# COPY --chown=keycloak:keycloak themes/sample                                  ./themes/sample
 
 # COPY --chown=keycloak:keycloak ./conf/cache-ispn-jdbc-ping.xml ./conf/cache-ispn-jdbc-ping.xml
 # RUN curl -sL https://github.com/aerogear/keycloak-metrics-spi/releases/download/2.5.3/keycloak-metrics-spi-2.5.3.jar -o /opt/keycloak/providers/keycloak-metrics-spi-2.5.3.jar

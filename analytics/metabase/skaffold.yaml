@@ -1,0 +1,84 @@
+# https://skaffold.dev/docs/references/yaml/
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: metabase
+  #  a map of labels identifying the project.
+  labels: {}
+  # a map of annotations providing additional metadata about the project.
+  annotations: {}
+
+# describes a list of other required configs for the current config.
+# requires: {}
+
+## Profiles: development, staging, production
+
+profiles:
+  - name: local
+    # build: &build
+    #   tagPolicy:
+    #     sha256: {}
+    #   artifacts:
+    #     - image: metabase
+    #       context: .
+    #       docker:
+    #         dockerfile: Dockerfile
+    #         target: final
+    #   local:
+    #     useBuildkit: true
+    #     concurrency: 0
+    deploy: &deploy
+      kubeContext: minikube
+      kubectl: {}
+    manifests: &manifests
+      kustomize:
+        paths:
+          - ./k8s/overlays/development
+    portForward: &portForward
+      - resourceType: service
+        resourceName: metabase
+        namespace: analytics
+        port: 80
+        localPort: 3000
+
+  - name: gcp
+    build:
+      tagPolicy:
+        sha256: {}
+      googleCloudBuild:
+        workerPool: projects/sample/locations/europe-west9/workerPools/worker-development-pool
+        projectId: sample
+        concurrency: 0
+      artifacts:
+        - image: metabase
+          kaniko:
+            dockerfile: Dockerfile
+            target: final
+            cache: {}
+    deploy:
+      kubeContext: gke_sample_europe-west9-b_k8s-development-cluster
+      kubectl: {}
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: development
+    # build: *build
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: staging
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+    portForward: *portForward
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
+    portForward: *portForward

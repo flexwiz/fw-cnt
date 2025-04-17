@@ -24,7 +24,7 @@ target "base" {
   labels = {
     org.opencontainers.image.title=Keycloak
     org.opencontainers.image.description=Keycloak component
-    org.opencontainers.image.vendor=ntdt
+    org.opencontainers.image.vendor=sample
   }
 }
 

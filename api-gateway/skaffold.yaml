@@ -7,8 +7,14 @@ requires:
   - configs: ["krakend"]
     path: krakend
     activeProfiles: &profiles
-      - name: minikube
-        activatedBy: [minikube]
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
       - name: gcp
         activatedBy: [gcp]
 

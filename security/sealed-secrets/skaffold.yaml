@@ -1,0 +1,41 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: sealed-secrets
+
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      # Don't need to use helm, just include postgres config in the requires:
+      helm:
+        releases:
+          # https://artifacthub.io/packages/helm/bitnami/sealed-secrets
+          - name: sealed-secrets
+            repo: https://charts.bitnami.com/bitnami
+            remoteChart: sealed-secrets
+            namespace: kube-system
+            version: 2.5.9
+            # setValues:
+            #   global.security.allowInsecureImages: true
+
+  - name: gcp
+    activation:
+      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+    deploy: *deploy
+
+  - name: development
+    activation:
+      - kubeContext: minikube
+    deploy: *deploy
+
+  - name: staging
+    activation:
+      - kubeContext: minikube
+    deploy: *deploy
+
+  - name: production
+    activation:
+      - kubeContext: minikube
+    deploy: *deploy

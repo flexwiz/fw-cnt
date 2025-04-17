@@ -23,3 +23,15 @@ requires:
   - configs: ["istio"]
     path: istio
     activeProfiles: *profiles
+
+  - configs: ["sealed-secrets"]
+    path: sealed-secrets
+    activeProfiles:
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]

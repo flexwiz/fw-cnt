@@ -1,6 +1,6 @@
-[![Keycloak CI](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/keycloak-ci.yml)
-[![Superset CI](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/superset-ci.yml)
-[![Security Scanning](https://github.com/ntdtfr/tools/actions/workflows/trivy.yml/badge.svg)](https://github.com/ntdtfr/tools/actions/workflows/trivy.yml)
+[![Keycloak CI](https://github.com/flexwiz/tools/actions/workflows/keycloak-ci.yml/badge.svg)](https://github.com/flexwiz/tools/actions/workflows/keycloak-ci.yml)
+[![Superset CI](https://github.com/flexwiz/tools/actions/workflows/superset-ci.yml/badge.svg)](https://github.com/flexwiz/tools/actions/workflows/superset-ci.yml)
+[![Security Scanning](https://github.com/flexwiz/tools/actions/workflows/trivy.yml/badge.svg)](https://github.com/flexwiz/tools/actions/workflows/trivy.yml)
 
 # Cloud Native Tools (CNT)
 

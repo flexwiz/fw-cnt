@@ -11,10 +11,10 @@ labels:
     flexwiz.io/tier: analytics
     flexwiz.io/type: business-intelligence
     flexwiz.io/app: metabase
-    flexwiz.io/version: "v0.54.3.2"
+    flexwiz.io/version: "0.54.2"
 
 resources:
+- metabase-config.yaml
 - metabase-deployment.yaml
 - metabase-service.yaml
-- metabase-config.yaml
 - metabase-ingress.yaml

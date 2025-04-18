@@ -7,6 +7,5 @@ metadata:
 data:
   java-opts: "-Xmx1g -Xms512m -XX:+UseG1GC -XX:MaxGCPauseMillis=100"
   log-level: "INFO"
-  site-url: "http://localhost:3000"
+  #site-url: "http://localhost:3000"
   report-timezone: "UTC"
-  mb_db_host: "postgres.database.svc.cluster.local"

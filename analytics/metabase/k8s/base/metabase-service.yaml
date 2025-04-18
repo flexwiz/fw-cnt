@@ -1,16 +1,14 @@
 ---
-# base/metabase-service.yaml
+# k8s/base/metabase-service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: metabase
-  labels:
-    app: metabase
 spec:
-  selector:
-    app: metabase
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 3000
     name: http
-  type: ClusterIP
+  selector:
+    flexwiz.io/app: metabase

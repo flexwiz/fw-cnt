@@ -3,8 +3,14 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: analytics
 
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: production
+
 resources:
 - ../../base
+- sealed-secrets.yaml
 - metabase-hpa.yaml
 - metabase-networkpolicy.yaml
 - postgres-backup-cronjob.yaml
@@ -14,19 +20,15 @@ patchesStrategicMerge:
 - patches/metabase-deployment-patch.yaml
 - patches/metabase-config-patch.yaml
 - patches/metabase-ingress-patch.yaml
-- patches/postgres-resources-patch.yaml
+# - patches/postgres-resources-patch.yaml
 
-labels:
-- includeSelectors: true
-  pairs:
-    example.com/env: production
+# Use the default image in the base kustomization
+# images:
+#   - name: metabase/metabase
+#     newTag: "v0.54.3.1"
 
-images:
-  - name: metabase/metabase
-    newTag: "v0.54.3.1"
-
-secretGenerator:
-- name: metabase-db-credentials
-  envs:
-  - secrets/db-credentials.env
-  type: Opaque
+# secretGenerator:
+# - name: metabase-db-credentials
+#   envs:
+#   - secrets/db-credentials.env
+#   type: Opaque

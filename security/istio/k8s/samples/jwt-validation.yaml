@@ -12,5 +12,5 @@ spec:
     matchLabels:
       app: istio-ingressgateway
   jwtRules:
-  - issuer: "https://accounts.example.com"
-    jwksUri: "https://accounts.example.com/.well-known/jwks.json"
+  - issuer: "https://accounts.flexwiz.io"
+    jwksUri: "https://accounts.flexwiz.io/.well-known/jwks.json"

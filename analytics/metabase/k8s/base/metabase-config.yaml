@@ -1,5 +1,5 @@
 ---
-# base/metabase-config.yaml
+# k8s/base/metabase-config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:

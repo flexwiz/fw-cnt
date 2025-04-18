@@ -1,5 +1,5 @@
 ---
-# base/metabase-deployment.yaml
+# k8s/base/metabase-deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,7 +31,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: metabase
-        image: metabase/metabase:latest
+        image: metabase/metabase:v0.54.3.2
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
@@ -42,19 +42,19 @@ spec:
         - name: MB_DB_DBNAME
           valueFrom:
             secretKeyRef:
-              name: metabase-db-credentials
-              key: database-name
+              name: metabase-secrets
+              key: database
         - name: MB_DB_PORT
           value: "5432"
         - name: MB_DB_USER
           valueFrom:
             secretKeyRef:
-              name: metabase-db-credentials
+              name: metabase-secrets
               key: username
         - name: MB_DB_PASS
           valueFrom:
             secretKeyRef:
-              name: metabase-db-credentials
+              name: metabase-secrets
               key: password
         - name: MB_DB_HOST
           value: "postgres"

@@ -32,8 +32,8 @@ requires:
     path: mongodb
     activeProfiles: *profiles
 
-  - configs: ["postgres"]
-    path: postgres
+  - configs: ["postgresql"]
+    path: postgresql
     activeProfiles: *profiles
 
   - configs: ["redis"]

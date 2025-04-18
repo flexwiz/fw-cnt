@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: api-gateway
 
 commonLabels:
-  example.com/env: development
+  flexwiz.io/env: development
 
 resources:
 - ../../base

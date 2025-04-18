@@ -1,3 +1,4 @@
+---
 # https://skaffold.dev/docs/references/yaml/
 apiVersion: skaffold/v4beta11
 kind: Config
@@ -12,7 +13,6 @@ metadata:
 # requires: {}
 
 ## Profiles: development, staging, production
-
 profiles:
   - name: local
     # build: &build

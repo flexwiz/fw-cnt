@@ -56,3 +56,5 @@ data:
       ALTER SYSTEM SET work_mem = '16MB';
       ALTER SYSTEM SET maintenance_work_mem = '128MB';
     EOSQL
+
+    echo "Postgres has been configured for Metabase."

@@ -4,19 +4,19 @@ services:
     env_file:
       - path: .env # default
         required: true
-      - path: .env-local # optional override
+      - path: .env.local # optional override
         required: false
-    image: postgres:16.1-alpine
+    image: postgres:17.4-alpine
     container_name: postgresql
     environment:
-        POSTGRES_USER: ${DB_USERNAME}
-        POSTGRES_PASSWORD: ${DB_PASSWORD}
-        POSTGRES_DB: ${DB_NAME}
+        POSTGRES_USER: ${username}
+        POSTGRES_PASSWORD: ${password}
+        POSTGRES_DB: ${database}
         #PGDATA: /data/postgres
         PGDATA: /var/lib/postgresql/data/db-files/
         #TZ: Asia/Tehran
     healthcheck:
-        test: ["CMD-SHELL", "pg_isready -d ${DB_NAME} -U ${DB_USERNAME}"]
+        test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
         interval: 5s
         timeout: 5s
         retries: 5

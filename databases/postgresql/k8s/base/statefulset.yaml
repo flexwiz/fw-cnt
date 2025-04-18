@@ -25,7 +25,10 @@ spec:
           name: postgres
         env:
         - name: POSTGRES_DB
-          value: "postgres"
+          valueFrom:
+            secretKeyRef:
+              name: postgresql-secrets
+              key: database
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:

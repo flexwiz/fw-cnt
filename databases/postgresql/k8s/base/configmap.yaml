@@ -1,5 +1,5 @@
 ---
-# k8s/base/postgresql/configmap.yaml
+# postgresql/k8s/base/configmap.yaml
 # apiVersion: v1
 # kind: ConfigMap
 # metadata:

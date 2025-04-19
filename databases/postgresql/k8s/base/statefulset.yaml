@@ -1,21 +1,21 @@
 ---
-# k8s/base/statefulset.yaml
+# postgresql/k8s/base/statefulset.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: postgresql
   labels:
-    app: postgresql
+    flexwiz.io/app: postgresql
 spec:
   serviceName: postgresql
   replicas: 1
   selector:
     matchLabels:
-      app: postgresql
+      flexwiz.io/app: postgresql
   template:
     metadata:
       labels:
-        app: postgresql
+        flexwiz.io/app: postgresql
     spec:
       containers:
       - name: postgresql

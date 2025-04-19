@@ -1,8 +1,8 @@
 ---
-# k8s/base/kustomization.yaml
+# keycloak/k8s/base/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: databases
+namespace: fw-databases
 
 labels:
 - includeSelectors: true

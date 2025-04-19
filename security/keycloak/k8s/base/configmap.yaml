@@ -1,0 +1,8 @@
+---
+# k8s/base/keycloak/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-config
+data:
+  KC_HOSTNAME: "keycloak.example.com"

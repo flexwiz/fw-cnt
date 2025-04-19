@@ -1,0 +1,177 @@
+# ---
+# # k8s/base/keycloak-deployment.yaml
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: keycloak
+#   namespace: keycloak
+#   labels:
+#     flexwiz.io/app: keycloak
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       flexwiz.io/app: keycloak
+#   template:
+#     metadata:
+#       labels:
+#         flexwiz.io/app: keycloak
+#     spec:
+#       initContainers:
+#         - name: wait-postgres
+#           image: postgres:13
+#           command:
+#             [
+#               "sh",
+#               "-c",
+#               "until pg_isready -h postgres.postgres -p 5432; do echo waiting for database; sleep 2; done;",
+#             ]
+#       containers:
+#         - name: keycloak
+#           image: keycloak
+#           #args: ["--import-realm"]
+#           env:
+#             # See https://www.keycloak.org/server/all-config
+#             # - name: KEYCLOAK_ADMIN
+#             #   valueFrom:
+#             #     secretKeyRef:
+#             #       name: keycloak-secret
+#             #       key: username
+#             # - name: KEYCLOAK_ADMIN_PASSWORD
+#             #   valueFrom:
+#             #     secretKeyRef:
+#             #       name: keycloak-secret
+#             #       key: password
+#             - name: KC_BOOTSTRAP_ADMIN_USERNAME
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: keycloak-secret
+#                   key: username
+#             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: keycloak-secret
+#                   key: password
+#             # DATABASE
+#             - name: KC_DB
+#               value: postgres
+#             - name: KC_DB_URL
+#               value: jdbc:postgresql://postgres.postgres.svc.cluster.local:5432/keycloak
+#             - name: KC_DB_URL_PORT
+#               value: "5432"
+#             - name: KC_DB_URL_DATABASE
+#               value: keycloak
+#             - name: KC_DB_USERNAME
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: keycloak-db-secret
+#                   key: username
+#             - name: KC_DB_PASSWORD
+#               valueFrom:
+#                 secretKeyRef:
+#                   name: keycloak-db-secret
+#                   key: password
+#             - name: KC_HTTP_PORT
+#               value: "8080"
+#             # - name: KC_HOSTNAME_STRICT
+#             #   value: "false"
+#             # - name: KC_HOSTNAME_STRICT_BACKCHANNEL
+#             #   value: "false"
+#             # Enables the HTTP listener
+#             - name: KC_HTTP_ENABLED
+#               value: "true"
+#             # By default, the new Quarkus distribution removes /auth from the context-path.
+#             # The following parameter will re-introduce the /auth
+#             - name: KC_HTTP_RELATIVE_PATH
+#               value: /auth
+#           # ports:
+#           #   - name: http
+#           #     containerPort: 8080
+#           # readinessProbe:
+#           #   httpGet:
+#           #     # If the KC_HTTP_RELATIVE_PATH is disable, remove the /auth path from /auth/realms/master
+#           #     path: /auth/realms/master
+#           #     port: 8080
+---
+# k8s/base/keycloak/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    flexwiz.io/app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      flexwiz.io/app: keycloak
+  template:
+    metadata:
+      labels:
+        flexwiz.io/app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:23.0.1
+        args: ["start"]
+        env:
+        - name: KC_DB
+          value: "postgres"
+        - name: KC_DB_URL_HOST
+          value: "postgresql"
+        - name: KC_DB_URL_PORT
+          value: "5432"
+        - name: KC_DB_URL_DATABASE
+          value: "keycloakdb"
+        - name: KC_DB_USERNAME
+          value: "keycloak"
+        - name: KC_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: KEYCLOAK_DB_PASSWORD
+        - name: KEYCLOAK_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: KEYCLOAK_ADMIN
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: keycloak-secrets
+              key: KEYCLOAK_ADMIN_PASSWORD
+        - name: KC_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              name: keycloak-config
+              key: KC_HOSTNAME
+        - name: KC_PROXY
+          value: "edge"
+        - name: KC_HTTP_ENABLED
+          value: "true"
+        - name: KC_HEALTH_ENABLED
+          value: "true"
+        - name: KC_METRICS_ENABLED
+          value: "true"
+        ports:
+        - name: http
+          containerPort: 8080
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 90
+          periodSeconds: 10

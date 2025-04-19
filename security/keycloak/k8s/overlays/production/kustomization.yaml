@@ -1,25 +1,25 @@
 # overlays/production/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: analytics
+namespace: fw-security
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: production
 
 resources:
 - ../../base
-- metabase-hpa.yaml
-- metabase-networkpolicy.yaml
-- postgres-backup-cronjob.yaml
-# - prometheus-servicemonitor.yaml
+- hpa.yaml
+- networkpolicy.yaml
+- cronjob-backup.yaml
+# - servicemonitor.yaml
 
 patches:
 - path: patches/metabase-deployment-patch.yaml
 - path: patches/metabase-config-patch.yaml
 - path: patches/metabase-ingress-patch.yaml
 - path: patches/postgres-resources-patch.yaml
-
-labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/env: production
 
 images:
 - name: metabase/metabase

@@ -1,21 +1,21 @@
-# base/kustomization.yaml
+---
+# k8s/base/keycloak/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: security
 
-resources:
-- postgres-config.yaml
-- postgres-deployment.yaml
-- postgres-service.yaml
-- postgres-pvc.yaml
-- keycloak-deployment.yaml
-- keycloak-service.yaml
-- keycloak-config.yaml
-- keycloak-ingress.yaml
-
 labels:
 - includeSelectors: true
   pairs:
-    app.kubernetes.io/part-of: keycloak
-    flexwiz.io/tier: middleware
-    flexwiz.io/type: oidc-provider
+    flexwiz.io/tier: security
+    flexwiz.io/type: authentication
+    flexwiz.io/app: postgresql
+    flexwiz.io/version: "17.4"
+
+resources:
+- configmap.yaml
+- pvc.yaml
+- statefulset.yaml
+- service.yaml
+
+

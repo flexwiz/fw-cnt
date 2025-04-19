@@ -1,13 +1,9 @@
 ---
+# k8s/base/keycloak/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: keycloak
-  namespace: keycloak
-  labels:
-    tier: middleware
-    type: security
-    app: keycloak
 spec:
   type: ClusterIP
   ports:
@@ -15,4 +11,4 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    app: keycloak
+    flexwiz.io/app: keycloak

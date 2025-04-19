@@ -1,5 +1,5 @@
 ---
-# overlays/development/patches/metabase-config-patch.yaml
+# k8s/overlays/development/patches/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:

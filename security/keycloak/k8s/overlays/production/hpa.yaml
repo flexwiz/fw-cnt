@@ -1,14 +1,14 @@
 ---
-# overlays/production/metabase-hpa.yaml
+# k8s/overlays/production/hpa.yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: metabase
+  name: keycloak
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: metabase
+    name: keycloak
   minReplicas: 3
   maxReplicas: 10
   metrics:

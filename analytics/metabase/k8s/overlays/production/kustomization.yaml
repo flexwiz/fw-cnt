@@ -1,7 +1,7 @@
 # metabase/k8s/overlays/production/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: analytics
+namespace: fw-analytics
 
 labels:
 - includeSelectors: true
@@ -10,16 +10,16 @@ labels:
 
 resources:
 - ../../base
-- hpa.yaml
-- networkpolicy-nginx.yaml
 - cronjob-backup.yaml
-# - prometheus-servicemonitor.yaml
+- hpa.yaml
+- networkpolicy.yaml
+# - servicemonitor.yaml
 - sealed-secrets.yaml
 
 patches:
-- path: patches/configmap-patch.yaml
-- path: patches/deployment-patch.yaml
-- path: patches/ingress-patch.yaml
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
 
 images:
 - name: metabase/metabase
@@ -27,7 +27,7 @@ images:
 
 # secretGenerator:
 # - envs:
-#   - secrets/db-credentials.env
+#   - ../../.env.production
 #   name: metabase-db-credentials
 #   type: Opaque
 

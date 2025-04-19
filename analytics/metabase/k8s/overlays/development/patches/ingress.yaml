@@ -5,10 +5,9 @@ kind: Ingress
 metadata:
   name: metabase
   annotations:
-    # kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-development"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
@@ -19,7 +18,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: metabase.k8s.local
+  - host: metabase.dev.flexwiz.io
     http:
       paths:
       - path: /
@@ -29,7 +28,7 @@ spec:
             name: metabase
             port:
               name: http
-  # tls:
-  # - hosts:
-  #   - metabase.k8s.local
-  #   secretName: metabase-tls
+  tls:
+  - hosts:
+    - metabase.dev.flexwiz.io
+    secretName: metabase-tls

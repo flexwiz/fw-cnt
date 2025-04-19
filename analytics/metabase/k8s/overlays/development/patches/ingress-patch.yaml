@@ -1,11 +1,11 @@
 ---
-# overlays/development/patches/metabase-ingress-patch.yaml
+# metabase/k8s/overlays/development/patches/ingress-patch.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: metabase
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    # kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -17,6 +17,7 @@ metadata:
       more_set_headers "X-Content-Type-Options: nosniff";
       more_set_headers "X-XSS-Protection: 1; mode=block";
 spec:
+  ingressClassName: nginx
   rules:
   - host: metabase.k8s.local
     http:

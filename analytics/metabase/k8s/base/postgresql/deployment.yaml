@@ -1,22 +1,22 @@
 ---
-# base/postgres-deployment.yaml
+# metabase/k8s/base/postgres/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres
   labels:
-    app: postgres
+    flexwiz.io/app: postgresql
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      flexwiz.io/app: postgresql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: postgres
+        flexwiz.io/app: postgresql
     spec:
       securityContext:
         runAsUser: 999

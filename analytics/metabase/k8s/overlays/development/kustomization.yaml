@@ -13,13 +13,12 @@ resources:
 - sealed-secrets.yaml
 
 patchesStrategicMerge:
-- patches/metabase-deployment-patch.yaml
-- patches/metabase-config-patch.yaml
-- patches/metabase-ingress-patch.yaml
-#- patches/postgres-resources-patch.yaml
+- patches/deployment-patch.yaml
+- patches/configmap-patch.yaml
+- patches/ingress-patch.yaml
 
 # secretGenerator:
-# - name: metabase-db-credentials
+# - name: metabase-db-secrets
 #   envs:
-#   - secrets/db-credentials.env
+#   - ../../secrets/.env.developement
 #   type: Opaque

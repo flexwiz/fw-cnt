@@ -1,5 +1,5 @@
 ---
-# overlays/staging/metabase-hpa.yaml
+# metabase/k8s/overlays/production/hpa.yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

@@ -1,5 +1,5 @@
 ---
-# overlays/staging/patches/metabase-deployment-patch.yaml
+# metabase/k8s/overlays/staging/patches/deployment-patch.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:

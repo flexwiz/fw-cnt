@@ -1,16 +1,16 @@
 ---
-# k8s/base/metabase-deployment.yaml
+# metabase/k8s/base/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metabase
   labels:
-    app: metabase
+    flexwiz.io/app: metabase
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: metabase
+      flexwiz.io/app: metabase
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: metabase
+        flexwiz.io/app: metabase
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "3000"

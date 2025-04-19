@@ -1,14 +1,15 @@
 ---
-# k8s/base/metabase-ingress.yaml
+# metabase/k8s/base/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: metabase
   annotations:
-    kubernetes.io/ingress.class: "nginx"
+    #kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
 spec:
+  ingressClassName: nginx
   rules:
   - host: metabase.flexwiz.io
     http:

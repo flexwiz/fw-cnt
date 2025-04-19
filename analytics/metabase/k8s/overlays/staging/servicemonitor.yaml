@@ -1,18 +1,17 @@
-# overlays/production/prometheus-servicemonitor.yaml
+# metabase/k8s/overlays/staging/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: metabase
-  namespace: monitoring
   labels:
     release: prometheus
 spec:
   selector:
     matchLabels:
-      app: metabase
+      flexwiz.io/app: metabase
   namespaceSelector:
     matchNames:
-    - metabase
+    - fw-analytics
   endpoints:
   - port: http
     interval: 30s

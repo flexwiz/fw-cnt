@@ -1,5 +1,5 @@
 ---
-# overlays/production/patches/metabase-config-patch.yaml
+# overlays/production/patches/configmap-patch.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,7 +7,7 @@ metadata:
 data:
   java-opts: "-Xmx3g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -Dlog4j.configurationFile=log4j2-prod.xml"
   log-level: "WARN"
-  site-url: "https://metabase.yourdomain.com"
+  site-url: "https://metabase.flexwiz.io"
   report-timezone: "America/New_York"
   check-for-updates: "false"
   session-timeout: "1440" # 24 hour

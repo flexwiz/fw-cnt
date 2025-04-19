@@ -1,5 +1,5 @@
 ---
-# overlays/production/metabase-networkpolicy.yaml
+# metabase/k8s/overlays/staging/networkpolicy.yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -7,7 +7,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: metabase
+      flexwiz.io/app: metabase
   policyTypes:
   - Ingress
   - Egress
@@ -15,7 +15,7 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          name: ingress-nginx
+          name: fw-ingress
     ports:
     - protocol: TCP
       port: 3000
@@ -23,7 +23,7 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          app: postgres
+          flexwiz.io/app: postgres
     ports:
     - protocol: TCP
       port: 5432

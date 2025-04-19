@@ -1,5 +1,5 @@
 ---
-# overlays/staging/postgres-backup-cronjob.yaml
+# metabase/k8s/overlays/staging/cronjob-backup.yaml
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -33,17 +33,17 @@ spec:
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: metabase-db-credentials
+                  name: metabase-db-secrets
                   key: database-name
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: metabase-db-credentials
+                  name: metabase-db-secrets
                   key: username
             - name: PGPASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: metabase-db-credentials
+                  name: metabase-db-secrets
                   key: password
             volumeMounts:
             - name: backup-volume

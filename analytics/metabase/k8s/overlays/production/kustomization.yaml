@@ -1,4 +1,4 @@
-# overlays/production/kustomization.yaml
+# metabase/k8s/overlays/production/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: analytics
@@ -10,22 +10,20 @@ labels:
 
 resources:
 - ../../base
-- sealed-secrets.yaml
-- metabase-hpa.yaml
-- metabase-networkpolicy.yaml
-- postgres-backup-cronjob.yaml
+- hpa.yaml
+- networkpolicy-nginx.yaml
+- cronjob-backup.yaml
 # - prometheus-servicemonitor.yaml
+- sealed-secrets.yaml
 
 patches:
-- path: patches/metabase-deployment-patch.yaml
-- path: patches/metabase-config-patch.yaml
-- path: patches/metabase-ingress-patch.yaml
-# - path: patches/postgres-resources-patch.yaml
+- path: patches/configmap-patch.yaml
+- path: patches/deployment-patch.yaml
+- path: patches/ingress-patch.yaml
 
-# Use the default image in the base kustomization
-# images:
-# - name: metabase/metabase
-#   newTag: "v0.45.0"
+images:
+- name: metabase/metabase
+  newTag: "v0.54.2"
 
 # secretGenerator:
 # - envs:

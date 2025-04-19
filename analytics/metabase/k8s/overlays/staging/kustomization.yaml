@@ -1,4 +1,4 @@
-# overlays/staging/kustomization.yaml
+# metabase/k8s/overlays/staging/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: analytics

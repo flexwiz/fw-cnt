@@ -1,5 +1,5 @@
 ---
-# k8s/base/kustomization.yaml
+# metabase/k8s/base/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: analytics
@@ -14,7 +14,7 @@ labels:
     flexwiz.io/version: "0.54.2"
 
 resources:
-- metabase-config.yaml
-- metabase-deployment.yaml
-- metabase-service.yaml
-- metabase-ingress.yaml
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml

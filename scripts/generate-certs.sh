@@ -46,7 +46,7 @@ openssl x509 -req -sha256 -days $ca_expire -in $app.csr -signkey $app.key -out $
 # SSL_CERT SSL Cert file, default cert.pem
 # SSL_SIZE SSL Cert size, default 2048 bits
 # SSL_EXPIRE SSL Cert expiry, default 60 days
-# SSL_SUBJECT SSL Subject default example.com
+# SSL_SUBJECT SSL Subject default flexwiz.io
 # SSL_DNS comma seperate list of alternative hostnames, no default [2]
 # SSL_IP comma seperate list of alternative IPs, no default [2]
 

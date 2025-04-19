@@ -1,0 +1,25 @@
+---
+# metabase/k8s/overlays/staging/patches/deployment-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metabase
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: metabase
+        resources:
+          requests:
+            memory: "1.5Gi"
+            cpu: "750m"
+          limits:
+            memory: "3Gi"
+            cpu: "1500m"
+        # env:
+        # - name: MB_ENCRYPTION_SECRET_KEY
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: metabase-encryption-key
+        #       key: encryption-secret

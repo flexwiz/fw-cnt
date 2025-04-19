@@ -1,0 +1,13 @@
+---
+# Source: metabase/k8s/overlays/development/patches/configmap-patch.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metabase-config
+data:
+  #java-opts: "-Xmx2g -Xms1g -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -Dlog4j.configurationFile=log4j2-prod.xml"
+  log-level: "INFO"
+  #site-url: "http://metabase.k8s.local"
+  #report-timezone: "America/New_York"
+  check-for-updates: "false"
+  session-timeout: "1440" # 24 hour

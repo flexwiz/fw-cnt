@@ -1,0 +1,19 @@
+---
+# keycloak/k8s/overlays/production/patches/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: keycloak
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 4Gi
+          limits:
+            cpu: 4000m
+            memory: 8Gi

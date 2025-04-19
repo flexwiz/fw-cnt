@@ -4,7 +4,7 @@
 
 # Cloud Native Tools (CNT)
 
-This repository contains the infrastructure code and configuration for deploying open-source Cloud Native Tools like database, cache, message broker, gateway, monitoring, logging, and more to multiple environments (development, staging, and production) using Docker, Kubernetes, and Skaffold.
+This repository contains the infrastructure code and configuration for deploying open-source Cloud Native Tools to multiple environments (development, staging, and production) using Docker, Kubernetes, and Skaffold.
 
 ## 📋 Table of Contents
 
@@ -33,14 +33,14 @@ This project provides a complete infrastructure setup for running any Cloud Nati
 
 ## 🏗️ Architecture
 
-The deployment architecture follows this approach with isolation in dedicated namespace (e.g: Krakend, Keycloak, Metabase):
+The deployment architecture follows this approach with isolation in dedicated namespace:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                  Kubernetes Cluster                     │
 │                                                         │
 │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │
-│  │ Krakend     │    │  Keycloak   │    │ Metabase    │  │
+│  │ api-gateway │    │  security   │    │ analytics   │  │
 │  │ Namespace   │    │  Namespace  │    │ Namespace   │  │
 │  │             │    │             │    │             │  │
 │  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │  │
@@ -72,6 +72,7 @@ Before starting, ensure you have the following tools installed:
 - [Skaffold (2.0.x or later)](https://skaffold.dev/)
 - [Kustomize (4.5.x or later)](https://kustomize.io/)
 - [helm (3.x or later)](https://helm.sh/docs/intro/install/)
+- [Kubeseal (0.29.x or later)](https://github.com/bitnami-labs/sealed-secrets)
 - Git (2.30.x or later)
 - Access to a Kubernetes cluster (local or remote)
 
@@ -79,7 +80,6 @@ Before starting, ensure you have the following tools installed:
 
 ```
 ├── .github/                        # CI/CD workflows
-|
 ├── api-gateway
 │   ├── krakend
 │   │   ├── k8s                     # Base Kubernetes manifests
@@ -166,23 +166,32 @@ This will create the required hosts in the `/etc/hosts`.
 
 ### Start Development Environment
 
-Deploy Krakend API Gateway component to your local Kubernetes cluster:
+First deploy the Sealed Secrets controller:
 
 ```bash
-skaffold dev -p development -m krakend
+# Deploy to your local development environnement
+skaffold run -p local -m sealed-secrets
+```
+
+See [Sealed Secrets](./security/sealed-secrets/README.md) documentation for more details
+
+Deploy another module (for example: Krakend) to your Kubernetes cluster :
+
+```bash
+skaffold dev -p local -m krakend
 ```
 
 This command will:
 - Build the Docker image for Krakend
-- Deploy the application to the krakend namespace
-- Skaffold port-forward the application port(s) to access from local
+- Deploy the application Krakend to your local Kubernetes cluster
+- Skaffold port-forward the application port(s) to access from the local host
 - Stream logs from all deployed components
 - Watch for file changes and automatically redeploy
 
 To set up port-forwarding with kubectl, you can use this command `kubectl port-forward -n <namespace> svc/<service-name> <local-port>:<target-port>`:
 
 ```bash
-kubectl port-forward -n krakend svc/<krakend> 9000:8080
+kubectl port-forward -n krakend svc/<krakend> 8180:80
 ```
 
 ### Port forward mapping
@@ -190,8 +199,8 @@ kubectl port-forward -n krakend svc/<krakend> 9000:8080
 **Reserved ports:**
 
 - `8080`: Ingress controler web UI
-- `8180`: API Gateway
-- `8280`: Authentication/authorization provider (Keycloak)
+- `8180`: API Gateway (Krakend, Kong, ...)
+- `8280`: Authentication/authorization tools (Keycloak)
 - `8380`: Service mesh web UI
 
 **No specific port used for other tools**

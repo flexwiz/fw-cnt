@@ -6,8 +6,8 @@ data:
   alertmanager.yml: |
     global:
       resolve_timeout: 5m
-      smtp_smarthost: 'smtp.example.com:587'
-      smtp_from: 'alertmanager@example.com'
+      smtp_smarthost: 'smtp.flexwiz.io:587'
+      smtp_from: 'alertmanager@flexwiz.io'
       smtp_auth_username: 'alertmanager'
       smtp_auth_password: 'password'
 
@@ -26,7 +26,7 @@ data:
     receivers:
     - name: 'email-notifications'
       email_configs:
-      - to: 'alerts@example.com'
+      - to: 'alerts@flexwiz.io'
         send_resolved: true
 
     - name: 'slack-notifications'

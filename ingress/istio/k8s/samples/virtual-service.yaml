@@ -9,7 +9,7 @@ metadata:
     type: microservice
 spec:
   hosts:
-  - "example.com"
+  - "flexwiz.io"
   gateways:
   - default-gateway
   http:

@@ -29,7 +29,7 @@ spec:
         - --entrypoints.web.address=:80
         - --entrypoints.websecure.address=:443
         - --certificatesresolvers.default.acme.tlschallenge
-        - --certificatesresolvers.default.acme.email=admin@example.com
+        - --certificatesresolvers.default.acme.email=admin@flexwiz.io
         - --certificatesresolvers.default.acme.storage=/data/acme.json
         - --metrics.prometheus=true
         ports:

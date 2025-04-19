@@ -56,6 +56,7 @@ Temporary Items
 .env.test.local
 .env.production.local
 .env.*
+!.env.example
 env/
 venv/
 ENV/
@@ -72,6 +73,9 @@ docker-compose.override.yml
 
 ### Kubernetes ###
 kubeconfig*
+.secrets*.yaml
+.sealed*
+!.secrets.yaml.example
 
 ### MongoDB ###
 data/

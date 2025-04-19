@@ -5,8 +5,8 @@ kind: Kustomization
 namespace: api-gateway
 
 commonLabels:
-  example.com/tier: middleware
-  example.com/type: api-gateway
+  flexwiz.io/tier: middleware
+  flexwiz.io/type: api-gateway
 
 resources:
 - krakend-config.yaml

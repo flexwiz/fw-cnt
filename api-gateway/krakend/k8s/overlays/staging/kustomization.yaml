@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: api-gateway
 
 commonLabels:
-  example.com/env: staging
+  flexwiz.io/env: staging
 
 resources:
 - ../../base

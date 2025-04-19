@@ -5,11 +5,10 @@ metadata:
 
 profiles:
   - name: local
-    activation:
-      - kubeContext: minikube
     deploy: &deploy
+      kubeContext: minikube
       # Don't need to use helm, just include postgres config in the requires:
-      helm:
+      helm: &helm
         releases:
           # https://artifacthub.io/packages/helm/bitnami/sealed-secrets
           - name: sealed-secrets
@@ -21,21 +20,15 @@ profiles:
             #   global.security.allowInsecureImages: true
 
   - name: gcp
-    activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
-    deploy: *deploy
+    deploy:
+      kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+      helm: *helm
 
   - name: development
-    activation:
-      - kubeContext: minikube
     deploy: *deploy
 
   - name: staging
-    activation:
-      - kubeContext: minikube
     deploy: *deploy
 
   - name: production
-    activation:
-      - kubeContext: minikube
     deploy: *deploy

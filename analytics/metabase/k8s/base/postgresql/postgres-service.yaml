@@ -1,0 +1,16 @@
+---
+# metabase/k8s/base/postgres/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    flexwiz.io/app: postgresql
+spec:
+  selector:
+    flexwiz.io/app: postgresql
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: postgres
+  type: ClusterIP

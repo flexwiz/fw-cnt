@@ -4,11 +4,6 @@ kind: Config
 metadata:
   name: keycloak
 
-requires:
-  # Postgres is required to run Keycloak
-  - configs: ["postgres"]
-    path: ../../databases/postgres
-
 profiles:
   - name: minikube
     activation:

@@ -1,4 +1,4 @@
-# overlays/production/kustomization.yaml
+# keycloak/k8s/overlays/production/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: fw-security
@@ -10,24 +10,30 @@ labels:
 
 resources:
 - ../../base
+- cronjob-backup.yaml
 - hpa.yaml
 - networkpolicy.yaml
 - cronjob-backup.yaml
+- sealed-secrets.yaml
 # - servicemonitor.yaml
 
 patches:
-- path: patches/metabase-deployment-patch.yaml
-- path: patches/metabase-config-patch.yaml
-- path: patches/metabase-ingress-patch.yaml
-- path: patches/postgres-resources-patch.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
 
 images:
-- name: metabase/metabase
-  newTag: "v0.45.0"
+  - name: flexwiz.io/keycloak
+    newTag: "26.1.4"
 
-secretGenerator:
-- envs:
-  - secrets/db-credentials.env
-  name: metabase-db-credentials
-  type: Opaque
+configMapGenerator:
+- name: keycloak-config
+  behavior: merge
+  literals:
+  - KC_HOSTNAME=auth.flexwiz.io
+
+# secretGenerator:
+# - envs:
+#   - secrets/.env.production
+#   name: keycloak-credentials
+#   type: Opaque
 

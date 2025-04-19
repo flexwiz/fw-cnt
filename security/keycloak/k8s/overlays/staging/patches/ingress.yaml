@@ -1,14 +1,12 @@
 ---
-# overlays/production/patches/metabase-ingress-patch.yaml
+# k8s/overlays/development/patches/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: metabase
+  name: keycloak
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
@@ -18,17 +16,17 @@ metadata:
       more_set_headers "X-XSS-Protection: 1; mode=block";
 spec:
   rules:
-  - host: metabase.flexwiz.io
+  - host: auth.staging.flexwiz.io
     http:
       paths:
-      - path: /
+      - path: /auth
         pathType: Prefix
         backend:
           service:
-            name: metabase
+            name: keycloak
             port:
               name: http
   tls:
   - hosts:
-    - metabase.flexwiz.io
-    secretName: metabase-tls
+    - auth.staging.flexwiz.io
+    secretName: keycloak-tls

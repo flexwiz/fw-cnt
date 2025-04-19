@@ -1,8 +1,8 @@
 ---
-# k8s/base/keycloak/configmap.yaml
+# keycloak/k8s/base/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: keycloak-config
 data:
-  KC_HOSTNAME: "keycloak.example.com"
+  KC_HOSTNAME: "keycloak.flexwiz.io"

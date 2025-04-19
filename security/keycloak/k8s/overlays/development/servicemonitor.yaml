@@ -1,18 +1,18 @@
-# overlays/staging/prometheus-servicemonitor.yaml
+# keycloak/k8s/overlays/production/servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: metabase
-  namespace: monitoring
+  name: keycloak
+  namespace: fw-monitoring
   labels:
     release: prometheus
 spec:
   selector:
     matchLabels:
-      app: metabase
+      flexwiz.io/app: keycloak
   namespaceSelector:
     matchNames:
-    - metabase
+    - fw-security
   endpoints:
   - port: http
     interval: 30s

@@ -1,8 +1,8 @@
-# keycloak/k8s/overlays/production/servicemonitor.yaml
+# overlays/production/prometheus-servicemonitor.yaml
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: keycloak
+  name: metabase
   namespace: fw-monitoring
   labels:
     release: prometheus

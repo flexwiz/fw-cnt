@@ -10,21 +10,24 @@ labels:
 
 resources:
 - ../../base
+- cronjob-backup.yaml
+- hpa.yaml
+- networkpolicy.yaml
 - sealed-secrets.yaml
+# - servicemonitor.yaml
 
 patches:
-- patches/deployment-patch.yaml
-- patches/configmap-patch.yaml
-- patches/ingress-patch.yaml
+- patches/deployment.yaml
+- patches/ingress.yaml
 
 configMapGenerator:
 - name: keycloak-config
   behavior: merge
   literals:
-  - KC_HOSTNAME=keycloak.dev.example.com
+  - KC_HOSTNAME=auth.dev.flexwiz.io
 
 # secretGenerator:
-# - name: metabase-db-credentials
-#   envs:
-#   - secrets/db-credentials.env
+# - envs:
+#   - secrets/.env.development
+#   name: keycloak-credentials
 #   type: Opaque

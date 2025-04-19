@@ -1,5 +1,5 @@
 ---
-# keycloak/k8s/overlays/production/hpa.yaml
+# k8s/overlays/production/hpa.yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

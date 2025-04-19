@@ -1,19 +1,19 @@
 ---
-# k8s/overlays/development/patches/deployment.yaml
+# keycloak/k8s/overlays/staging/patches/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: keycloak
 spec:
-  replicas: 1
+  replicas: 2
   template:
     spec:
       containers:
       - name: keycloak
         resources:
           requests:
-            cpu: 500m
-            memory: 512Mi
-          limits:
             cpu: 1000m
             memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi

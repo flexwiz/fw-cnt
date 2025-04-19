@@ -1,5 +1,5 @@
 ---
-# keycloak/k8s/overlays/production/cronjob-backup.yaml
+# k8s/overlays/production/cronjob-backup.yaml
 apiVersion: batch/v1
 kind: CronJob
 metadata:

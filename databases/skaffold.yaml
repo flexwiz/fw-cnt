@@ -34,7 +34,17 @@ requires:
 
   - configs: ["postgresql"]
     path: postgresql
-    activeProfiles: *profiles
+    activeProfiles:
+      - name: local
+        activatedBy: [local]
+      - name: gcp
+        activatedBy: [gcp]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
 
   - configs: ["redis"]
     path: redis

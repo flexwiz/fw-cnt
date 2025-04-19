@@ -48,7 +48,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: postgresql
-        namespace: databases
+        namespace: fw-databases
         port: 5432
         localPort: 5432
 

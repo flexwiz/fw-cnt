@@ -7,10 +7,16 @@ requires:
   - configs: ["analytics"]
     path: analytics
     activeProfiles: &profiles
-      - name: minikube
-        activatedBy: [minikube]
+      - name: local
+        activatedBy: [local]
       - name: gcp
         activatedBy: [gcp]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
 
   - configs: ["api-gateway"]
     path: api-gateway

@@ -11,9 +11,14 @@ labels:
 
 resources:
 - ../../base
-- cronjob-backup.yaml
 - sealed-secrets.yaml
 
 patchesStrategicMerge:
 - patches/statefulset.yaml
 - patches/pvc.yaml
+
+# secretGenerator:
+# - name: postgresql-secrets
+#   envs:
+#   - ../../.env.development
+#   type: Opaque

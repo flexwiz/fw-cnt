@@ -73,7 +73,7 @@ docker-compose.override.yml
 
 ### Kubernetes ###
 kubeconfig*
-.secrets.yaml
+.secrets*.yaml
 .sealed*
 !.secrets.yaml.example
 

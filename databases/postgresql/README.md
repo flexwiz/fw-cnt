@@ -14,25 +14,41 @@ Before starting, ensure you have installed all tools mentioned in the [main docu
 
 ## How to create sealed secrets for PostgrSQL ?
 
-Use this manifest (secrets.yaml) to create sealed secrets for each environment:
+Use this manifest (`secrets/.secrets.yaml.example`) to create the sealed secrets for each environment.
+
+
+```bash
+# Go to the secrets directory
+cd secrets
+
+# Create a `.secrets.yaml.<environment>` file for the environment (example: dev)
+cp .secrets.yaml.example .secrets.yaml.dev
+
+```
+Configure the data secrets for the development environment:
 ```yaml
+# .secrets.yaml.dev
 apiVersion: v1
 kind: Secret
 metadata:
   name: postgresql-secrets
-  namespace: databases
+  namespace: fw-databases
   labels:
-    flexwiz.io/tier: middleware
-    flexwiz.io/type: security
+    flexwiz.io/tier: storage
+    flexwiz.io/type: database
     flexwiz.io/app: postgresql
 type: Opaque
 data:
+  database: cG9zdGdyZXM= # base64 encoded "postgres"
   username: cG9zdGdyZXM= # base64 encoded "postgres"
   password: cGFzc3dvcmQ= # base64 encoded "password"
 ```
 
+Generate the sealed secrets with [kubeseal](../../security/sealed-secrets/README.md#-getting-start):
+
 ```
-kubeseal --controller-name sealed-secrets --controller-namespace kube-system -f secrets.yaml -w sealed-secrets.yaml
+# Generate sealed secrets for development environment
+kubeseal --controller-name sealed-secrets --controller-namespace kube-system -f .secrets.yaml.dev -w sealed-secrets.yaml && mv sealed-secrets.yaml ../k8s/overlays/development
 ```
 
 

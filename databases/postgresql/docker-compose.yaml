@@ -26,13 +26,13 @@ services:
         - "5432:5432"
     restart: unless-stopped
     networks:
-        - monitoring
+        - fw-cnt-network
 
   prometheus:
     env_file:
-      - path: docker/.env # default
+      - path: .env # default
         required: true
-      - path: docker/.env-local # optional override
+      - path: .env-local # optional override
         required: false
     image: prom/prometheus
     container_name: prometheus
@@ -48,13 +48,13 @@ services:
         - "${PROMETHEUS_PORT:-9090}:9090"
     restart: unless-stopped
     networks:
-          - monitoring
+          - fw-cnt-network
 
   grafana:
     env_file:
-    - path: docker/.env # default
+    - path: .env # default
       required: true
-    - path: docker/.env-local # optional override
+    - path: .env-local # optional override
       required: false
     image: grafana/grafana
     container_name: grafana
@@ -67,7 +67,7 @@ services:
         - "${GRAFANA_PORT:-3000}:3000"
     restart: unless-stopped
     networks:
-        - monitoring
+        - fw-cnt-network
 
   postgresql-exporter:
     image: prometheuscommunity/postgres-exporter
@@ -83,7 +83,7 @@ services:
             condition: service_healthy
     restart: unless-stopped
     networks:
-        - monitoring
+        - fw-cnt-network
 
 volumes:
   prometheus: {}
@@ -93,5 +93,5 @@ volumes:
 
 
 networks:
-  monitoring:
+  fw-cnt-network:
       driver: bridge

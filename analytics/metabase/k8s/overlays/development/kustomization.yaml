@@ -12,13 +12,18 @@ resources:
 - ../../base
 - cronjob-backup.yaml
 # - cronjob-restore.yaml
-- networking-policy.yaml
+- network-policy.yaml
 - sealed-secrets.yaml
 
-patchesStrategicMerge:
-- patches/deployment.yaml
-- patches/configmap.yaml
-- patches/ingress.yaml
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
+
+# patchesStrategicMerge:
+# - patches/deployment.yaml
+# - patches/configmap.yaml
+# - patches/ingress.yaml
 
 # secretGenerator:
 # - name: metabase-db-secrets

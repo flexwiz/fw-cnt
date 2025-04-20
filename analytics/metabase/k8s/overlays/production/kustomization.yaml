@@ -12,7 +12,7 @@ resources:
 - ../../base
 - cronjob-backup.yaml
 - hpa.yaml
-- networkpolicy.yaml
+- network-policy.yaml
 # - servicemonitor.yaml
 - sealed-secrets.yaml
 

@@ -13,13 +13,13 @@ resources:
 - cronjob-backup.yaml
 - sealed-secrets.yaml
 - hpa.yaml
-- networkpolicy.yaml
+- network-policy.yaml
 #- servicemonitor.yaml
 
-patchesStrategicMerge:
-- patches/deployment.yaml
-- patches/configmap.yaml
-- patches/ingress.yaml
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
 
 images:
   - name: metabase/metabase

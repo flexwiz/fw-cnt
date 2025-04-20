@@ -12,13 +12,16 @@ resources:
 - ../../base
 - cronjob-backup.yaml
 - hpa.yaml
-- networkpolicy.yaml
-- cronjob-backup.yaml
+- network-policy.yaml
+- sealed-secrets.yaml
 # - servicemonitor.yaml
 
-patches:
-- path: patches/deployment.yaml
-- path: patches/ingress.yaml
+# patches:
+#   - path: patches/deployment.yaml
+#   - path: patches/ingress.yaml
+patchesStrategicMerge:
+- patches/deployment.yaml
+- patches/ingress.yaml
 
 images:
   - name: flexwiz.io/keycloak

@@ -78,8 +78,8 @@ FROM keycloak-base AS development
 WORKDIR /opt/keycloak
 
 # Copy local data to the image
-# COPY --chown=keycloak:keycloak import ./data/import
-# COPY --chown=keycloak:keycloak export ./data/export
+# COPY --chown=keycloak:keycloak data/import ./data/import
+# COPY --chown=keycloak:keycloak data/export ./data/export
 
 # Set entrypoint
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev"]

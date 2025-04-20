@@ -12,11 +12,14 @@ resources:
 - ../../base
 - cronjob-backup.yaml
 - hpa.yaml
-- networkpolicy.yaml
+# - network-policy.yaml
 - sealed-secrets.yaml
 # - servicemonitor.yaml
 
-patches:
+# patches:
+#   - path: patches/deployment.yaml
+#   - path: patches/ingress.yaml
+patchesStrategicMerge:
 - patches/deployment.yaml
 - patches/ingress.yaml
 

@@ -9,13 +9,14 @@ labels:
   pairs:
     flexwiz.io/tier: security
     flexwiz.io/type: authentication
-    flexwiz.io/app: postgresql
-    flexwiz.io/version: "17.4"
+    flexwiz.io/app: keycloak
+    flexwiz.io/version: "26.1.4"
 
 resources:
 - configmap.yaml
-- pvc.yaml
 - deployment.yaml
+- ingress.yaml
+# - pvc.yaml
 - service.yaml
 
 

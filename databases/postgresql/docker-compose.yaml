@@ -1,13 +1,13 @@
 services:
 
   postgresql:
-    env_file:
-      - path: .env # default
-        required: true
-      - path: .env.local # optional override
-        required: false
     image: postgres:17.4-alpine
     container_name: postgresql
+    healthcheck:
+        test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
     environment:
         POSTGRES_USER: ${username}
         POSTGRES_PASSWORD: ${password}
@@ -15,11 +15,11 @@ services:
         #PGDATA: /data/postgres
         PGDATA: /var/lib/postgresql/data/db-files/
         #TZ: Asia/Tehran
-    healthcheck:
-        test: ["CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
-        interval: 5s
-        timeout: 5s
-        retries: 5
+    env_file:
+      - path: .env # default
+        required: true
+      - path: .env.local # optional override
+        required: false
     volumes:
         - postgresql-data:/var/lib/postgresql/data/db-files
     ports:
@@ -29,16 +29,8 @@ services:
         - fw-cnt-network
 
   prometheus:
-    env_file:
-      - path: .env # default
-        required: true
-      - path: .env-local # optional override
-        required: false
     image: prom/prometheus
     container_name: prometheus
-    volumes:
-        - prometheus/:/etc/prometheus/
-        - prometheus:/prometheus
     command:
         - '--config.file=/etc/prometheus/prometheus.yml'
         - '--storage.tsdb.path=/prometheus'
@@ -47,31 +39,40 @@ services:
     ports:
         - "${PROMETHEUS_PORT:-9090}:9090"
     restart: unless-stopped
+    env_file:
+      - path: .env # default
+        required: true
+      - path: .env-local # optional override
+        required: false
+    volumes:
+        - prometheus/:/etc/prometheus/
+        - prometheus:/prometheus
     networks:
           - fw-cnt-network
 
   grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+        - "${GRAFANA_PORT:-3000}:3000"
+    environment:
+        GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+        GF_USERS_ALLOW_SIGN_UP: false
     env_file:
     - path: .env # default
       required: true
     - path: .env-local # optional override
       required: false
-    image: grafana/grafana
-    container_name: grafana
-    environment:
-        GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
-        GF_USERS_ALLOW_SIGN_UP: false
     volumes:
         - grafana:/var/lib/grafana
-    ports:
-        - "${GRAFANA_PORT:-3000}:3000"
-    restart: unless-stopped
     networks:
         - fw-cnt-network
 
   postgresql-exporter:
     image: prometheuscommunity/postgres-exporter
     container_name: postgresql-exporter
+    restart: unless-stopped
     ports:
         - "9187:9187"
     environment:
@@ -81,7 +82,6 @@ services:
             condition: service_started
         postgresql:
             condition: service_healthy
-    restart: unless-stopped
     networks:
         - fw-cnt-network
 

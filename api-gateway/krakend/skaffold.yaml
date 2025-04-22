@@ -43,7 +43,7 @@ profiles:
         - image: krakend
           kaniko:
             dockerfile: Dockerfile
-            target: final
+            target: development
             cache: {}
     deploy:
       kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster

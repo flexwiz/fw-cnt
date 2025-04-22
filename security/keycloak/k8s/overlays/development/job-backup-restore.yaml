@@ -1,0 +1,53 @@
+---
+# keycloak/k8s/overlays/development/job-import-data.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-init
+spec:
+  ttlSecondsAfterFinished: 100
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - name: wait-for-db
+        image: busybox:1.34
+        command: ['sh', '-c', 'until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done;']
+      containers:
+      - name: db-init
+        image: postgres:15-alpine
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          runAsNonRoot: true
+          runAsUser: 999
+        env:
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: PGHOST
+          value: postgres
+        - name: PGUSER
+          value: postgres
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          psql -v ON_ERROR_STOP=1 <<-EOSQL
+            CREATE DATABASE appdb;
+            \c appdb;
+            CREATE SCHEMA IF NOT EXISTS app;
+          EOSQL
+
+          pg_restore -d appdb /init-data/backup.dump
+        volumeMounts:
+        - name: init-data
+          mountPath: /init-data
+          readOnly: true
+      volumes:
+      - name: init-data
+        configMap:
+          name: db-init-data

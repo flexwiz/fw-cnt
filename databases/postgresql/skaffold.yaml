@@ -1,0 +1,85 @@
+---
+# https://skaffold.dev/docs/references/yaml/
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: postgresql
+  #  a map of labels identifying the project.
+  labels: {}
+  # a map of annotations providing additional metadata about the project.
+  annotations: {}
+
+# describes a list of other required configs for the current config.
+# requires: {}
+
+## Profiles: local, development, staging, production, gcp
+profiles:
+  - name: local
+    deploy: &deploy
+      kubeContext: minikube
+      kubectl: {}
+    manifests: &manifests
+      kustomize:
+        paths:
+          - ./k8s/overlays/development
+      # helm:
+      #   releases:
+      #     - name: postgres
+      #       repo: https://charts.bitnami.com/bitnami
+      #       remoteChart: postgresql
+      #       version: 12.6.0
+      #       setValues:
+      #         image.tag: 13.6.0-debian-10-r89
+      #         image.debug: true
+      #         primary.extraEnvVars:
+      #           - name: POSTGRESQL_WAL_LEVEL
+      #             value: logical
+      #         global.postgresql.auth.postgresPassword: "password"
+      #         primary.initdb.scripts.init\.sql: "
+      #           CREATE DATABASE keycloak;
+      #           CREATE DATABASE ezloc;
+      #           CREATE DATABASE ezloc-immo;"
+      #       namespace: default
+    # portForward: &portForward
+    #   - resourceType: service
+    #     resourceName: postgres-postgresql
+    #     port: 5432
+    #     localPort: 5432
+    portForward: &portForward
+      - resourceType: service
+        resourceName: postgresql
+        namespace: fw-databases
+        port: 5432
+        localPort: 5432
+
+  - name: gcp
+    deploy:
+      kubeContext: gke_sample_europe-west9-b_k8s-development-cluster
+      kubectl: {}
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: development
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: staging
+    deploy:
+      kubeContext: minikube    # Setup kubernetes context for staging cluster
+      kubectl: {}
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+    portForward: *portForward
+
+  - name: production
+    deploy:
+      kubeContext: minikube    # Setup kubernetes context for production cluster
+      kubectl: {}
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
+    portForward: *portForward

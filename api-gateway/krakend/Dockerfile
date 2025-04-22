@@ -13,3 +13,11 @@ COPY ./config/krakend.json /etc/krakend/krakend.json
 FROM base AS final
 
 USER krakend
+
+##
+### Stage 3: Development
+FROM final AS development
+
+##
+### Stage 4: Production
+FROM final AS production

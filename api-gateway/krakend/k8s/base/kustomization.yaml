@@ -1,16 +1,20 @@
 ---
-# base/kustomization.yaml
+# krakend/k8s/base/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: api-gateway
+namespace: fw-gateway
 
-commonLabels:
-  example.com/tier: middleware
-  example.com/type: api-gateway
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/tier: middleware
+    flexwiz.io/type: api-gateway
+    flexwiz.io/app: krakend
+    flexwiz.io/version: "2.9"
 
 resources:
-- krakend-config.yaml
-- krakend-deployment.yaml
-- krakend-service.yaml
-- krakend-ingress.yaml
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml
 

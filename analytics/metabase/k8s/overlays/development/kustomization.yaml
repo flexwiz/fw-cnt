@@ -1,24 +1,32 @@
 # overlays/development/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: analytics
-
-resources:
-- ../../base
-
-patchesStrategicMerge:
-- patches/metabase-deployment-patch.yaml
-- patches/metabase-config-patch.yaml
-- patches/metabase-ingress-patch.yaml
-- patches/postgres-resources-patch.yaml
+namespace: fw-analytics
 
 labels:
 - includeSelectors: true
   pairs:
-    example.com/env: development
+    flexwiz.io/env: development
 
-secretGenerator:
-- name: metabase-db-credentials
-  envs:
-  - secrets/db-credentials.env
-  type: Opaque
+resources:
+- ../../base
+- cronjob-backup.yaml
+# - cronjob-restore.yaml
+- network-policy.yaml
+- sealed-secrets.yaml
+
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
+
+# patchesStrategicMerge:
+# - patches/deployment.yaml
+# - patches/configmap.yaml
+# - patches/ingress.yaml
+
+# secretGenerator:
+# - name: metabase-db-secrets
+#   envs:
+#   - ../../.env.developement
+#   type: Opaque

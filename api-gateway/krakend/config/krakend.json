@@ -1,13 +1,133 @@
 {
+  "$schema": "https://www.krakend.io/schema/v3.json",
   "version": 3,
+  "name": "Production API Gateway",
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "debug_endpoint": false,
+  "echo_endpoint": false,
+  "extra_config": {
+    "telemetry/logging": {
+      "level": "INFO",
+      "prefix": "krakend",
+      "syslog": false,
+      "stdout": true
+    },
+    "telemetry/metrics": {
+      "collection_time": "60s",
+      "listen_address": ":8090",
+      "proxy_disabled": false
+    },
+    "security/cors": {
+      "allow_origins": ["*"],
+      "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "allow_headers": ["Origin", "Authorization", "Content-Type"],
+      "expose_headers": ["Content-Length"],
+      "max_age": "12h"
+    }
+  },
   "endpoints": [
     {
-      "endpoint": "/api/v1/orders",
+      "endpoint": "/health",
       "method": "GET",
+      "output_encoding": "json",
       "backend": [
         {
-          "url_pattern": "/orders",
-          "host": ["http://order-service:3000"]
+          "url_pattern": "/__health",
+          "host": ["http://localhost:8080"],
+          "encoding": "json"
+        }
+      ]
+    },
+    {
+      "endpoint": "/docs",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/docs",
+          "host": ["http://api-docs-service:8080"],
+          "encoding": "json"
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/public",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/public",
+          "host": ["http://public-service:8080"],
+          "encoding": "json"
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/secured",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "alg": "RS256",
+          "jwk_url": "http://keycloak/realms/api-gateway/protocol/openid-connect/certs",
+          "disable_jwk_security": false,
+          "cache": true,
+          "audience": ["api-gateway-client"],
+          "roles_key": "realm_access.roles",
+          "roles": ["user"],
+          "propagate_claims": [
+            ["sub", "x-user-id"],
+            ["email", "x-user-email"],
+            ["name", "x-user-name"],
+            ["realm_access.roles", "x-user-roles"]
+          ]
+        }
+      },
+      "backend": [
+        {
+          "url_pattern": "/secured",
+          "host": ["http://secure-service:8080"],
+          "encoding": "json",
+          "extra_config": {
+            "modifier/martian": {
+              "header.Modifier": {
+                "scope": ["request"],
+                "name": "X-User-Id",
+                "value": "{{ .Request.Headers.X-User-Id }}"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/v1/admin",
+      "method": "GET",
+      "output_encoding": "json",
+      "extra_config": {
+        "auth/validator": {
+          "alg": "RS256",
+          "jwk_url": "http://keycloak/realms/api-gateway/protocol/openid-connect/certs",
+          "disable_jwk_security": false,
+          "cache": true,
+          "audience": ["api-gateway-client"],
+          "roles_key": "realm_access.roles",
+          "roles": ["admin"],
+          "propagate_claims": [
+            ["sub", "x-user-id"],
+            ["email", "x-user-email"],
+            ["name", "x-user-name"],
+            ["realm_access.roles", "x-user-roles"]
+          ]
+        }
+      },
+      "backend": [
+        {
+          "url_pattern": "/admin",
+          "host": ["http://admin-service:8080"],
+          "encoding": "json"
         }
       ]
     }

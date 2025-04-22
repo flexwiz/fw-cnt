@@ -3,17 +3,19 @@ apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
   name: keycloak
+  #  a map of labels identifying the project.
+  labels: {}
+  # a map of annotations providing additional metadata about the project.
+  annotations: {}
 
-requires:
-  # Postgres is required to run Keycloak
-  - configs: ["postgres"]
-    path: ../../databases/postgres
+# describes a list of other required configs for the current config.
+# requires: {}
+
+## Profiles: development, staging, production
 
 profiles:
-  - name: minikube
-    activation:
-      - kubeContext: minikube
-    build:
+  - name: local
+    build: &build
       tagPolicy:
         sha256: {}
       artifacts:
@@ -28,36 +30,38 @@ profiles:
         useBuildkit: true
         concurrency: 0
     deploy: &deploy
-      # Don't need to use helm, just include postgres config in the requires:
-      # helm:
-      #   releases:
-      #     - name: postgres
-      #       namespace: postgres
-      #       # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
-      #       # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
-      #       repo: https://charts.bitnami.com/bitnami
-      #       version: 12.6.0
-      #       remoteChart: postgresql
-      #       setValues:
-      #         image.tag: 13.6.0-debian-10-r89
-      #         image.debug: true
-      #         primary.extraEnvVars:
-      #           - name: POSTGRESQL_WAL_LEVEL
-      #             value: logical
-      #         global.postgresql.auth.postgresPassword: "password"
-      #         primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
+      kubeContext: minikube
       kubectl: {}
     manifests: &manifests
-      rawYaml:
-        - ./k8s/*.yaml
+      kustomize:
+        paths:
+          - ./k8s/overlays/development
+      # Don't need to use helm, just include postgres config in the requires:
+      helm:
+        releases:
+          - name: postgres
+            namespace: fw-security
+            # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
+            # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
+            repo: https://charts.bitnami.com/bitnami
+            version: 12.6.0
+            remoteChart: postgresql
+            setValues:
+              image.tag: 13.6.0-debian-10-r89
+              image.debug: true
+              primary.extraEnvVars:
+                - name: POSTGRESQL_WAL_LEVEL
+                  value: logical
+              global.postgresql.auth.postgresPassword: "password"
+              primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
     portForward: &portForward
       - resourceType: service
         resourceName: keycloak
-        namespace: keycloak
+        namespace: fw-security
         port: 8080
         localPort: 8280
 
-  - name: gke
+  - name: gcp
     activation:
       - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
     build:
@@ -76,4 +80,26 @@ profiles:
             cache: {}
     deploy: *deploy
     manifests: *manifests
+    portForward: *portForward
+
+  - name: development
+    build: *build
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: staging
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+    portForward: *portForward
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
     portForward: *portForward

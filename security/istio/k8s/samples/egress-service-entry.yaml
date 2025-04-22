@@ -9,7 +9,7 @@ metadata:
     type: service-mesh
 spec:
   hosts:
-  - api.example.com
+  - api.flexwiz.io
   location: MESH_EXTERNAL
   ports:
   - number: 443

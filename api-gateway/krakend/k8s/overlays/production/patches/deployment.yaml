@@ -1,0 +1,19 @@
+---
+# krakend/k8s/overlays/staging/patches/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: krakend
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: krakend
+        resources:
+          limits:
+            memory: "1Gi"           # Maximum memory allowed
+            cpu: "1000m"            # Maximum CPU allowed (200 milliCPU)
+          requests:
+            memory: "512Mi"         # Initial memory request
+            cpu: "500m"             # Initial CPU request

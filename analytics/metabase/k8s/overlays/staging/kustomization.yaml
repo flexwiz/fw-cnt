@@ -1,32 +1,32 @@
-# overlays/staging/kustomization.yaml
+# metabase/k8s/overlays/staging/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: analytics
-
-resources:
-- ../../base
-- metabase-hpa.yaml
-- metabase-networkpolicy.yaml
-- postgres-backup-cronjob.yaml
-#- prometheus-servicemonitor.yaml
-
-patchesStrategicMerge:
-- patches/metabase-deployment-patch.yaml
-- patches/metabase-config-patch.yaml
-- patches/metabase-ingress-patch.yaml
-- patches/postgres-resources-patch.yaml
+namespace: fw-analytics
 
 labels:
 - includeSelectors: true
   pairs:
-    example.com/env: production
+    flexwiz.io/env: staging
+
+resources:
+- ../../base
+- cronjob-backup.yaml
+- sealed-secrets.yaml
+- hpa.yaml
+- network-policy.yaml
+#- servicemonitor.yaml
+
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
 
 images:
   - name: metabase/metabase
     newTag: "v0.54.3.1"
 
-secretGenerator:
-- name: metabase-db-credentials
-  envs:
-  - secrets/db-credentials.env
-  type: Opaque
+# secretGenerator:
+# - name: metabase-db-credentials
+#   envs:
+#   - ../../.env.staging
+#   type: Opaque

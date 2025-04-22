@@ -1,0 +1,19 @@
+# overlays/production/prometheus-servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: metabase
+  namespace: fw-monitoring
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      flexwiz.io/app: keycloak
+  namespaceSelector:
+    matchNames:
+    - fw-security
+  endpoints:
+  - port: http
+    interval: 30s
+    path: /metrics

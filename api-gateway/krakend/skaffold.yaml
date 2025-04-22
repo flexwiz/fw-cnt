@@ -27,7 +27,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: krakend
-        namespace: api-gateway
+        namespace: fw-gateway
         port: 80
         localPort: 8180
 
@@ -43,7 +43,7 @@ profiles:
         - image: krakend
           kaniko:
             dockerfile: Dockerfile
-            target: final
+            target: development
             cache: {}
     deploy:
       kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster

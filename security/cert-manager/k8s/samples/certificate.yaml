@@ -10,7 +10,7 @@
 #   issuerRef:
 #     name: letsencrypt-prod
 #     kind: ClusterIssuer
-#   commonName: example.com
+#   commonName: flexwiz.io
 #   dnsNames:
-#   - example.com
-#   - www.example.com
+#   - flexwiz.io
+#   - www.flexwiz.io

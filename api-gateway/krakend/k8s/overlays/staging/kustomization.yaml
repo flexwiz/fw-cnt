@@ -1,26 +1,28 @@
 ---
-# overlays/staging/kustomization.yaml
+# krakend/k8s/overlays/staging/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: api-gateway
+namespace: fw-gateway
 
-commonLabels:
-  flexwiz.io/env: staging
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: staging
 
 resources:
 - ../../base
 
-patchesStrategicMerge:
-- patches/krakend-config-patch.yaml
-- patches/krakend-deployment-patch.yaml
-- patches/krakend-ingress-patch.yaml
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
+
+images:
+  - name: devopsfaith/krakend
+    newTag: "2.9"
 
 # secretGenerator:
 # - name: krakend-db-credentials
 #   envs:
 #   - secrets/db-credentials.env
 #   type: Opaque
-
-images:
-  - name: devopsfaith/krakend
-    newTag: "2.9"

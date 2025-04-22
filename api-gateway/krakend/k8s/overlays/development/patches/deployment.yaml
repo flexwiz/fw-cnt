@@ -1,4 +1,4 @@
-# overlays/development/patches/krakend-deployment-patch.yaml
+# krakend/k8s/overlays/development/patches/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:

@@ -1,5 +1,5 @@
 ---
-# overlays/base/krakend-deployment.yaml
+# krakend/k8s/overlays/base/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:

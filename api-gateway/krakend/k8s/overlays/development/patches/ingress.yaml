@@ -1,13 +1,13 @@
 ---
-# overlays/development/patches/metabase-ingress-patch.yaml
+# krakend/k8s/overlays/development/patches/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: krakend-ingress
+  name: krakend
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx
   rules:
   - host: api.k8s.local
     http:

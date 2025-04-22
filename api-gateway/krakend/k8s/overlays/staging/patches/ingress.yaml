@@ -1,14 +1,13 @@
 ---
-# overlays/base/krakend-ingress.yaml
+# krakend/k8s/overlays/staging/patches/ingress.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: krakend-ingress
+  name: krakend
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
@@ -17,8 +16,9 @@ metadata:
       more_set_headers "X-Content-Type-Options: nosniff";
       more_set_headers "X-XSS-Protection: 1; mode=block";
 spec:
+  ingressClassName: nginx
   rules:
-  - host: api.flexwiz.io
+  - host: api.staging.flexwiz.io
     http:
       paths:
       - path: /
@@ -27,8 +27,8 @@ spec:
           service:
             name: krakend
             port:
-              name: https
+              name: http
   tls:
   - hosts:
-    - api.flexwiz.io
+    - api.staging.flexwiz.io
     secretName: krakend-tls

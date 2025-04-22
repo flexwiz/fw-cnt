@@ -27,7 +27,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: krakend
-        namespace: api-gateway
+        namespace: fw-gateway
         port: 80
         localPort: 8180
 

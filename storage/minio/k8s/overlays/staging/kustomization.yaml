@@ -1,0 +1,25 @@
+# minio/k8s/overlays/staging/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: staging
+
+resources:
+- ../../base
+- certificate.yaml
+# - ingress.yaml
+- sealed-secrets.yaml
+
+patches:
+- path: patches/deployment.yaml
+- path: patches/pvc.yaml
+- path: patches/cronjob-buckets-backup.yaml
+
+# secretGenerator:
+# - name: minio-secrets
+#   envs:
+#   - ../../.env.staging
+#   type: Opaque

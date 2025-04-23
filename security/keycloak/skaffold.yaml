@@ -57,7 +57,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: keycloak
-        namespace: fw-security
+        namespace: fw-middleware
         port: 8080
         localPort: 8280
 

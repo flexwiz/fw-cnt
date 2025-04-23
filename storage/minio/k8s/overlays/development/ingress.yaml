@@ -1,0 +1,71 @@
+---
+# minio/k8s/overlays/development/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minio
+  annotations:
+    # kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-development"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - minio-dev.flexwiz.io
+    - minio-console-dev.flexwiz.io
+    secretName: minio-dev-tls
+  rules:
+  - host: minio-dev.flexwiz.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              name: api
+  - host: minio-console-dev.flexwiz.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: minio
+            port:
+              name: console
+
+---
+# Traefik
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-api
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`minio-dev.flexwiz.io`)
+    kind: Rule
+    services:
+    - name: minio
+      port: 9000
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-console
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`minio-console-dev.flexwiz.io`)
+    kind: Rule
+    services:
+    - name: minio
+      port: 9001
+  tls:
+    certResolver: letsencrypt

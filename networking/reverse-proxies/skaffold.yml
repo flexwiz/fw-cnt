@@ -1,0 +1,27 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: reverse-proxies
+
+requires:
+  - configs: ["nginx-ingress"]
+    path: nginx
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
+
+  - configs: ["kong-ingress"]
+    path: kong
+    activeProfiles: *profiles
+
+  - configs: ["traefik-ingress"]
+    path: traefik
+    activeProfiles: *profiles

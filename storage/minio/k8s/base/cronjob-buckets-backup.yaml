@@ -1,0 +1,123 @@
+# minio/k8s/base/cronjob-buckets-backup.yaml
+---
+# CronJob for AWS S3 Backup
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-aws-backup
+spec:
+  schedule: "0 1 * * *"  # Run daily at 1:00 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: minio-aws-backup
+            image: minio/mc:RELEASE.2023-12-06T09-52-56Z
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                # Configure MinIO client
+                mc config host add flexwiz http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+
+                # Configure AWS S3
+                mc config host add aws "https://s3.amazonaws.com" "$AWS_ACCESS_KEY" "$AWS_SECRET_KEY"
+
+                # Sync public bucket
+                echo "Starting backup of public bucket to AWS S3..."
+                mc mirror --overwrite flexwiz/public aws/flexwiz-backups/public
+
+                # Sync images bucket
+                echo "Starting backup of images bucket to AWS S3..."
+                mc mirror --overwrite flexwiz/images aws/flexwiz-backups/images
+
+                echo "AWS S3 backup completed on $(date)"
+            env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: username
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: password
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: accessKey
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-credentials
+                  key: secretKey
+          volumes:
+          - name: backup-logs
+            emptyDir: {}
+---
+# CronJob for Google Cloud Storage Backup
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-gcs-backup
+spec:
+  schedule: "0 3 * * *"  # Run daily at 3:00 AM
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: minio-gcs-backup
+            image: minio/mc:RELEASE.2023-12-06T09-52-56Z
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                # Configure MinIO client
+                mc config host add flexwiz http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+
+                # Configure Google Cloud Storage
+                mc config host add gcs "https://storage.googleapis.com" "$GCS_ACCESS_KEY" "$GCS_SECRET_KEY" --api "S3v2"
+
+                # Sync public bucket
+                echo "Starting backup of public bucket to Google Cloud Storage..."
+                mc mirror --overwrite flexwiz/public gcs/flexwiz-backups/public
+
+                # Sync images bucket
+                echo "Starting backup of images bucket to Google Cloud Storage..."
+                mc mirror --overwrite flexwiz/images gcs/flexwiz-backups/images
+
+                echo "Google Cloud Storage backup completed on $(date)"
+            env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: username
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: password
+            - name: GCS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gcs-credentials
+                  key: accessKey
+            - name: GCS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: gcs-credentials
+                  key: secretKey
+          volumes:
+          - name: backup-logs
+            emptyDir: {}

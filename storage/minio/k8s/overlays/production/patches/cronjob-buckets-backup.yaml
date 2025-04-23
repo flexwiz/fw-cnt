@@ -1,0 +1,85 @@
+---
+# minio/k8s/overlays/production/cronjob-buckets-backup.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-aws-backup
+spec:
+  schedule: "0 1 * * *"  # Daily at 1:00 AM for production
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: minio-aws-backup
+            resources:
+              requests:
+                memory: "512Mi"
+                cpu: "250m"
+              limits:
+                memory: "1Gi"
+                cpu: "500m"
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                # Configure MinIO client
+                mc config host add myminio http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+
+                # Configure AWS S3
+                mc config host add aws "https://s3.amazonaws.com" "$AWS_ACCESS_KEY" "$AWS_SECRET_KEY"
+
+                # Sync public bucket with versioning
+                echo "Starting backup of public bucket to AWS S3 with versioning..."
+                mc mirror --overwrite --preserve flexwiz/public aws/flexwiz-backups/public
+
+                # Sync images bucket with versioning
+                echo "Starting backup of images bucket to AWS S3 with versioning...."
+                mc mirror --overwrite --preserve flexwiz/images aws/flexwiz-backups/images
+
+                # Backup additional production buckets with versioning
+                echo "Starting backup of backups bucket to AWS S3 with versioning..."
+                mc mirror --overwrite --preserve flexwiz/backups aws/flexwiz/backups
+
+                echo "AWS S3 backup completed on $(date)"
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-gcs-backup
+spec:
+  schedule: "0 3 * * *"  # Daily at 3:00 AM for production
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: minio-gcs-backup
+            resources:
+              requests:
+                memory: "512Mi"
+                cpu: "250m"
+              limits:
+                memory: "1Gi"
+                cpu: "500m"
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                # Configure MinIO client
+                mc config host add myminio http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+
+                # Configure Google Cloud Storage
+                mc config host add gcs "https://storage.googleapis.com" "$GCS_ACCESS_KEY" "$GCS_SECRET_KEY" --api "S3v2"
+
+                # Sync public bucket
+                echo "Starting backup of public bucket to Google Cloud Storage with versioning..."
+                mc mirror --overwrite --preserve flexwiz/public gcs/flexwiz-backups/public
+
+                # Sync images bucket
+                echo "Starting backup of images bucket to Google Cloud Storage with versioning..."
+                mc mirror --overwrite --preserve flexwiz/images gcs/flexwiz-backups/images
+
+                # Backup additional production buckets
+                echo "Starting backup of backups bucket to Google Cloud Storage with versioning..."
+                mc mirror --overwrite --preserve flexwiz/backups gcs/flexwiz/backups
+
+                echo "Google Cloud Storage backup completed on $(date)"

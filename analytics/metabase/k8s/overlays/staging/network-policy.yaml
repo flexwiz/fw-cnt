@@ -15,7 +15,7 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          name: fw-ingress
+          name: fw-analytics
     ports:
     - protocol: TCP
       port: 3000
@@ -23,7 +23,7 @@ spec:
   - to:
     - podSelector:
         matchLabels:
-          flexwiz.io/app: postgres
+          flexwiz.io/app: postgresql
     ports:
     - protocol: TCP
       port: 5432

@@ -1,0 +1,33 @@
+---
+# minio/k8s/overlays/production/ingress.yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-api
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`minio.flexwiz.io`)
+    kind: Rule
+    services:
+    - name: minio
+      port: 9000
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: minio-console
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`minio-console.flexwiz.io`)
+    kind: Rule
+    services:
+    - name: minio
+      port: 9001
+  tls:
+    certResolver: letsencrypt

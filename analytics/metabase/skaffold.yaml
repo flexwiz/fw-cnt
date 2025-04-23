@@ -27,6 +27,7 @@ profiles:
     #   local:
     #     useBuildkit: true
     #     concurrency: 0
+    #     # push: false
     deploy: &deploy
       kubeContext: minikube
       kubectl: {}
@@ -62,12 +63,25 @@ profiles:
     portForward: *portForward
 
   - name: development
-    # build: *build
+    # build:
+    #   tagPolicy: *tagPolicy
+    #   artifacts: *artifacts
+    #   local:
+    #     useBuildkit: true
+    #     concurrency: 0
+    #     push: true
     deploy: *deploy
     manifests: *manifests
     portForward: *portForward
 
   - name: staging
+    # build:
+    #   tagPolicy: *tagPolicy
+    #   artifacts: *artifacts
+    #   local:
+    #     useBuildkit: true
+    #     concurrency: 0
+    #     push: true
     deploy: *deploy
     manifests:
       kustomize:
@@ -76,6 +90,13 @@ profiles:
     portForward: *portForward
 
   - name: production
+    # build:
+    #   tagPolicy: *tagPolicy
+    #   artifacts: *artifacts
+    #   local:
+    #     useBuildkit: true
+    #     concurrency: 0
+    #     push: true
     deploy: *deploy
     manifests:
       kustomize:

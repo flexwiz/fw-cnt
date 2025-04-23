@@ -1,0 +1,11 @@
+---
+# minio/k8s/overlays/production/patches/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  resources:
+    requests:
+      storage: 500Gi
+  storageClassName: ssd-redundant

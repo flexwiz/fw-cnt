@@ -1,0 +1,27 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: traefik-ingress
+
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - ./k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: traefik-admin
+        namespace: traefik
+        port: 8080
+        localPort: 8080
+
+  - name: gcp
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward

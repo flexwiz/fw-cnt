@@ -1,0 +1,23 @@
+---
+# minio/k8s/base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fw-middleware
+
+labels:
+- includeSelectors: true
+  pairs:
+    #app.kubernetes.io/part-of: postgresql
+    flexwiz.io/tier: storage
+    flexwiz.io/type: object-storage
+    flexwiz.io/app: minio
+    flexwiz.io/version: "RELEASE.2025-04-22T22-12-26Z"
+
+resources:
+# - certificate.yaml  # Need to use cert-manager
+- configmap.yaml
+- deployment.yaml
+- pvc.yaml
+- service.yaml
+- job-buckets-init.yaml
+- cronjob-buckets-backup.yaml

@@ -1,0 +1,11 @@
+---
+# For staging environment
+# minio/k8s/overlays/staging/patches/certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert
+spec:
+  dnsNames:
+  - minio-staging.flexwiz.io
+  - minio-console-staging.flexwiz.io

@@ -1,0 +1,23 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: service-mesh
+
+requires:
+  - configs: ["istio"]
+    path: istio
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
+
+  # - configs: ["linkerd"]
+  #   path: linkerd
+  #   activeProfiles: *profiles

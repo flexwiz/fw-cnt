@@ -1,0 +1,24 @@
+# minio/k8s/overlays/development/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: development
+
+resources:
+- ../../base
+# - ingress.yaml
+- sealed-secrets.yaml
+
+patches:
+# - path: patches/certificate.yaml # Need to use cert-manager
+- path: patches/pvc.yaml
+- path: patches/cronjob-buckets-backup.yaml
+
+# secretGenerator:
+# - name: minio-secrets
+#   envs:
+#   - ../../.env.development
+#   type: Opaque

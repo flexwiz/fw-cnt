@@ -1,0 +1,20 @@
+---
+# metabase/k8s/base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: analytics
+
+labels:
+- includeSelectors: true
+  pairs:
+    #app.kubernetes.io/part-of: postgresql
+    flexwiz.io/tier: analytics
+    flexwiz.io/type: business-intelligence
+    flexwiz.io/app: metabase
+    flexwiz.io/version: "0.54.2"
+
+resources:
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml

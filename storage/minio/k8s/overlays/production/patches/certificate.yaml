@@ -1,0 +1,11 @@
+---
+# For production environment
+# minio/k8s/overlays/production/patches/certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert
+spec:
+  dnsNames:
+  - minio.flexwiz.io
+  - minio-console.flexwiz.io

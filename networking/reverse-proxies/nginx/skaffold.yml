@@ -1,0 +1,20 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: nginx-ingress
+
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - ./k8s/*.yaml
+
+  - name: gcp
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    deploy: *deploy
+    manifests: *manifests

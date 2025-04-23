@@ -1,0 +1,10 @@
+---
+# minio/k8s/overlays/development/patches/pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+spec:
+  resources:
+    requests:
+      storage: 5Gi

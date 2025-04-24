@@ -1,0 +1,25 @@
+# traefik/k8s/base/configmap.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+data:
+  traefik.yaml: |
+    api:
+      dashboard: true
+      insecure: true
+    entryPoints:
+      http:
+        address: ":80"
+      https:
+        address: ":443"
+    providers:
+      kubernetesCRD:
+        ingressClass: traefik
+        allowCrossNamespace: true
+      kubernetesIngress:
+        ingressClass: traefik
+        allowExternalNameServices: true
+    log:
+      level: INFO

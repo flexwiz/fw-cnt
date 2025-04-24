@@ -76,6 +76,24 @@ Before starting, ensure you have the following tools installed:
 - Git (2.30.x or later)
 - Access to a Kubernetes cluster (local or remote)
 
+## Components
+
+### Traefik
+
+[Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy. It integrates with your existing infrastructure components and configures itself automatically and dynamically.
+
+### Skaffold
+
+[Skaffold](https://skaffold.dev/) handles the workflow for building, pushing, and deploying your application, and provides building blocks for creating CI/CD pipelines.
+
+### Kustomize
+
+[Kustomize](https://kustomize.io/) lets you customize raw, template-free YAML files for multiple purposes, leaving the original YAML untouched and usable as-is.
+
+### Sealed Secrets
+
+[Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) allows you to encrypt your secrets into SealedSecrets, which is safe to store even in public repositories.
+
 ## 📁 Project Structure
 
 ```
@@ -169,16 +187,16 @@ This will create the required hosts in the `/etc/hosts`.
 First deploy the Sealed Secrets controller:
 
 ```bash
-# Deploy to your local development environnement
-skaffold run -p local -m sealed-secrets
+# Deploy to your development environnement
+skaffold run -p development -m sealed-secrets
 ```
 
 See [Sealed Secrets](./security/sealed-secrets/README.md) documentation for more details
 
-Deploy another module (for example: Krakend) to your Kubernetes cluster :
+Deploy another module (for example: krakend) to your Kubernetes cluster :
 
 ```bash
-skaffold dev -p local -m krakend
+skaffold dev -p development -m krakend
 ```
 
 This command will:

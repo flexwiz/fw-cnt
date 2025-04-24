@@ -1,0 +1,27 @@
+# cert-manager/helm/base/helm-release.yaml
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  releaseName: cert-manager
+  chart:
+    repository: https://charts.jetstack.io
+    name: cert-manager
+    version: v1.13.1
+  values:
+    installCRDs: true
+    global:
+      logLevel: 2
+    prometheus:
+      enabled: true
+      servicemonitor:
+        enabled: true
+    webhook:
+      replicaCount: 1
+    cainjector:
+      replicaCount: 1
+    startupapicheck:
+      timeout: 5m

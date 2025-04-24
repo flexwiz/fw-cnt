@@ -3,15 +3,22 @@ kind: Config
 metadata:
   name: traefik-ingress
 
+# Environments: development, staging, production
 profiles:
-  - name: local
-    activation:
-      - kubeContext: minikube
+
+  - name: development
+    build: &build
+      tagPolicy:
+        sha256: {}
     deploy: &deploy
       kubectl: {}
+      kubeContext: minikube
+      # kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
     manifests: &manifests
-      rawYaml:
-        - ./k8s/*.yaml
+      kustomize:
+        paths:
+          - k8s/overlays/development
+          # - helm/overlays/development
     portForward: &portForward
       - resourceType: service
         resourceName: traefik-admin
@@ -19,9 +26,20 @@ profiles:
         port: 8080
         localPort: 8080
 
-  - name: gcp
-    activation:
-      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+  - name: staging
     deploy: *deploy
-    manifests: *manifests
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+          # - ./helm/overlays/staging
+    portForward: *portForward
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
+          # - ./helm/overlays/production
     portForward: *portForward

@@ -8,9 +8,7 @@ requires:
     path: nginx
     activeProfiles: &profiles
       - name: local
-        activatedBy: [minikube]
-      - name: gcp
-        activatedBy: [gcp]
+        activatedBy: [development]
       - name: development
         activatedBy: [development]
       - name: staging

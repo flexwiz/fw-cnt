@@ -3,15 +3,22 @@ kind: Config
 metadata:
   name: istio-ingress
 
+# Environments: development, staging, production
 profiles:
-  - name: local
-    activation:
-      - kubeContext: minikube
+  - name: development
+    build:
+      tagPolicy:
+        sha256: {}
     deploy: &deploy
       kubectl: {}
-    manifests: &manifests
+      kubeContext: minikube
+    manifests:
       rawYaml:
         - ./k8s/*.yaml
+      # kustomize:
+      #   paths:
+      #     - k8s/overlays/development
+      #     # - helm/overlays/development
     # portForward: &portForward
     #   - resourceType: service
     #     resourceName: istiod
@@ -19,9 +26,18 @@ profiles:
     #     port: 15014
     #     localPort: 8280
 
-  - name: gcp
-    activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+  - name: staging
     deploy: *deploy
-    manifests: *manifests
-    #portForward: *portForward
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+          # - ./helm/overlays/staging
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
+          # - ./helm/overlays/production

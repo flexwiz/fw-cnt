@@ -1,0 +1,19 @@
+# cert-manager/helm/overlays/production/issuers/cluster-issuer.yaml
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@flexwiz.io
+    privateKeySecretRef:
+      name: letsencrypt-production
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+    - http01:
+        ingress:
+          class: traefik

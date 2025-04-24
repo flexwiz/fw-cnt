@@ -1,0 +1,1042 @@
+# traefik/k8s/base/crds.yaml
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ingressroutes.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: IngressRoute
+    listKind: IngressRouteList
+    plural: ingressroutes
+    singular: ingressroute
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                entryPoints:
+                  type: array
+                  items:
+                    type: string
+                routes:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - match
+                    properties:
+                      match:
+                        type: string
+                      kind:
+                        type: string
+                      priority:
+                        type: integer
+                      services:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                            port:
+                              anyOf:
+                                - type: string
+                                - type: integer
+                            kind:
+                              type: string
+                            scheme:
+                              type: string
+                            strategy:
+                              type: string
+                            sticky:
+                              type: object
+                              properties:
+                                cookie:
+                                  type: object
+                                  properties:
+                                    name:
+                                      type: string
+                                    secure:
+                                      type: boolean
+                                    httpOnly:
+                                      type: boolean
+                                    sameSite:
+                                      type: string
+                            weight:
+                              type: integer
+                            passHostHeader:
+                              type: boolean
+                            responseForwarding:
+                              type: object
+                              properties:
+                                flushInterval:
+                                  type: string
+                            serversTransport:
+                              type: string
+                      middlewares:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                tls:
+                  type: object
+                  properties:
+                    secretName:
+                      type: string
+                    options:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                    certResolver:
+                      type: string
+                    domains:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          main:
+                            type: string
+                          sans:
+                            type: array
+                            items:
+                              type: string
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: middlewares.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: Middleware
+    listKind: MiddlewareList
+    plural: middlewares
+    singular: middleware
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                addPrefix:
+                  type: object
+                  properties:
+                    prefix:
+                      type: string
+                basicAuth:
+                  type: object
+                  properties:
+                    secret:
+                      type: string
+                    realm:
+                      type: string
+                    headerField:
+                      type: string
+                    removeHeader:
+                      type: boolean
+                buffering:
+                  type: object
+                  properties:
+                    maxRequestBodyBytes:
+                      type: integer
+                    memRequestBodyBytes:
+                      type: integer
+                    maxResponseBodyBytes:
+                      type: integer
+                    memResponseBodyBytes:
+                      type: integer
+                    retryExpression:
+                      type: string
+                chain:
+                  type: object
+                  properties:
+                    middlewares:
+                      type: array
+                      items:
+                        type: object
+                        required:
+                          - name
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                circuitBreaker:
+                  type: object
+                  properties:
+                    expression:
+                      type: string
+                    checkPeriod:
+                      type: string
+                    fallbackDuration:
+                      type: string
+                    recoverDuration:
+                      type: string
+                compress:
+                  type: object
+                  properties:
+                    excludedContentTypes:
+                      type: array
+                      items:
+                        type: string
+                contentType:
+                  type: object
+                  properties:
+                    autoDetect:
+                      type: boolean
+                digestAuth:
+                  type: object
+                  properties:
+                    secret:
+                      type: string
+                    realm:
+                      type: string
+                    headerField:
+                      type: string
+                    removeHeader:
+                      type: boolean
+                errors:
+                  type: object
+                  properties:
+                    status:
+                      type: array
+                      items:
+                        type: string
+                    service:
+                      type: string
+                    query:
+                      type: string
+                forwardAuth:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    trustForwardHeader:
+                      type: boolean
+                    authResponseHeaders:
+                      type: array
+                      items:
+                        type: string
+                    authResponseHeadersRegex:
+                      type: string
+                    authRequestHeaders:
+                      type: array
+                      items:
+                        type: string
+                    tls:
+                      type: object
+                      properties:
+                        ca:
+                          type: string
+                        cert:
+                          type: string
+                        key:
+                          type: string
+                        insecureSkipVerify:
+                          type: boolean
+                headers:
+                  type: object
+                  properties:
+                    customRequestHeaders:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    customResponseHeaders:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    accessControlAllowCredentials:
+                      type: boolean
+                    accessControlAllowHeaders:
+                      type: array
+                      items:
+                        type: string
+                    accessControlAllowMethods:
+                      type: array
+                      items:
+                        type: string
+                    accessControlAllowOriginList:
+                      type: array
+                      items:
+                        type: string
+                    accessControlAllowOriginListRegex:
+                      type: array
+                      items:
+                        type: string
+                    accessControlExposeHeaders:
+                      type: array
+                      items:
+                        type: string
+                    accessControlMaxAge:
+                      type: integer
+                    addVaryHeader:
+                      type: boolean
+                    allowedHosts:
+                      type: array
+                      items:
+                        type: string
+                    hostsProxyHeaders:
+                      type: array
+                      items:
+                        type: string
+                    sslRedirect:
+                      type: boolean
+                    sslTemporaryRedirect:
+                      type: boolean
+                    sslHost:
+                      type: string
+                    sslProxyHeaders:
+                      type: object
+                      additionalProperties:
+                        type: string
+                    sslForceHost:
+                      type: boolean
+                    stsSeconds:
+                      type: integer
+                    stsIncludeSubdomains:
+                      type: boolean
+                    stsPreload:
+                      type: boolean
+                    forceSTSHeader:
+                      type: boolean
+                    frameDeny:
+                      type: boolean
+                    contentTypeNosniff:
+                      type: boolean
+                    browserXssFilter:
+                      type: boolean
+                    customBrowserXSSValue:
+                      type: string
+                    contentSecurityPolicy:
+                      type: string
+                    publicKey:
+                      type: string
+                    referrerPolicy:
+                      type: string
+                    permissionsPolicy:
+                      type: string
+                ipWhiteList:
+                  type: object
+                  properties:
+                    sourceRange:
+                      type: array
+                      items:
+                        type: string
+                    ipStrategy:
+                      type: object
+                      properties:
+                        depth:
+                          type: integer
+                        excludedIPs:
+                          type: array
+                          items:
+                            type: string
+                passTLSClientCert:
+                  type: object
+                  properties:
+                    pem:
+                      type: boolean
+                    info:
+                      type: object
+                      properties:
+                        notAfter:
+                          type: boolean
+                        notBefore:
+                          type: boolean
+                        sans:
+                          type: boolean
+                        subject:
+                          type: object
+                          properties:
+                            country:
+                              type: boolean
+                            province:
+                              type: boolean
+                            locality:
+                              type: boolean
+                            organization:
+                              type: boolean
+                            organizationalUnit:
+                              type: boolean
+                            commonName:
+                              type: boolean
+                            serialNumber:
+                              type: boolean
+                            domainComponent:
+                              type: boolean
+                        issuer:
+                          type: object
+                          properties:
+                            country:
+                              type: boolean
+                            province:
+                              type: boolean
+                            locality:
+                              type: boolean
+                            organization:
+                              type: boolean
+                            commonName:
+                              type: boolean
+                            serialNumber:
+                              type: boolean
+                            domainComponent:
+                              type: boolean
+                        serialNumber:
+                          type: boolean
+                rateLimit:
+                  type: object
+                  properties:
+                    average:
+                      type: integer
+                    period:
+                      type: string
+                    burst:
+                      type: integer
+                    sourceCriterion:
+                      type: object
+                      properties:
+                        ipStrategy:
+                          type: object
+                          properties:
+                            depth:
+                              type: integer
+                            excludedIPs:
+                              type: array
+                              items:
+                                type: string
+                        requestHeaderName:
+                          type: string
+                        requestHost:
+                          type: boolean
+                redirectRegex:
+                  type: object
+                  properties:
+                    regex:
+                      type: string
+                    replacement:
+                      type: string
+                    permanent:
+                      type: boolean
+                redirectScheme:
+                  type: object
+                  properties:
+                    scheme:
+                      type: string
+                    port:
+                      type: string
+                    permanent:
+                      type: boolean
+                replacePath:
+                  type: object
+                  properties:
+                    path:
+                      type: string
+                replacePathRegex:
+                  type: object
+                  properties:
+                    regex:
+                      type: string
+                    replacement:
+                      type: string
+                retry:
+                  type: object
+                  properties:
+                    attempts:
+                      type: integer
+                    initialInterval:
+                      type: string
+                    maxInterval:
+                      type: string
+                  required:
+                    - attempts
+                    - initialInterval
+                stripPrefix:
+                  type: object
+                  properties:
+                    prefixes:
+                      type: array
+                      items:
+                        type: string
+                    forceSlash:
+                      type: boolean
+                  required:
+                    - prefixes
+                stripPrefixRegex:
+                  type: object
+                  properties:
+                    regex:
+                      type: array
+                      items:
+                        type: string
+                  required:
+                    - regex
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ingressroutetcps.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: IngressRouteTCP
+    listKind: IngressRouteTCPList
+    plural: ingressroutetcps
+    singular: ingressroutetcp
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                entryPoints:
+                  type: array
+                  items:
+                    type: string
+                routes:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - match
+                    properties:
+                      match:
+                        type: string
+                      priority:
+                        type: integer
+                      middlewares:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                      services:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                            port:
+                              anyOf:
+                                - type: string
+                                - type: integer
+                            weight:
+                              type: integer
+                            proxyProtocol:
+                              type: object
+                              properties:
+                                version:
+                                  type: integer
+                            serversTransport:
+                              type: string
+                tls:
+                  type: object
+                  properties:
+                    secretName:
+                      type: string
+                    passthrough:
+                      type: boolean
+                    options:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        namespace:
+                          type: string
+                    certResolver:
+                      type: string
+                    domains:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          main:
+                            type: string
+                          sans:
+                            type: array
+                            items:
+                              type: string
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: ingressrouteudps.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: IngressRouteUDP
+    listKind: IngressRouteUDPList
+    plural: ingressrouteudps
+    singular: ingressrouteudp
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                entryPoints:
+                  type: array
+                  items:
+                    type: string
+                routes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      services:
+                        type: array
+                        items:
+                          type: object
+                          required:
+                            - name
+                          properties:
+                            name:
+                              type: string
+                            namespace:
+                              type: string
+                            port:
+                              anyOf:
+                                - type: string
+                                - type: integer
+                            weight:
+                              type: integer
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: middlewaretcps.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: MiddlewareTCP
+    listKind: MiddlewareTCPList
+    plural: middlewaretcps
+    singular: middlewaretcp
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                ipWhiteList:
+                  type: object
+                  properties:
+                    sourceRange:
+                      type: array
+                      items:
+                        type: string
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tlsoptions.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: TLSOption
+    listKind: TLSOptionList
+    plural: tlsoptions
+    singular: tlsoption
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                minVersion:
+                  type: string
+                  enum:
+                    - VersionTLS10
+                    - VersionTLS11
+                    - VersionTLS12
+                    - VersionTLS13
+                maxVersion:
+                  type: string
+                  enum:
+                    - VersionTLS10
+                    - VersionTLS11
+                    - VersionTLS12
+                    - VersionTLS13
+                cipherSuites:
+                  type: array
+                  items:
+                    type: string
+                curvePreferences:
+                  type: array
+                  items:
+                    type: string
+                clientAuth:
+                  type: object
+                  properties:
+                    secretNames:
+                      type: array
+                      items:
+                        type: string
+                    clientAuthType:
+                      type: string
+                      enum:
+                        - NoClientCert
+                        - RequestClientCert
+                        - RequireAnyClientCert
+                        - VerifyClientCertIfGiven
+                        - RequireAndVerifyClientCert
+                sniStrict:
+                  type: boolean
+                alpnProtocols:
+                  type: array
+                  items:
+                    type: string
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tlsstores.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: TLSStore
+    listKind: TLSStoreList
+    plural: tlsstores
+    singular: tlsstore
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                defaultCertificate:
+                  type: object
+                  required:
+                    - secretName
+                  properties:
+                    secretName:
+                      type: string
+                certificates:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - secretName
+                    properties:
+                      secretName:
+                        type: string
+                      domains:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            main:
+                              type: string
+                            sans:
+                              type: array
+                              items:
+                                type: string
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: serverstransports.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: ServersTransport
+    listKind: ServersTransportList
+    plural: serverstransports
+    singular: serverstransport
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                serverName:
+                  type: string
+                insecureSkipVerify:
+                  type: boolean
+                rootCAsSecrets:
+                  type: array
+                  items:
+                    type: string
+                certificates:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      certFile:
+                        type: string
+                      keyFile:
+                        type: string
+                maxIdleConnsPerHost:
+                  type: integer
+                forwardingTimeouts:
+                  type: object
+                  properties:
+                    dialTimeout:
+                      type: string
+                    responseHeaderTimeout:
+                      type: string
+                    idleConnTimeout:
+                      type: string
+                disableHTTP2:
+                  type: boolean
+                peerCertURI:
+                  type: string
+                spiffe:
+                  type: object
+                  properties:
+                    ids:
+                      type: array
+                      items:
+                        type: string
+                    trustDomain:
+                      type: string
+
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: traefikservices.traefik.io
+spec:
+  group: traefik.io
+  names:
+    kind: TraefikService
+    listKind: TraefikServiceList
+    plural: traefikservices
+    singular: traefikservice
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                weighted:
+                  type: object
+                  properties:
+                    services:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          port:
+                            anyOf:
+                              - type: string
+                              - type: integer
+                          kind:
+                            type: string
+                          namespace:
+                            type: string
+                          passHostHeader:
+                            type: boolean
+                          responseForwarding:
+                            type: object
+                            properties:
+                              flushInterval:
+                                type: string
+                          weight:
+                            type: integer
+                          sticky:
+                            type: object
+                            properties:
+                              cookie:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  secure:
+                                    type: boolean
+                                  httpOnly:
+                                    type: boolean
+                                  sameSite:
+                                    type: string
+                          strategy:
+                            type: string
+                          serversTransport:
+                            type: string
+                    sticky:
+                      type: object
+                      properties:
+                        cookie:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            secure:
+                              type: boolean
+                            httpOnly:
+                              type: boolean
+                            sameSite:
+                              type: string
+                mirroring:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    port:
+                      anyOf:
+                        - type: string
+                        - type: integer
+                    kind:
+                      type: string
+                    scheme:
+                      type: string
+                    namespace:
+                      type: string
+                    passHostHeader:
+                      type: boolean
+                    responseForwarding:
+                      type: object
+                      properties:
+                        flushInterval:
+                          type: string
+                    sticky:
+                      type: object
+                      properties:
+                        cookie:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            secure:
+                              type: boolean
+                            httpOnly:
+                              type: boolean
+                            sameSite:
+                              type: string
+                    strategy:
+                      type: string
+                    serversTransport:
+                      type: string
+                    maxBodySize:
+                      type: integer
+                    mirrors:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          port:
+                            anyOf:
+                              - type: string
+                              - type: integer
+                          kind:
+                            type: string
+                          scheme:
+                            type: string
+                          namespace:
+                            type: string
+                          passHostHeader:
+                            type: boolean
+                          responseForwarding:
+                            type: object
+                            properties:
+                              flushInterval:
+                                type: string
+                          sticky:
+                            type: object
+                            properties:
+                              cookie:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                  secure:
+                                    type: boolean
+                                  httpOnly:
+                                    type: boolean
+                                  sameSite:
+                                    type: string
+                          strategy:
+                            type: string
+                          serversTransport:
+                            type: string
+                          percent:
+                            type: integer

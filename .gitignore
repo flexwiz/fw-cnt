@@ -76,6 +76,7 @@ kubeconfig*
 .secret*
 .sealed*
 !.secrets.yaml.example
+!.*.yaml.example
 
 ### MongoDB ###
 data/

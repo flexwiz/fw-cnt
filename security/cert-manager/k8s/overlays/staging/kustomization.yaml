@@ -1,0 +1,22 @@
+# cert-manager/k8s/overlays/staging/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: staging
+
+resources:
+- ../../base
+- ingress-traefik.yaml
+
+patches:
+- path: patches/deployment.yaml
+
+# secretGenerator:
+# - name: cert-manager-secrets
+#   envs:
+#   - ../../.env.staging
+#   type: Opaque

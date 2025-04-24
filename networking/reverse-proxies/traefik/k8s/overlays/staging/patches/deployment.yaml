@@ -1,0 +1,27 @@
+# traefik/k8s/overlays/staging/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: traefik
+          resources:
+            requests:
+              cpu: 300m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: tls-cert
+              mountPath: /certs
+              readOnly: true
+      volumes:
+        - name: tls-cert
+          secret:
+            secretName: traefik-tls

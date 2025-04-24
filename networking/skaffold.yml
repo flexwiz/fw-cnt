@@ -8,9 +8,7 @@ requires:
     path: reverse-proxies
     activeProfiles: &profiles
       - name: local
-        activatedBy: [local]
-      - name: gcp
-        activatedBy: [gcp]
+        activatedBy: [development]
       - name: development
         activatedBy: [development]
       - name: staging

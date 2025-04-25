@@ -1,3 +1,5 @@
+# reverse-proxies/skaffold.yaml
+---
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
@@ -7,8 +9,6 @@ requires:
   - configs: ["nginx-ingress"]
     path: nginx
     activeProfiles: &profiles
-      - name: local
-        activatedBy: [development]
       - name: development
         activatedBy: [development]
       - name: staging
@@ -16,9 +16,9 @@ requires:
       - name: production
         activatedBy: [production]
 
-  - configs: ["kong-ingress"]
-    path: kong
-    activeProfiles: *profiles
+  # - configs: ["kong-ingress"]
+  #   path: kong
+  #   activeProfiles: *profiles
 
   - configs: ["traefik-ingress"]
     path: traefik

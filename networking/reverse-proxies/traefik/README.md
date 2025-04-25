@@ -43,42 +43,42 @@ Before starting, ensure you have installed all tools mentioned in the [main docu
 
 ## 🚀 Getting start
 
-### Initial Setup
+### 1. Initial Setup
 
 1. Read the setup step from the [main documentation](../../../README.md#setup-environment-variables) of this repository
 2. [Setup Sealed Secrets controller](../../../security/sealed-secrets/README.md#-getting-start) in your cluster (if not already installed)
 
-### Creating Sealed Secrets
+### 2. Creating Sealed Secrets
 
 To create a sealed secret for TLS certificates:
 
 1. Create a regular Kubernetes Secret:
-   ```
-   kubectl create secret tls traefik-tls --cert=./tls.crt --key=./tls.key --dry-run=client -o yaml > secrets/.secret.yaml
+   ```bash
+   kubectl create secret tls traefik-tls --cert=path/to/tls.crt --key=path/to/tls.key --dry-run=client -o yaml > secrets/.secret.yaml
    ```
 
 2. Seal the secret using kubeseal:
-   ```
+   ```bash
    kubeseal --controller-name=sealed-secrets --controller-namespace=kube-system -o yaml < secrets/.secret.yaml > sealed-tls-cert.yaml
    ```
 
 3. Place the generated `sealed-tls-cert.yaml` in the appropriate environment directory under `overlays/`.
 
-### Deploying with Skaffold
+### 3. Deploying with Skaffold
 
 To deploy to a specific environment:
 
-```
+```bash
 skaffold run -p development  # Or staging, production
 ```
 
 To develop with continuous deployment:
 
-```
+```bash
 skaffold dev -p development
 ```
 
-## Environment Configurations
+## Environment configurations
 
 ### Base Configuration
 
@@ -88,7 +88,23 @@ The base configuration contains common elements shared across all environments:
 - Common CRDs
 - Basic Traefik configuration
 
-### Production Environment
+### Development environment
+
+- Single replica
+- Minimal resource requirements
+- Simplified configuration
+- Debug logging enabled
+- No TLS enforcement
+
+### Staging environment
+
+- 2 replicas for redundancy
+- Moderate resource allocations
+- TLS enabled
+- Test metrics
+- Standard logging
+
+### Production environment
 
 - High availability with 3 replicas
 - Resource limits optimized for production traffic
@@ -97,21 +113,6 @@ The base configuration contains common elements shared across all environments:
 - Extended logging
 - Rate limiting
 
-### Staging Environment
-
-- 2 replicas for redundancy
-- Moderate resource allocations
-- TLS enabled
-- Test metrics
-- Standard logging
-
-### Development Environment
-
-- Single replica
-- Minimal resource requirements
-- Simplified configuration
-- Debug logging enabled
-- No TLS enforcement
 
 ## Monitoring and Maintenance
 

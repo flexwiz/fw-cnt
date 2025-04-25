@@ -1,0 +1,47 @@
+# nginx/k8s/overlays/staging/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: nginx-ingress-controller
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+          requests:
+            cpu: 300m
+            memory: 256Mi
+        volumeMounts:
+        - mountPath: /etc/ingress-controller/ssl
+          name: ssl-certs
+        - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+          name: kube-api-access
+          readOnly: true
+      volumes:
+      - name: ssl-certs
+        secret:
+          secretName: ingress-tls-cert
+      - name: kube-api-access
+        projected:
+          defaultMode: 420
+          sources:
+          - serviceAccountToken:
+              expirationSeconds: 3607
+              path: token
+          - configMap:
+              items:
+              - key: ca.crt
+                path: ca.crt
+              name: kube-root-ca.crt
+          - downwardAPI:
+              items:
+              - fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+                path: namespace

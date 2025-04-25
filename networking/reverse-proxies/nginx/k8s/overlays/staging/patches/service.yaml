@@ -1,0 +1,10 @@
+# nginx/k8s/overlays/production/patches/service.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  type: LoadBalancer

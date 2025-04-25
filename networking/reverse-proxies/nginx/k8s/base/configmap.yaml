@@ -1,0 +1,19 @@
+# nginx/k8s/base/configmap.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+data:
+  use-forwarded-headers: "true"
+  proxy-body-size: "50m"
+  client-header-buffer-size: "64k"
+  proxy-buffer-size: "16k"
+  server-tokens: "false"
+  ssl-protocols: "TLSv1.2 TLSv1.3"
+  http2: "true"
+  keep-alive: "75"
+  keep-alive-requests: "100"
+  proxy-connect-timeout: "5s"
+  proxy-read-timeout: "60s"
+  proxy-send-timeout: "60s"

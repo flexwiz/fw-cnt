@@ -24,6 +24,6 @@ images:
 
 # secretGenerator:
 # - envs:
-#   - ../../.env.production
+#   - ../../.env.staging
 #   name: traefik-credentials
 #   type: Opaque

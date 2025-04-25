@@ -1,0 +1,19 @@
+# nginx/k8s/base/service.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+spec:
+  type: LoadBalancer
+  selector:
+    flexwiz.io/app: nginx-ingress
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443

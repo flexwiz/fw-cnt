@@ -1,3 +1,5 @@
+# networking/skaffold.yaml
+---
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
@@ -7,8 +9,6 @@ requires:
   - configs: ["reverse-proxies"]
     path: reverse-proxies
     activeProfiles: &profiles
-      - name: local
-        activatedBy: [development]
       - name: development
         activatedBy: [development]
       - name: staging
@@ -16,6 +16,6 @@ requires:
       - name: production
         activatedBy: [production]
 
-  - configs: ["service-mesh"]
-    path: service-mesh
-    activeProfiles: *profiles
+  # - configs: ["service-mesh"]
+  #   path: service-mesh
+  #   activeProfiles: *profiles

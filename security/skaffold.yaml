@@ -7,26 +7,6 @@ requires:
   - configs: ["cert-manager"]
     path: cert-manager
     activeProfiles: &profiles
-      - name: minikube
-        activatedBy: [minikube]
-      - name: gcp
-        activatedBy: [gcp]
-
-  - configs: ["keycloak"]
-    path: keycloak
-    activeProfiles: *profiles
-
-  - configs: ["linkerd"]
-    path: linkerd
-    activeProfiles: *profiles
-
-  - configs: ["istio"]
-    path: istio
-    activeProfiles: *profiles
-
-  - configs: ["sealed-secrets"]
-    path: sealed-secrets
-    activeProfiles:
       - name: local
         activatedBy: [local]
       - name: development
@@ -35,3 +15,11 @@ requires:
         activatedBy: [staging]
       - name: production
         activatedBy: [production]
+
+  - configs: ["keycloak"]
+    path: keycloak
+    activeProfiles: *profiles
+
+  - configs: ["sealed-secrets"]
+    path: sealed-secrets
+    activeProfiles: *profiles

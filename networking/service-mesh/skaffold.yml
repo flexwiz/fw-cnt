@@ -8,9 +8,7 @@ requires:
     path: istio
     activeProfiles: &profiles
       - name: local
-        activatedBy: [minikube]
-      - name: gcp
-        activatedBy: [gcp]
+        activatedBy: [local]
       - name: development
         activatedBy: [development]
       - name: staging
@@ -18,6 +16,6 @@ requires:
       - name: production
         activatedBy: [production]
 
-  # - configs: ["linkerd"]
-  #   path: linkerd
-  #   activeProfiles: *profiles
+  - configs: ["linkerd"]
+    path: linkerd
+    activeProfiles: *profiles

@@ -1,5 +1,5 @@
+# traefik/k8s/base/kustomization.yaml
 ---
-# metabase/k8s/base/kustomization.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: fw-middleware

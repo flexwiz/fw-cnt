@@ -1,43 +1,30 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: istio-ingress
+  name: istio
 
-# Environments: development, staging, production
 profiles:
-  - name: development
-    build:
-      tagPolicy:
-        sha256: {}
+  - name: local
+    activation:
+      - kubeContext: minikube
     deploy: &deploy
-      kubectl: {}
-      kubeContext: minikube
-    manifests:
+      kubectl:
+        defaultNamespace: istio-system
+    manifests: &manifests
       rawYaml:
+        - ./k8s/crd/*.yaml
+        - ./k8s/addons/*.yaml
         - ./k8s/*.yaml
-      # kustomize:
-      #   paths:
-      #     - k8s/overlays/development
-      #     # - helm/overlays/development
-    # portForward: &portForward
-    #   - resourceType: service
-    #     resourceName: istiod
-    #     namespace: istio-system
-    #     port: 15014
-    #     localPort: 8280
+    portForward: &portForward
+      - resourceType: service
+        resourceName: kiali
+        namespace: istio-system
+        port: 20001
+        localPort: 20001
 
-  - name: staging
+  - name: gcp
+    activation:
+      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
     deploy: *deploy
-    manifests:
-      kustomize:
-        paths:
-          - ./k8s/overlays/staging
-          # - ./helm/overlays/staging
-
-  - name: production
-    deploy: *deploy
-    manifests:
-      kustomize:
-        paths:
-          - ./k8s/overlays/production
-          # - ./helm/overlays/production
+    manifests: *manifests
+    portForward: *portForward

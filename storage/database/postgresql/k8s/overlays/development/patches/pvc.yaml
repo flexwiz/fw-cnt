@@ -1,5 +1,5 @@
+# postgresql/k8s/orverlays/development/patches/pvc.yaml
 ---
-# postgresql/k8s/orverlays/development/pvc.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

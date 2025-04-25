@@ -1,5 +1,5 @@
+# postgresql/k8s/overlays/staging/patches/statefulset.yaml
 ---
-# k8s/overlays/staging/patches/statefulset.yaml
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:

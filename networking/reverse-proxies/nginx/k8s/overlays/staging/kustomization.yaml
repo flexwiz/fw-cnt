@@ -2,7 +2,6 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: fw-middleware
 
 labels:
 - includeSelectors: true
@@ -14,12 +13,20 @@ resources:
 # - sealed-tls-cert.yaml
 
 patches:
+- path: patches/configmap.yaml
 - path: patches/deployment.yaml
 - path: patches/service.yaml
 
 images:
 - name: nginx
-  newTag: "v1.9.0"
+  newTag: "v1.9.4"
+
+configMapGenerator:
+- name: nginx-configuration
+  behavior: merge
+  literals:
+  - enable-modsecurity="true"
+  - enable-owasp-core-rules="true"
 
 # secretGenerator:
 # - envs:

@@ -24,7 +24,7 @@ profiles:
 
   - name: gcp
     activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
     deploy: *deploy
     manifests: *manifests
     portForward: *portForward

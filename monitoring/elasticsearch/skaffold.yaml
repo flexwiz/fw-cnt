@@ -1,0 +1,38 @@
+# elasticsearch/skaffold.yaml
+---
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: elasticsearch
+
+profiles:
+  - name: local
+    build: &build
+      tagPolicy:
+        sha256: {}
+    deploy: &deploy
+      kubeContext: minikube
+      kubectl: {}
+    manifests: &manifests
+      kustomize:
+        paths:
+          - ./k8s/overlays/development
+
+  - name: development
+    build: *build
+    deploy: *deploy
+    manifests: *manifests
+
+  - name: staging
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production

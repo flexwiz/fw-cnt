@@ -2,7 +2,6 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: fw-middleware
 
 labels:
 - includeSelectors: true
@@ -19,7 +18,14 @@ patches:
 
 images:
 - name: nginx
-  newTag: "v1.9.0"
+  newTag: "v1.9.4"
+
+configMapGenerator:
+- name: nginx-configuration
+  behavior: merge
+  literals:
+  - enable-modsecurity="false"
+  - enable-owasp-core-rules="false"
 
 # secretGenerator:
 # - envs:

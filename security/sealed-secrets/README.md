@@ -48,7 +48,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgresql-secrets
-  namespace: fw-databases
+  namespace: fw-data
   labels:
     flexwiz.io/tier: storage
     flexwiz.io/type: database
@@ -74,7 +74,7 @@ kind: SealedSecret
 metadata:
   creationTimestamp: null
   name: postgresql-secrets
-  namespace: fw-databases
+  namespace: fw-data
 spec:
   encryptedData:
     password: AgAJoIZN1Q6PJfh+61M8FFkzNdLEt9SWBPRuCBJI8jLuV2rbj+Nk2YEPK15SVxqsuqf/O7Jzy4OgNDm0WJxrCkyPHbvfoLsjC7KZzqgrh0Gh0IiQlg+skfb24vCPM/L7wM8pPIOQwNRSWSrtmPnKm1fJ/fTmBq23KQeBmKjWmtPKXmBN32PLaRvDSrCI+4yGFn4PlvPjcg61crbId3p6dvS6LGzDYcm1hYoi51wPoz1tPD9q19+RV5ARb11z1Yjl8h0JJI5vANVqaIZPYT+eD4nKVNE/dgaGktlX/8BbTFqD0s/5P2FJ71kemliE+1QZyzmjV7PbPhz5VOxHh2TrSnKKz6h8FDz0dXbn+apph90rkulJgjkN5xnufCdpoLXuIkjFVQCqUCnfEPAN/rMLk7OHZ7jkZbPptEiOM0DgBHzyI2qX+jDsCFIa3yQwyADNzIIJhfr4blb3Syd8958qzLVDhPWGAU6vtMDKiZjl2CK3QGhiwlrp2RrT40BngUyLnYCpXXtOcdkRSEaViv33NOmaaK50TNbkF1PHaBPcuFefpFaH1ITgNzakO67M+5kh62eyEc97wvLfZi56s7hInxf59MdpRAuoQEBbU+mTA8Hp6aIbBdr5KzUO3guZXT+ZPBUzdOhM0euQ5lkQ7y7QPjEjSxyAbiPIkDUX41Yqod78zG0CR8ZX2JAFjanZg5Wao+kBo24H74Y6TQ==
@@ -88,7 +88,7 @@ spec:
         flexwiz.io/app: postgresql
         flexwiz.io/env: development
       name: postgresql-secrets
-      namespace: fw-databases
+      namespace: fw-data
     type: Opaque
 ```
 

@@ -1,0 +1,37 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: database
+
+requires:
+  - configs: ["cassandra"]
+    path: cassandra
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
+
+  # - configs: ["cockroachdb"]
+  #   path: cockroachdb
+  #   activeProfiles: *profiles
+
+  # - configs: ["duckdb"]
+  #   path: duckdb
+  #   activeProfiles: *profiles
+
+  # - configs: ["mysql"]
+  #   path: mysql
+  #   activeProfiles: *profiles
+
+  - configs: ["mongodb"]
+    path: mongodb
+    activeProfiles: *profiles
+
+  - configs: ["postgresql"]
+    path: postgresql
+    activeProfiles: *profiles

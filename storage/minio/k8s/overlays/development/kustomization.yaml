@@ -11,6 +11,7 @@ resources:
 - ../../base
 # - ingress.yaml
 - sealed-secrets.yaml
+# - letsencrypt-cert.yaml  # Need to use cert-manager
 
 patches:
 # - path: patches/certificate.yaml # Need to use cert-manager

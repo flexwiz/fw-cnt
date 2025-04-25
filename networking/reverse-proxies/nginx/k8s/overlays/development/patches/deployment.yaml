@@ -10,19 +10,9 @@ spec:
     spec:
       containers:
       - name: nginx-ingress-controller
-        args:
-        - /nginx-ingress-controller
-        - --publish-service=$(POD_NAMESPACE)/nginx-ingress
-        - --election-id=ingress-controller-leader
-        - --controller-class=k8s.io/ingress-nginx
-        - --configmap=$(POD_NAMESPACE)/nginx-configuration
-        - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
-        - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
-        - --annotations-prefix=nginx.ingress.kubernetes.io
-        - --v=3  # Enable debug logging
         resources:
           limits:
-            cpu: 500m
+            cpu: 200m
             memory: 256Mi
           requests:
             cpu: 100m

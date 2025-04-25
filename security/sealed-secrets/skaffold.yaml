@@ -14,14 +14,14 @@ profiles:
           - name: sealed-secrets
             repo: https://charts.bitnami.com/bitnami
             remoteChart: sealed-secrets
-            namespace: kube-system
+            namespace: fw-security
             version: 2.5.9
             # setValues:
             #   global.security.allowInsecureImages: true
 
   - name: gcp
     deploy:
-      kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+      kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
       helm: *helm
 
   - name: development

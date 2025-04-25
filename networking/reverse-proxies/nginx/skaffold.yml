@@ -5,10 +5,10 @@ kind: Config
 metadata:
   name: nginx-ingress
 
-# Environments: development, staging, production
+# Environments: local, development, staging, production
 profiles:
 
-  - name: development
+  - name: local
     build: &build
       tagPolicy:
         sha256: {}
@@ -27,6 +27,11 @@ profiles:
         namespace: fw-middleware
         port: 80
         localPort: 8080
+
+  - name: development
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
 
   - name: staging
     deploy: *deploy

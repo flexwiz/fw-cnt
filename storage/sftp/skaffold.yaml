@@ -22,14 +22,15 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: sftp
+        namespace: fw-storage
         port: 22
         localPort: 15000
 
   - name: gcp
     activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
     build:
       googleCloudBuild:
-        projectId: sample
+        projectId: flexwiz
     deploy: *deploy
     portForward: *portForward

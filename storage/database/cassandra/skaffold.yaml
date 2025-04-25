@@ -1,0 +1,55 @@
+# https://skaffold.dev/docs/references/yaml/
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: cassandra
+
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+    # build:
+    #   tagPolicy:
+    #     sha256: {}
+    #   artifacts:
+    #     - image: cassandra
+    #       context: .
+    #       docker:
+    #         dockerfile: Dockerfile
+    #         target: development
+    #   local:
+    #     useBuildkit: true
+    #     concurrency: 0
+    deploy: &deploy
+      kubectl:
+        defaultNamespace: default
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: cassandra
+        port: 9042
+        localPort: 9042
+
+  - name: gcp
+    activation:
+      - kubeContext: europe-west9-b_ntdt-europe-west9-b_k8s-development-cluster
+    build:
+      tagPolicy:
+        sha256: {}
+      googleCloudBuild:
+        workerPool: projects/flexwiz/locations/europe-west9/workerPools/development-pool
+        projectId: flexwiz
+        concurrency: 0
+      artifacts:
+        - image: cassandra
+          context: .
+          kaniko:
+            dockerfile: Dockerfile
+            target: development
+            cache: {}
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+

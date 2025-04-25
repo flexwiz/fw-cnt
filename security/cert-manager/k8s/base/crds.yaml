@@ -1,5 +1,5 @@
+# cert-manager/k8s/base/crds.yaml
 ---
-# cert-manager/k8s/base/cert-manager/crds.yaml
 # Note: This is a simplified version of the CRDs - in practice you would
 # include full CRD definitions from https://github.com/cert-manager/cert-manager/releases
 

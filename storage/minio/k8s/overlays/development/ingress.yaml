@@ -1,5 +1,5 @@
----
 # minio/k8s/overlays/development/ingress.yaml
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

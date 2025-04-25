@@ -10,8 +10,8 @@ labels:
 resources:
 - ../../base
 - certificate.yaml
-# - ingress.yaml
-- sealed-secrets.yaml
+- ingress.yaml
+- sealed-secrets.yaml # Need to use cert-manager
 
 patches:
 - path: patches/deployment.yaml

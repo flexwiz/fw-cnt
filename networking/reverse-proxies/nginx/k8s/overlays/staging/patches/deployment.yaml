@@ -12,10 +12,10 @@ spec:
       - name: nginx-ingress-controller
         resources:
           limits:
-            cpu: 1000m
+            cpu: 500m
             memory: 512Mi
           requests:
-            cpu: 300m
+            cpu: 200m
             memory: 256Mi
         volumeMounts:
         - mountPath: /etc/ingress-controller/ssl

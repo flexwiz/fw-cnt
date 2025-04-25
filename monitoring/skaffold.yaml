@@ -1,16 +1,23 @@
+# monitoring/skaffold.yaml
+---
+# monitoring, logging, alerting
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: monitoring-logging
+  name: monitoring
 
 requires:
   - configs: ["alertmanager"]
     path: alertmanager
     activeProfiles: &profiles
-      - name: minikube
-        activatedBy: [minikube]
+      - name: local
+        activatedBy: [local]
       - name: gcp
         activatedBy: [gcp]
+
+  - configs: ["elasticsearch"]
+    path: elasticsearch
+    activeProfiles: *profiles
 
   - configs: ["grafana"]
     path: grafana

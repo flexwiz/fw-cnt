@@ -1,0 +1,19 @@
+# cache/skaffold.yaml
+---
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: cache
+
+requires:
+  - configs: ["redis"]
+    path: redis
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]

@@ -1,3 +1,5 @@
+# api/skaffold.yaml
+---
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
@@ -15,8 +17,6 @@ requires:
         activatedBy: [staging]
       - name: production
         activatedBy: [production]
-      - name: gcp
-        activatedBy: [gcp]
 
   # - configs: ["kong"]
   #   path: kong

@@ -13,20 +13,20 @@ on:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - analytics/superset/Dockerfile
-      - analytics/superset/docker-bake.hcl
+      - data/analytics/superset/Dockerfile
+      - data/analytics/superset/docker-bake.hcl
       - .github/workflows/superset-ci.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - analytics/superset/Dockerfile
-      - analytics/superset/docker-bake.hcl
+      - data/analytics/superset/Dockerfile
+      - data/analytics/superset/docker-bake.hcl
       - .github/workflows/superset-ci.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  SOURCE_DIR: ./analytics/superset
+  SOURCE_DIR: ./data/analytics/superset
   SUPERSET_VERSION: 4.0.1 # see Dockerfile
   DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
   DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

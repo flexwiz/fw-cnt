@@ -48,12 +48,12 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: minio
-        namespace: fw-middleware
+        namespace: fw-storage
         port: api
         localPort: 9000
       - resourceType: service
         resourceName: minio
-        namespace: fw-middleware
+        namespace: fw-storage
         port: console
         localPort: 9001
 
@@ -62,8 +62,8 @@ profiles:
     #   tagPolicy:
     #     sha256: {}
     #   googleCloudBuild:
-    #     workerPool: projects/sample/locations/europe-west9/workerPools/worker-development-pool
-    #     projectId: sample
+    #     workerPool: projects/flexwiz/locations/europe-west9/workerPools/worker-development-pool
+    #     projectId: flexwiz
     #     concurrency: 0
     #   artifacts:
     #     - image: minio

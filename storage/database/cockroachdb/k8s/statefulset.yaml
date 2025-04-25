@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cockroachdb
+  namespace: cockroachdb
+spec:
+  serviceName: "cockroachdb"
+  replicas: 1 # 3 for production
+  selector:
+    matchLabels:
+      app: cockroachdb
+  template:
+    metadata:
+      labels:
+        app: cockroachdb
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - cockroachdb
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: cockroachdb
+        image: cockroachdb/cockroach:v23.1.11
+        command:
+          - "/bin/bash"
+          - "-ecx"
+          - |
+            exec /cockroach/cockroach start \
+            --insecure \
+            --logtostderr \
+            --certs-dir=/cockroach/cockroach-certs \
+            --advertise-host=$(hostname -f) \
+            --http-addr=0.0.0.0 \
+            --join=cockroachdb-0.cockroachdb.cockroachdb.svc.cluster.local:26257,cockroachdb-1.cockroachdb.cockroachdb.svc.cluster.local:26257,cockroachdb-2.cockroachdb.cockroachdb.svc.cluster.local:26257 \
+            --cache=25% \
+            --max-sql-memory=25% \
+        ports:
+        - containerPort: 26257
+          name: grpc
+        - containerPort: 8080
+          name: http
+        livenessProbe:
+          httpGet:
+            path: "/health"
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: "/health?ready=1"
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 2
+        resources:
+          requests:
+            cpu: "1"
+            memory: "4Gi"
+          limits:
+            cpu: "2"
+            memory: "8Gi"
+        volumeMounts:
+        - name: datadir
+          mountPath: /cockroach/cockroach-data
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes:
+        - "ReadWriteOnce"
+      resources:
+        requests:
+          storage: "100Gi"
+      storageClassName: standard

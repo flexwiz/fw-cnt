@@ -20,10 +20,10 @@ profiles:
 
   - name: gcp
     activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
     build:
       googleCloudBuild:
-        projectId: sample-development
+        projectId: flexwiz-development
         concurrency: 0
     deploy: *deploy
     manifests: *manifests

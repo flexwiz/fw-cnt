@@ -20,13 +20,13 @@ profiles:
 
   - name: gcp
     activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
     # build:
     #   tagPolicy:
     #     sha256: {}
     #   googleCloudBuild:
-    #     workerPool: projects/sample/locations/europe-west9/workerPools/worker-development-pool
-    #     projectId: sample
+    #     workerPool: projects/flexwiz/locations/europe-west9/workerPools/worker-development-pool
+    #     projectId: flexwiz
     #     concurrency: 0
     #   artifacts:
     #     - image: grafana

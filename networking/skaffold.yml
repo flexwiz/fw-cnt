@@ -16,6 +16,6 @@ requires:
       - name: production
         activatedBy: [production]
 
-  # - configs: ["service-mesh"]
-  #   path: service-mesh
-  #   activeProfiles: *profiles
+  - configs: ["service-mesh"]
+    path: service-mesh
+    activeProfiles: *profiles

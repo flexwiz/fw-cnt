@@ -1,8 +1,0 @@
-# traefik/k8s/base/namespace.yaml
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: fw-middleware
-  labels:
-    istio-injection: disabled

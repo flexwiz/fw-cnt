@@ -13,7 +13,6 @@ labels:
       flexwiz.io/version: "stable-2.14.1"
 
 resources:
-  - namespace.yaml
   - crds.yaml
   - configmap.yaml
   - deployment.yaml

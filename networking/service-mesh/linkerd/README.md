@@ -1,67 +1,54 @@
-# Linkerd Kubernetes Deployment Project
+# Linkerd
 
 This project provides a comprehensive setup for deploying Linkerd service mesh across multiple environments (production, staging, development) using Skaffold, Kustomize, and Sealed Secrets. It also includes sample implementations for integrating KrakenD API gateway and Keycloak authentication with Linkerd.
 
 ## Project Structure
 
 ```
+.
+├── config
+│   └── config.yaml
+├── k8s
+│   ├── addons
+│   │   ├── grafana.yaml
+│   │   ├── pod-monitor.yaml
+│   │   └── prometheus.yaml
+│   ├── base
+│   │   ├── configmap.yaml
+│   │   ├── crds.yaml
+│   │   ├── deployment.yaml
+│   │   ├── kustomization.yaml
+│   │   ├── namespace.yaml
+│   │   └── service.yaml
+│   └── overlays
+│       ├── development
+│       │   ├── kustomization.yaml
+│       │   └── patches
+│       │       └── deployment.yaml
+│       ├── production
+│       │   ├── kustomization.yaml
+│       │   └── patches
+│       │       └── deployment.yaml
+│       └── staging
+│           ├── kustomization.yaml
+│           └── patches
+│               └── deployment.yaml
 ├── README.md
-├── skaffold.yaml
-├── base
-│   ├── kustomization.yaml
-│   ├── linkerd-crds.yaml
-│   ├── linkerd-control-plane.yaml
-│   ├── linkerd-viz.yaml
-│   └── sealed-secrets-controller.yaml
-├── environments
-│   ├── development
-│   │   ├── kustomization.yaml
-│   │   ├── patches
-│   │   │   ├── linkerd-config-patch.yaml
-│   │   │   ├── linkerd-resources-patch.yaml
-│   │   │   └── linkerd-viz-patch.yaml
-│   │   └── secrets
-│   │       └── linkerd-trust-anchor.yaml
-│   ├── staging
-│   │   ├── kustomization.yaml
-│   │   ├── patches
-│   │   │   ├── linkerd-config-patch.yaml
-│   │   │   ├── linkerd-resources-patch.yaml
-│   │   │   └── linkerd-viz-patch.yaml
-│   │   └── secrets
-│   │       └── linkerd-trust-anchor.yaml
-│   └── production
-│       ├── kustomization.yaml
-│       ├── patches
-│       │   ├── linkerd-config-patch.yaml
-│       │   ├── linkerd-resources-patch.yaml
-│       │   └── linkerd-viz-patch.yaml
-│       └── secrets
-│           └── linkerd-trust-anchor.yaml
-└── samples
-    ├── krakend
-    │   ├── kustomization.yaml
-    │   ├── krakend-config.yaml
-    │   └── krakend-deployment.yaml
-    └── keycloak
-        ├── kustomization.yaml
-        ├── keycloak-deployment.yaml
-        └── keycloak-config.yaml
+└── skaffold.yaml
 ```
 
 ## Prerequisites
 
-- Kubernetes cluster (v1.25+)
-- kubectl (v1.25+)
-- Skaffold (v2.8.0+)
-- Kustomize (v5.0.0+)
-- kubeseal (v0.23.0+)
-- helm (v3.12.0+)
+Before starting, ensure you have installed all tools mentioned in the [main documentation](../../README.md#-prerequisites) of this repository.
 
-## Linkerd Installation Overview
+## 🚀 Getting start
+
+1. Read the setup step from the [main documentation](../../../README.md#setup-environment-variables) of this repository
+2. [Setup Sealed Secrets controller](../../../security/sealed-secrets/README.md#-getting-start) in your cluster (if not already installed)
+
+### Linkerd Installation Overview
 
 This project deploys Linkerd in a three-step process:
-
 1. Install Linkerd CRDs
 2. Deploy Linkerd control plane
 3. Deploy Linkerd visualization components
@@ -80,7 +67,7 @@ Each environment (development, staging, production) has its own configuration:
 - **Staging**: Moderate resources, standard replicas, some tracing
 - **Production**: High-availability deployment, multiple replicas, optimized resources
 
-## Setup Instructions
+## Setup instructions
 
 ### 1. Generate Trust Anchor Certificates
 
@@ -128,79 +115,6 @@ linkerd check
 linkerd stat deployments -n linkerd
 ```
 
-## Integrating with Sample Applications
-
-### KrakenD API Gateway
-
-The sample KrakenD deployment is configured to work with Linkerd by:
-
-1. Including the necessary Linkerd annotations
-2. Setting up proper service profiles for traffic management
-3. Configuring health checking endpoints for Linkerd
-
-To deploy:
-
-```bash
-kubectl apply -k samples/krakend
-```
-
-### Keycloak Authentication
-
-The sample Keycloak deployment is configured to:
-
-1. Work as an identity provider for applications in the mesh
-2. Provide JWT token validation for service-to-service authentication
-3. Integrate with Linkerd's mTLS for added security
-
-To deploy:
-
-```bash
-kubectl apply -k samples/keycloak
-```
-
-## Key Files
-
-### skaffold.yaml
-
-```yaml
-apiVersion: skaffold/v4beta5
-kind: Config
-metadata:
-  name: linkerd-deployment
-build: {}
-profiles:
-  - name: dev
-    deploy:
-      kubectl:
-        manifests:
-          - environments/development/kustomization.yaml
-  - name: staging
-    deploy:
-      kubectl:
-        manifests:
-          - environments/staging/kustomization.yaml
-  - name: production
-    deploy:
-      kubectl:
-        manifests:
-          - environments/production/kustomization.yaml
-```
-
-### base/kustomization.yaml
-
-```yaml
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-resources:
-  - linkerd-crds.yaml
-  - linkerd-control-plane.yaml
-  - linkerd-viz.yaml
-  - sealed-secrets-controller.yaml
-
-namespace: linkerd
-```
-
 ## Best Practices Implemented
 
 1. **Security**:
@@ -244,7 +158,7 @@ namespace: linkerd
 
 2. **Resource Constraints**:
    ```bash
-   kubectl describe pods -n linkerd
+   kubectl describe pods -n fw-security
    # Look for resource-related failures
    ```
 
@@ -258,7 +172,7 @@ namespace: linkerd
 
 ```bash
 # Get Linkerd proxy logs
-kubectl logs deployment/linkerd-controller -n linkerd -c linkerd-proxy
+kubectl logs deployment/linkerd-controller -n fw-security -c linkerd-proxy
 
 # Check Linkerd components
 linkerd check --proxy
@@ -279,7 +193,7 @@ To update Linkerd to a newer version:
 
 ```bash
 # Monitor rollout
-kubectl rollout status deployment/linkerd-controller -n linkerd
+kubectl rollout status deployment/linkerd-controller -n fw-security
 ```
 
 ### Rotating Certificates

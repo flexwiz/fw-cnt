@@ -2,18 +2,17 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: fw-middleware
+namespace: fw-network
 
 labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/tier: networking
-    flexwiz.io/type: reverse-proxy
-    flexwiz.io/app: traefik
-    flexwiz.io/version: "v3.3.5"
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/tier: networking
+      flexwiz.io/type: reverse-proxy
+      flexwiz.io/app: traefik
+      flexwiz.io/version: "v3.3.5"
 
 resources:
-  - namespace.yaml
   - rbac.yaml
   - crds.yaml
   - service.yaml

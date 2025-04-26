@@ -78,8 +78,7 @@ kubeconfig*
 !.secrets.yaml.example
 !.*.yaml.example
 
-### MongoDB ###
-data/
+### databases data ###
 **/data/db/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode

@@ -1,0 +1,31 @@
+# metabase/k8s/overlays/staging/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: staging
+
+resources:
+- ../../base
+- cronjob-backup.yaml
+- sealed-secrets.yaml
+- hpa.yaml
+- network-policy.yaml
+#- servicemonitor.yaml
+
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+- path: patches/ingress.yaml
+
+images:
+  - name: metabase/metabase
+    newTag: "v0.54.3.1"
+
+# secretGenerator:
+# - name: metabase-db-credentials
+#   envs:
+#   - ../../.env.staging
+#   type: Opaque

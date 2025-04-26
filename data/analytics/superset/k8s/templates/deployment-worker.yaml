@@ -1,0 +1,80 @@
+---
+# Source: superset/templates/deployment-worker.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset-worker
+  # namespace: superset
+  labels:
+    app: superset-worker
+    chart: superset-0.12.9
+    release: superset
+    heritage: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: superset-worker
+      release: superset
+  template:
+    metadata:
+      annotations:
+        checksum/superset_config.py: 645f8b44e6f772a77ab5910009c2790dc7fa8a372bb685e15183e1b2b88f2ea1
+        checksum/superset_bootstrap.sh: dc9a47141051ced34960c313860a55e03eb48c1fa36a0ed25c03ad60cd3b5c48
+        checksum/connections: 2d41a2c51ec2fc809be84fc0ea0e603c946d529b4a0e43f7257e617909561a75
+        checksum/extraConfigs: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+        checksum/extraSecrets: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+        checksum/extraSecretEnv: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+        checksum/configOverrides: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+        checksum/configOverridesFiles: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
+      labels:
+        app: superset-worker
+        release: superset
+    spec:
+      securityContext:
+        runAsUser: 0
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT"
+          -timeout 120s
+        envFrom:
+        - secretRef:
+            name: 'superset-env'
+        image: 'apache/superset:dockerize'
+        imagePullPolicy: 'IfNotPresent'
+        name: wait-for-postgres-redis
+      containers:
+        - name: superset
+          #image: "apachesuperset.docker.scarf.sh/apache/superset:4.0.0"
+          image: "flexwiz/superset"
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-c",". /app/pythonpath/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker"]
+          env:
+            - name: "SUPERSET_PORT"
+              value: "8088"
+          envFrom:
+            - secretRef:
+                name: "superset-env"
+          volumeMounts:
+            - name: superset-config
+              mountPath: "/app/pythonpath"
+              readOnly: true
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - celery -A superset.tasks.celery_app:app inspect ping -d celery@$HOSTNAME
+            failureThreshold: 3
+            initialDelaySeconds: 120
+            periodSeconds: 60
+            successThreshold: 1
+            timeoutSeconds: 60
+          resources:
+            {}
+      volumes:
+        - name: superset-config
+          secret:
+            secretName: superset-config

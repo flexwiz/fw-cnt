@@ -18,7 +18,7 @@ patches:
 
 images:
   - name: mongodb
-    newTag: "6.0"
+    newTag: "8.0.8"
 
 # secretGenerator:
 # - name: mongodb-secrets

@@ -236,9 +236,9 @@ requires:
 
 ## 🚢 Deployment
 
-### Manual Deployment
+### Manual deployment
 
-Deploy to a specific environment using Skaffold:
+#### Deploy to a specific environment using Skaffold
 
 ```bash
 # Deploy to development environnement
@@ -251,7 +251,23 @@ skaffold run -p staging -m [component1],[component2],...
 skaffold run -p production -m [component1],[component2],...
 ```
 
-### CI/CD Integration
+#### Deploy with kubectl
+
+You can also deploy using kubectl and kustomize directly:
+
+```bash
+# Deploy to development
+kubectl apply -k </component-directory>/k8s/overlays/development/
+
+# Deploy to staging
+kubectl apply -k </component-directory>/k8s/overlays/staging/
+
+# Deploy to production
+kubectl apply -k </component-directory>/k8s/overlays/production/
+```
+
+
+### CI/CD integration
 
 This repository includes GitHub Actions workflows for automated deployments for each component:
 

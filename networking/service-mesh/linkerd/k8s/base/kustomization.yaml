@@ -1,0 +1,20 @@
+# linkerd/k8s/base/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fw-network
+
+labels:
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/tier: networking
+      flexwiz.io/type: service-mesh
+      flexwiz.io/app: linkerd
+      flexwiz.io/version: "stable-2.14.1"
+
+resources:
+  - namespace.yaml
+  - crds.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml

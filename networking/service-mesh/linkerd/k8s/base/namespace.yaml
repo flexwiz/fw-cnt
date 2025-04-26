@@ -1,8 +1,8 @@
+# linkerd/k8s/base/namespace.yaml
+---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: linkerd
+  name: fw-network
   labels:
-    tier: middleware
-    type: service-mesh
     istio-injection: disabled  # Avoid injection if Istio is also present

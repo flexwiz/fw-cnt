@@ -11,8 +11,7 @@ metadata:
 # describes a list of other required configs for the current config.
 # requires: {}
 
-## Profiles: development, staging, production
-
+## Profiles: local, development, staging, production
 profiles:
   - name: local
     build: &build
@@ -57,7 +56,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: keycloak
-        namespace: fw-middleware
+        namespace: fw-security
         port: 8080
         localPort: 8280
 

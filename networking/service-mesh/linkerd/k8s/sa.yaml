@@ -1,9 +1,0 @@
-# Service Account for Linkerd Controller
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: linkerd-controller
-  namespace: linkerd
-  labels:
-    tier: middleware
-    type: service-mesh

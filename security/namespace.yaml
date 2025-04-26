@@ -1,0 +1,8 @@
+# security/namespace.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fw-security
+  labels:
+    istio-injection: disabled  # Avoid injection if Istio is also present

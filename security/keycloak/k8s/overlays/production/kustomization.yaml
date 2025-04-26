@@ -1,36 +1,34 @@
 # keycloak/k8s/overlays/production/kustomization.yaml
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/env: production
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: production
 
 resources:
-- ../../base
-- cronjob-backup.yaml
-- hpa.yaml
-- network-policy.yaml
-- sealed-secrets.yaml
-# - servicemonitor.yaml
+  - ../../base
+  - cronjob-backup.yaml
+  - hpa.yaml
+  - network-policy.yaml
+  - sealed-secrets.yaml
+  # - servicemonitor.yaml
 
-# patches:
-#   - path: patches/deployment.yaml
-#   - path: patches/ingress.yaml
-patchesStrategicMerge:
-- patches/deployment.yaml
-- patches/ingress.yaml
+patches:
+  - path: patches/deployment.yaml
+  - path: patches/ingress.yaml
 
 images:
   - name: flexwiz.io/keycloak
     newTag: "26.1.4"
 
 configMapGenerator:
-- name: keycloak-config
-  behavior: merge
-  literals:
-  - KC_HOSTNAME=auth.flexwiz.io
+  - name: keycloak-config
+    behavior: merge
+    literals:
+    - KC_HOSTNAME=auth.flexwiz.io
 
 # secretGenerator:
 # - envs:

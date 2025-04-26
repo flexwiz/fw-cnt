@@ -55,32 +55,21 @@ data:
           "backend": [
             {
               "url_pattern": "/docs",
-              "host": ["http://api-docs-service:8080"],
+              "host": ["http://api-docs-service.fw-orp.svc.cluster.local:8080"],
               "encoding": "json"
             }
           ]
         },
         {
-          "endpoint": "/api/v1/public",
-          "method": "GET",
-          "output_encoding": "json",
-          "backend": [
-            {
-              "url_pattern": "/public",
-              "host": ["http://public-service:8080"],
-              "encoding": "json"
-            }
-          ]
-        },
-        {
-          "endpoint": "/api/v1/secured",
+          "endpoint": "/api/v1/users",
           "method": "GET",
           "output_encoding": "json",
           "extra_config": {
             "auth/validator": {
               "alg": "RS256",
-              "jwk_url": "http://keycloak/realms/api-gateway/protocol/openid-connect/certs",
+              "jwk_url": "http://keycloak.fw-security.svc.cluster.local:8080/auth/realms/master/protocol/openid-connect/certs",
               "disable_jwk_security": false,
+              "operation_debug": true,
               "cache": true,
               "audience": ["api-gateway-client"],
               "roles_key": "realm_access.roles",
@@ -95,8 +84,8 @@ data:
           },
           "backend": [
             {
-              "url_pattern": "/secured",
-              "host": ["http://secure-service:8080"],
+              "url_pattern": "/users",
+              "host": ["http://user-service.fw-orp.svc.cluster.local:8080"],
               "encoding": "json",
               "extra_config": {
                 "modifier/martian": {
@@ -117,8 +106,9 @@ data:
           "extra_config": {
             "auth/validator": {
               "alg": "RS256",
-              "jwk_url": "http://keycloak-service/realms/api-gateway/protocol/openid-connect/certs",
+              "jwk_url": "http://keycloak.fw-security.svc.cluster.local:8080/auth/realms/master/protocol/openid-connect/certs",
               "disable_jwk_security": false,
+              "operation_debug": true,
               "cache": true,
               "audience": ["api-gateway-client"],
               "roles_key": "realm_access.roles",
@@ -134,7 +124,7 @@ data:
           "backend": [
             {
               "url_pattern": "/admin",
-              "host": ["http://admin-service:8080"],
+              "host": ["http://admin-service.fw-orp.svc.cluster.local:8080"],
               "encoding": "json"
             }
           ]

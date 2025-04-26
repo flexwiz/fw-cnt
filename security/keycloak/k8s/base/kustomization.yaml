@@ -1,22 +1,20 @@
----
 # keycloak/k8s/base/kustomization.yaml
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: fw-middleware
+namespace: fw-security
 
 labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/tier: security
-    flexwiz.io/type: iam
-    flexwiz.io/app: keycloak
-    flexwiz.io/version: "26.2.0"
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/tier: security
+      flexwiz.io/type: iam
+      flexwiz.io/app: keycloak
+      flexwiz.io/version: "26.2.0"
 
 resources:
-- configmap.yaml
-- deployment.yaml
-- ingress.yaml
-# - pvc.yaml
-- service.yaml
-
-
+  - configmap.yaml
+  - deployment.yaml
+  - ingress.yaml
+  # - pvc.yaml
+  - service.yaml

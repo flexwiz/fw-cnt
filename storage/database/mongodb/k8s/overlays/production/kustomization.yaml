@@ -1,0 +1,25 @@
+# mongodb/k8s/overlays/production/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: production
+
+resources:
+  - ../../base
+  - pdb.yaml
+  - sealed-secrets.yaml
+
+patches:
+  - path: patches/statefulset.yaml
+  - path: patches/pvc.yaml
+
+# secretGenerator:
+#   - name: mongodb-secrets
+#     envs:
+#     - ../../.env.production
+#     type: Opaque
+

@@ -22,7 +22,7 @@ skaffold run -p staging -m sealed-secrets
 skaffold run -p production -m sealed-secrets
 ``` 
 
-It will deploy Sealed Secrets to your Kubernetes cluster in the `kube-system` namespace.
+It will deploy Sealed Secrets to your Kubernetes cluster in the `fw-security` namespace.
 
 ### 2. Encrypt your Kubernetes secrets with the [Kubeseal](https://github.com/bitnami-labs/sealed-secrets) tools
 
@@ -30,14 +30,14 @@ Use the following command to generate a sealed secrets file (`my-sealed-secret.y
 
 ```bash
 # With existing secrets template (mysecret.yaml)
-kubeseal --controller-name sealed-secrets --controller-namespace kube-system -f mysecret.yaml -w my-sealed-secrets.yaml
+kubeseal --controller-name sealed-secrets --controller-namespace fw-security -f mysecret.yaml -w my-sealed-secrets.yaml
 
 # or without template
 kubectl create secret generic my-secrets \
   --from-literal=username=YOUR_USERNAME \
   --from-literal=password=YOUR_PASSWORD \
   --dry-run=client -o yaml | \
-  kubeseal --controller-name sealed-secrets --controller-namespace kube-system --format yaml > my-sealed-secrets.yaml
+  kubeseal --controller-name sealed-secrets --controller-namespace fw-security --format yaml > my-sealed-secrets.yaml
 ```
 
 For example, to generate a sealed secrets file for my postgresql-secrets.yaml file:
@@ -61,7 +61,7 @@ type: Opaque
 ```
 
 ```bash
-kubeseal --controller-name sealed-secrets --controller-namespace kube-system -f postgres-secrets.yaml -w sealed-secrets.yaml
+kubeseal --controller-name sealed-secrets --controller-namespace fw-security -f postgres-secrets.yaml -w sealed-secrets.yaml
 
 ```
 

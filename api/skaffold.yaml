@@ -18,6 +18,10 @@ requires:
       - name: production
         activatedBy: [production]
 
+  # - configs: ["gravitee"]
+  #   path: gravitee
+  #   activeProfiles: *profiles
+
   # - configs: ["kong"]
   #   path: kong
   #   activeProfiles: *profiles

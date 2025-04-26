@@ -5,24 +5,18 @@ kind: Kustomization
 namespace: fw-api
 
 labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/env: staging
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: staging
 
 resources:
-- ../../base
+  - ../../base
 
 patches:
-- path: patches/configmap.yaml
-- path: patches/deployment.yaml
-- path: patches/ingress.yaml
+  - path: patches/configmap.yaml
+  - path: patches/deployment.yaml
+  - path: patches/ingress.yaml
 
 images:
   - name: devopsfaith/krakend
     newTag: "2.9"
-
-# secretGenerator:
-# - name: krakend-db-credentials
-#   envs:
-#   - secrets/db-credentials.env
-#   type: Opaque

@@ -5,20 +5,14 @@ kind: Kustomization
 namespace: fw-api
 
 labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/env: development
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: development
 
 resources:
-- ../../base
+  - ../../base
 
 patches:
-- path: patches/configmap.yaml
-- path: patches/deployment.yaml
-- path: patches/ingress.yaml
-
-# secretGenerator:
-# - name: krakend-db-credentials
-#   envs:
-#   - secrets/db-credentials.env
-#   type: Opaque
+  - path: patches/configmap.yaml
+  - path: patches/deployment.yaml
+  - path: patches/ingress.yaml

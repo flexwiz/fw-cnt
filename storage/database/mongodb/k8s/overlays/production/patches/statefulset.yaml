@@ -1,0 +1,29 @@
+# mongodb/k8s/overlays/production/patches/statefulset.yaml
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongodb
+spec:
+  replicas: 5
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: flexwiz.io/app
+                operator: In
+                values:
+                - mongodb
+            topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: mongodb
+        resources:
+          requests:
+            cpu: 2000m
+            memory: 4Gi
+          limits:
+            cpu: 4000m
+            memory: 8Gi

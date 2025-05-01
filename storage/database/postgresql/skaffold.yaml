@@ -49,7 +49,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: postgresql
-        namespace: fw-databases
+        namespace: fw-storage
         port: 5432
         localPort: 5432
 

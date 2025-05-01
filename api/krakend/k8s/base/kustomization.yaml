@@ -7,7 +7,7 @@ namespace: fw-api
 labels:
   - includeSelectors: true
     pairs:
-      flexwiz.io/tier: middleware
+      flexwiz.io/tier: api
       flexwiz.io/type: api-gateway
       flexwiz.io/app: krakend
       flexwiz.io/version: "2.9"

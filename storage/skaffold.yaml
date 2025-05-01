@@ -5,8 +5,8 @@ metadata:
 
 requires:
 
-  - configs: ["database"]
-    path: database
+  - configs: ["cache"]
+    path: cache
     activeProfiles: &profiles
       - name: local
         activatedBy: [local]
@@ -17,10 +17,18 @@ requires:
       - name: production
         activatedBy: [production]
 
-  - configs: ["minio"]
-    path: minio
+  - configs: ["database"]
+    path: database
     activeProfiles: *profiles
 
-  - configs: ["sftp"]
-    path: sftp
+  - configs: ["files-storage"]
+    path: files-storage
+    activeProfiles: *profiles
+
+  - configs: ["objects-storage"]
+    path: objects-storage
+    activeProfiles: *profiles
+
+  - configs: ["registry"]
+    path: registry
     activeProfiles: *profiles

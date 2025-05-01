@@ -1,11 +1,12 @@
 apiVersion: skaffold/v4beta11
 kind: Config
 metadata:
-  name: data
+  name: objects-storage
 
 requires:
-  - configs: ["analytics"]
-    path: analytics
+
+  - configs: ["minio"]
+    path: minio
     activeProfiles: &profiles
       - name: local
         activatedBy: [local]
@@ -15,11 +16,3 @@ requires:
         activatedBy: [staging]
       - name: production
         activatedBy: [production]
-
-  # - configs: ["elt"]
-  #   path: elt
-  #   activeProfiles: *profiles
-
-  # - configs: ["message-broker"]
-  #   path: message-broker
-  #   activeProfiles: *profiles

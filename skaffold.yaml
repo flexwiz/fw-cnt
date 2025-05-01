@@ -20,10 +20,6 @@ requires:
     path: data
     activeProfiles: *profiles
 
-  # - configs: ["message-broker"]
-  #   path: message-broker
-  #   activeProfiles: *profiles
-
   # - configs: ["monitoring"]
   #   path: monitoring
   #   activeProfiles: *profiles

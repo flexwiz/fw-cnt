@@ -1,11 +1,11 @@
-# networking/namespace.yaml
+# monitoring/namespace.yaml
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: fw-network
+  name: fw-monitoring
   labels:
-    flexwiz.io/tier: networking
+    flexwiz.io/tier: monitoring
     istio-injection: enabled    # Avoid injection if Istio is also present
     linkerd.io/inject: enabled  # Avoid injection if Linkerd is also present
     pod-security.kubernetes.io/enforce: restricted

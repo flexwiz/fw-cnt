@@ -1,0 +1,68 @@
+# linkerd/k8s/overlays/development/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: public-api
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      - name: destination
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      - name: identity
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-viz
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: web
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      - name: prometheus
+        resources:
+          requests:
+            cpu: 100m
+            memory: 200Mi
+          limits:
+            cpu: 200m
+            memory: 400Mi
+      - name: tap
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi

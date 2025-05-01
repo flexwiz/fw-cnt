@@ -1,0 +1,104 @@
+# linkerd/k8s/base/service.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-controller-api
+  labels:
+    app.kubernetes.io/name: linkerd-controller
+    app.kubernetes.io/part-of: linkerd
+    linkerd.io/control-plane-component: controller
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8084
+    targetPort: http
+  - name: admin-http
+    port: 9994
+    targetPort: admin-http
+  selector:
+    app.kubernetes.io/name: linkerd-controller
+    linkerd.io/control-plane-component: controller
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-dst
+  labels:
+    app.kubernetes.io/name: linkerd-controller
+    app.kubernetes.io/part-of: linkerd
+    linkerd.io/control-plane-component: controller
+spec:
+  type: ClusterIP
+  ports:
+  - name: grpc
+    port: 8086
+    targetPort: grpc
+  selector:
+    app.kubernetes.io/name: linkerd-controller
+    linkerd.io/control-plane-component: controller
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-identity
+  labels:
+    app.kubernetes.io/name: linkerd-controller
+    app.kubernetes.io/part-of: linkerd
+    linkerd.io/control-plane-component: controller
+spec:
+  type: ClusterIP
+  ports:
+  - name: grpc
+    port: 8080
+    targetPort: grpc
+  selector:
+    app.kubernetes.io/name: linkerd-controller
+    linkerd.io/control-plane-component: controller
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-viz
+  labels:
+    app.kubernetes.io/name: linkerd-viz
+    app.kubernetes.io/part-of: linkerd
+    linkerd.io/extension: viz
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8084
+    targetPort: http
+  - name: admin-http
+    port: 9994
+    targetPort: admin-http
+  selector:
+    app.kubernetes.io/name: linkerd-viz
+    linkerd.io/extension: viz
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkerd-prometheus
+  labels:
+    app.kubernetes.io/name: linkerd-viz
+    app.kubernetes.io/part-of: linkerd
+    linkerd.io/extension: viz
+spec:
+  type: ClusterIP
+  ports:
+  - name: admin-http
+    port: 9090
+    targetPort: admin-http
+  selector:
+    app.kubernetes.io/name: linkerd-viz
+    linkerd.io/extension: viz

@@ -1,0 +1,30 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: kafka
+
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: kafka
+        port: 9092
+        localPort: 9092
+
+  - name: gcp
+    activation:
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
+    build:
+      googleCloudBuild:
+        projectId: flexwiz-development
+        concurrency: 0
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward

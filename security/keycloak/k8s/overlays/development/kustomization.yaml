@@ -1,33 +1,30 @@
-# overlays/development/kustomization.yaml
+# keycloak/overlays/development/kustomization.yaml
+---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: fw-security
 
 labels:
-- includeSelectors: true
-  pairs:
-    flexwiz.io/env: development
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: development
 
 resources:
-- ../../base
-- cronjob-backup.yaml
-- hpa.yaml
-# - network-policy.yaml
-- sealed-secrets.yaml
-# - servicemonitor.yaml
+  - ../../base
+  - cronjob-backup.yaml
+  - hpa.yaml
+  # - network-policy.yaml
+  - sealed-secrets.yaml
+  # - servicemonitor.yaml
 
-# patches:
-#   - path: patches/deployment.yaml
-#   - path: patches/ingress.yaml
-patchesStrategicMerge:
-- patches/deployment.yaml
-- patches/ingress.yaml
+patches:
+  - path: patches/deployment.yaml
+  - path: patches/ingress.yaml
 
 configMapGenerator:
-- name: keycloak-config
-  behavior: merge
-  literals:
-  - KC_HOSTNAME=auth.dev.flexwiz.io
+  - name: keycloak-config
+    behavior: merge
+    literals:
+    - KC_HOSTNAME=auth.dev.flexwiz.io
 
 # secretGenerator:
 # - envs:

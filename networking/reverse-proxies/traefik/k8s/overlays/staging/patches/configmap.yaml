@@ -1,0 +1,37 @@
+# traefik/k8s/overlays/staging/patches/configmap.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+data:
+  traefik.yaml: |
+    api:
+      dashboard: true
+      insecure: false
+    entryPoints:
+      http:
+        address: ":80"
+      https:
+        address: ":443"
+        http:
+          tls:
+            certResolver: default
+    providers:
+      kubernetesCRD:
+        ingressClass: traefik
+        allowCrossNamespace: true
+      kubernetesIngress:
+        ingressClass: traefik
+    log:
+      level: INFO
+    metrics:
+      prometheus: {}
+    certificatesResolvers:
+      default:
+        acme:
+          email: devops@flexwiz.io
+          storage: /certs/acme.json
+          tlsChallenge: {}
+    ping:
+      entryPoint: http

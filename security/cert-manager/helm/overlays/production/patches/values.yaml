@@ -1,0 +1,44 @@
+# cert-manager/helm/overlays/production/patches/values.yaml
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  values:
+    replicaCount: 3
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+    resources:
+      requests:
+        cpu: 300m
+        memory: 512Mi
+      limits:
+        cpu: 600m
+        memory: 1Gi
+    webhook:
+      replicaCount: 3
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
+      resources:
+        requests:
+          cpu: 150m
+          memory: 256Mi
+        limits:
+          cpu: 300m
+          memory: 512Mi
+    cainjector:
+      replicaCount: 3
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
+      resources:
+        requests:
+          cpu: 150m
+          memory: 256Mi
+        limits:
+          cpu: 300m
+          memory: 512Mi

@@ -1,0 +1,19 @@
+---
+# metabase/k8s/base/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fw-analytics
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/tier: analytics
+    flexwiz.io/type: business-intelligence
+    flexwiz.io/app: metabase
+    flexwiz.io/version: "0.54.2"
+
+resources:
+- configmap.yaml
+- deployment.yaml
+- service.yaml
+- ingress.yaml

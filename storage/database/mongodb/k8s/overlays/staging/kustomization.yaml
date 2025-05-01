@@ -1,0 +1,28 @@
+# mongodb/k8s/overlays/staging/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: staging
+
+resources:
+  - ../../base
+  - pdb.yaml
+  - sealed-secrets.yaml
+
+patches:
+  - path: patches/statefulset.yaml
+  - path: patches/pvc.yaml
+
+images:
+  - name: mongodb
+    newTag: "8.0.8"
+
+# secretGenerator:
+#   - name: mongodb-secrets
+#     envs:
+#     - ../../.env.staging
+#     type: Opaque

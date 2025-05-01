@@ -13,22 +13,22 @@ on:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - api-gateway/krakend/config/krakend*.json
-      - api-gateway/krakend/Dockerfile
-      - api-gateway/krakend/docker-bake.hcl
+      - api/krakend/config/krakend*.json
+      - api/krakend/Dockerfile
+      - api/krakend/docker-bake.hcl
       - .github/workflows/krakend-ci.yml
   pull_request:
     # paths-ignore:
     #   - '**.md'
     paths:
-      - api-gateway/krakend/config/krakend*.json
-      - api-gateway/krakend/Dockerfile
-      - api-gateway/krakend/docker-bake.hcl
+      - api/krakend/config/krakend*.json
+      - api/krakend/Dockerfile
+      - api/krakend/docker-bake.hcl
       - .github/workflows/krakend-ci.yml
 
 # Environment variables available to all jobs and steps in this workflow
 env:
-  SOURCE_DIR: ./api-gateway/krakend
+  SOURCE_DIR: ./api/krakend
   KRAKEND_VERSION: 2.9 # see Dockerfile
   DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
   DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

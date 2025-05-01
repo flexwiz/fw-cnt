@@ -1,0 +1,15 @@
+# mongodb/k8s/base/configmap.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongodb-config
+data:
+  mongod.conf: |
+    storage:
+      dbPath: /data/db
+    net:
+      bindIp: 0.0.0.0
+      port: 27017
+    security:
+      authorization: enabled

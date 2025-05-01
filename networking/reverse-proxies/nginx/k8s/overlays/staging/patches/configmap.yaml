@@ -1,0 +1,10 @@
+# nginx/k8s/overlays/staging/patches/configmap.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-configuration
+data:
+  log-level: info
+  log-format-upstream: '{"time": "$time_iso8601", "remote_addr": "$remote_addr", "request_id": "$req_id", "proxy_upstream_name": "$proxy_upstream_name", "upstream_addr": "$upstream_addr", "upstream_status": "$upstream_status", "request": "$request", "status": "$status"}'
+  ssl-redirect: "true"

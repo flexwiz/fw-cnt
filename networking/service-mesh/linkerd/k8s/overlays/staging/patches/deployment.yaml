@@ -1,0 +1,86 @@
+# linkerd/k8s/overlays/staging/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-controller
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: public-api
+        args:
+        - "public-api"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+      - name: destination
+        args:
+        - "destination"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+      - name: identity
+        args:
+        - "identity"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+        - "-identity-trust-domain=cluster.local"
+        - "-identity-scheme=kubernetes.io/tls"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+      - name: destination
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+      - name: identity
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-viz
+  namespace: linkerd-viz
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: web
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi
+      - name: prometheus
+        resources:
+          requests:
+            cpu: 300m
+            memory: 400Mi
+          limits:
+            cpu: 500m
+            memory: 800Mi
+      - name: tap
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 200m
+            memory: 200Mi

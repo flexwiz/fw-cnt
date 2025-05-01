@@ -1,0 +1,30 @@
+# traefik/k8s/overlays/production/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fw-middleware
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: production
+
+resources:
+- ../../base
+- network-policy.yaml
+- sealed-tls-cert.yaml
+
+patches:
+- path: patches/configmap.yaml
+- path: patches/deployment.yaml
+
+images:
+- name: traefik
+  newTag: "v3.3.5"
+
+# secretGenerator:
+# - envs:
+#   - ../../.env.production
+#   name: traefik-credentials
+#   type: Opaque
+

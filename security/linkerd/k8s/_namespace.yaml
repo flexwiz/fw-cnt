@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: linkerd
-  labels:
-    tier: middleware
-    type: service-mesh
-    istio-injection: disabled  # Avoid injection if Istio is also present

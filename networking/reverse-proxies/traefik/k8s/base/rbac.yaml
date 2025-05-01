@@ -1,0 +1,61 @@
+# traefik/k8s/base/rbac.yaml
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: traefik
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - extensions
+      - networking.k8s.io
+    resources:
+      - ingresses
+      - ingressclasses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - traefik.containo.us
+      - traefik.io
+    resources:
+      - middlewares
+      - middlewaretcps
+      - ingressroutes
+      - ingressroutetcps
+      - ingressrouteudps
+      - tlsoptions
+      - tlsstores
+      - serverstransports
+    verbs:
+      - get
+      - list
+      - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: traefik
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: traefik
+subjects:
+  - kind: ServiceAccount
+    name: traefik
+    namespace: fw-middleware

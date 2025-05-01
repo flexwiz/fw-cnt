@@ -1,0 +1,17 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: registry
+
+requires:
+  - configs: ["artifactory"]
+    path: artifactory
+    activeProfiles: &profiles
+      - name: minikube
+        activatedBy: [minikube]
+      - name: gcp
+        activatedBy: [gcp]
+
+  # - configs: ["other"]
+  #   path: other
+  #   activeProfiles: *profiles

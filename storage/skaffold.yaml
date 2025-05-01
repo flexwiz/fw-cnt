@@ -4,14 +4,31 @@ metadata:
   name: storage
 
 requires:
-  - configs: ["minio"]
-    path: minio
-    activeProfiles: &profiles
-      - name: minikube
-        activatedBy: [minikube]
-      - name: gcp
-        activatedBy: [gcp]
 
-  - configs: ["sftp"]
-    path: sftp
+  - configs: ["cache"]
+    path: cache
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
+
+  - configs: ["database"]
+    path: database
+    activeProfiles: *profiles
+
+  - configs: ["files-storage"]
+    path: files-storage
+    activeProfiles: *profiles
+
+  - configs: ["objects-storage"]
+    path: objects-storage
+    activeProfiles: *profiles
+
+  - configs: ["registry"]
+    path: registry
     activeProfiles: *profiles

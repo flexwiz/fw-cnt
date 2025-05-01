@@ -1,0 +1,30 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: istio
+
+profiles:
+  - name: local
+    activation:
+      - kubeContext: minikube
+    deploy: &deploy
+      kubectl:
+        defaultNamespace: istio-system
+    manifests: &manifests
+      rawYaml:
+        - ./k8s/crd/*.yaml
+        - ./k8s/addons/*.yaml
+        - ./k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: kiali
+        namespace: istio-system
+        port: 20001
+        localPort: 20001
+
+  - name: gcp
+    activation:
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward

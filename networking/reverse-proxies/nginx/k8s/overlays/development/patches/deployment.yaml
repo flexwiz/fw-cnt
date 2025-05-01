@@ -1,0 +1,19 @@
+# nginx/k8s/overlays/development/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: nginx-ingress-controller
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

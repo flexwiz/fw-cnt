@@ -1,0 +1,22 @@
+# cert-manager/helm/overlays/development/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: production
+
+resources:
+- ../../base
+- issuers/cluster-issuer.yaml
+
+patches:
+  - path: patches/values.yaml
+
+# secretGenerator:
+# - name: cert-manager-secrets
+#   envs:
+#   - ../../.env.production
+#   type: Opaque

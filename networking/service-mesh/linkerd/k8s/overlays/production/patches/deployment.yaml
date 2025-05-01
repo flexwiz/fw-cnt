@@ -1,0 +1,112 @@
+# linkerd/k8s/overlays/production/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-controller
+  namespace: linkerd
+spec:
+  replicas: 3
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: linkerd-controller
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: public-api
+        args:
+        - "public-api"
+        - "-controller-namespace=linkerd"
+        - "-log-level=warn"
+      - name: destination
+        args:
+        - "destination"
+        - "-controller-namespace=linkerd"
+        - "-log-level=warn"
+      - name: identity
+        args:
+        - "identity"
+        - "-controller-namespace=linkerd"
+        - "-log-level=warn"
+        - "-identity-trust-domain=cluster.local"
+        - "-identity-scheme=kubernetes.io/tls"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 400m
+            memory: 400Mi
+      - name: destination
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 400m
+            memory: 400Mi
+      - name: identity
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 400m
+            memory: 400Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-viz
+  namespace: linkerd-viz
+spec:
+  replicas: 3
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: linkerd-viz
+              topologyKey: kubernetes.io/hostname
+      containers:
+      - name: web
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 400m
+            memory: 400Mi
+      - name: prometheus
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 1
+            memory: 2Gi
+        volumeMounts:
+        - name: prometheus-data
+          mountPath: /prometheus
+      - name: tap
+        resources:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 400m
+            memory: 400Mi
+      volumes:
+      - name: prometheus-data
+        persistentVolumeClaim:
+          claimName: linkerd-prometheus-data

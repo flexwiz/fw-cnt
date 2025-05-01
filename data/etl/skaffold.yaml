@@ -1,0 +1,25 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: etl
+
+requires:
+  - configs: ["airbyte"]
+    path: airbyte
+    activeProfiles: &profiles
+      - name: local
+        activatedBy: [local]
+      - name: development
+        activatedBy: [development]
+      - name: staging
+        activatedBy: [staging]
+      - name: production
+        activatedBy: [production]
+
+  # - configs: ["dbt"]
+  #   path: dbt
+  #   activeProfiles: *profiles
+
+  # - configs: ["stitch"]
+  #   path: stitch
+  #   activeProfiles: *profiles

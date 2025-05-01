@@ -1,0 +1,26 @@
+# cert-manager/k8s/overlays/development/ingress-nginx.yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cert-manager
+  annotations:
+    # kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt-development"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - cert-manager.dev.flexwiz.io
+    secretName: cert-manager-tls
+  rules:
+  - host: cert-manager.dev.flexwiz.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cert-manager
+            port:
+              number: 9402

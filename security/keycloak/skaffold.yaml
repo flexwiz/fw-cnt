@@ -11,8 +11,7 @@ metadata:
 # describes a list of other required configs for the current config.
 # requires: {}
 
-## Profiles: development, staging, production
-
+## Profiles: local, development, staging, production
 profiles:
   - name: local
     build: &build
@@ -25,7 +24,7 @@ profiles:
             dockerfile: Dockerfile
             target: development
             # buildArgs:
-            #   KEYCLOAK_VERSION: 25.0.4
+            #   KEYCLOAK_VERSION: 26.2.0
       local:
         useBuildkit: true
         concurrency: 0
@@ -36,24 +35,24 @@ profiles:
       kustomize:
         paths:
           - ./k8s/overlays/development
-      # Don't need to use helm, just include postgres config in the requires:
-      helm:
-        releases:
-          - name: postgres
-            namespace: fw-security
-            # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
-            # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
-            repo: https://charts.bitnami.com/bitnami
-            version: 12.6.0
-            remoteChart: postgresql
-            setValues:
-              image.tag: 13.6.0-debian-10-r89
-              image.debug: true
-              primary.extraEnvVars:
-                - name: POSTGRESQL_WAL_LEVEL
-                  value: logical
-              global.postgresql.auth.postgresPassword: "password"
-              primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
+      # # Don't need to use helm, just include postgres config in the requires:
+      # helm:
+      #   releases:
+      #     - name: postgres
+      #       namespace: fw-databases
+      #       # https://artifacthub.io/packages/helm/bitnami/postgresql-ha/12.6.0
+      #       # https://artifacthub.io/packages/helm/bitnami/postgresql/12.6.0
+      #       repo: https://charts.bitnami.com/bitnami
+      #       version: 12.6.0
+      #       remoteChart: postgresql
+      #       setValues:
+      #         image.tag: 13.6.0-debian-10-r89
+      #         image.debug: true
+      #         primary.extraEnvVars:
+      #           - name: POSTGRESQL_WAL_LEVEL
+      #             value: logical
+      #         global.postgresql.auth.postgresPassword: "password"
+      #         primary.initdb.scripts.init\.sql: "CREATE DATABASE \"keycloak\";"
     portForward: &portForward
       - resourceType: service
         resourceName: keycloak
@@ -68,8 +67,8 @@ profiles:
       tagPolicy:
         sha256: {}
       googleCloudBuild:
-        workerPool: projects/sample/locations/europe-west9/workerPools/development-pool
-        projectId: sample
+        workerPool: projects/flexwiz/locations/europe-west9/workerPools/development-pool
+        projectId: flexwiz
         concurrency: 0
       artifacts:
         - image: keycloak

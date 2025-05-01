@@ -1,0 +1,193 @@
+# linkerd/k8s/base/deployment.yaml
+---
+# linkerd-controller
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-controller
+  labels:
+    app.kubernetes.io/name: linkerd-controller
+    app.kubernetes.io/part-of: linkerd
+    app.kubernetes.io/version: stable-2.14.1
+    linkerd.io/control-plane-component: controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: linkerd-controller
+      linkerd.io/control-plane-component: controller
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: disabled
+        config.linkerd.io/proxy-await: "enabled"
+      labels:
+        app.kubernetes.io/name: linkerd-controller
+        app.kubernetes.io/part-of: linkerd
+        linkerd.io/control-plane-component: controller
+    spec:
+      containers:
+      - name: public-api
+        image: cr.l5d.io/linkerd/controller:stable-2.14.1
+        args:
+        - "public-api"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+        ports:
+        - name: http
+          containerPort: 8084
+        - name: admin-http
+          containerPort: 9994
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+        securityContext:
+          runAsUser: 2103
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: admin-http
+          initialDelaySeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /live
+            port: admin-http
+          initialDelaySeconds: 10
+      - name: destination
+        image: cr.l5d.io/linkerd/controller:stable-2.14.1
+        args:
+        - "destination"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+        ports:
+        - name: grpc
+          containerPort: 8086
+        - name: admin-http
+          containerPort: 9996
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+        securityContext:
+          runAsUser: 2103
+      - name: identity
+        image: cr.l5d.io/linkerd/controller:stable-2.14.1
+        args:
+        - "identity"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+        - "-identity-trust-domain=cluster.local"
+        - "-identity-scheme=kubernetes.io/tls"
+        volumeMounts:
+        - name: trust-anchor
+          mountPath: /var/run/linkerd/identity/trust-anchor
+        ports:
+        - name: grpc
+          containerPort: 8080
+        - name: admin-http
+          containerPort: 9990
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      volumes:
+      - name: trust-anchor
+        secret:
+          secretName: linkerd-trust-anchor
+      securityContext:
+        fsGroup: 2103
+      serviceAccountName: linkerd-controller
+---
+# linkerd-viz
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linkerd-viz
+  labels:
+    app.kubernetes.io/name: linkerd-viz
+    app.kubernetes.io/part-of: linkerd
+    app.kubernetes.io/version: stable-2.14.1
+    linkerd.io/extension: viz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: linkerd-viz
+      linkerd.io/extension: viz
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app.kubernetes.io/name: linkerd-viz
+        app.kubernetes.io/part-of: linkerd
+        linkerd.io/extension: viz
+    spec:
+      containers:
+      - name: web
+        image: cr.l5d.io/linkerd/web:stable-2.14.1
+        args:
+        - "-api-addr=linkerd-controller-api.linkerd.svc.cluster.local:8084"
+        - "-grafana-addr=linkerd-grafana.linkerd-viz.svc.cluster.local:3000"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+        ports:
+        - name: http
+          containerPort: 8084
+        - name: admin-http
+          containerPort: 9994
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 9994
+          initialDelaySeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 9994
+          failureThreshold: 7
+      - name: prometheus
+        image: prom/prometheus:v2.42.0
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--storage.tsdb.retention.time=1d"
+        ports:
+        - name: admin-http
+          containerPort: 9090
+        resources:
+          requests:
+            cpu: 300m
+            memory: 300Mi
+        volumeMounts:
+        - name: prometheus-config
+          mountPath: /etc/prometheus
+        - name: prometheus-data
+          mountPath: /prometheus
+      - name: tap
+        image: cr.l5d.io/linkerd/controller:stable-2.14.1
+        args:
+        - "tap"
+        - "-controller-namespace=linkerd"
+        - "-log-level=info"
+        ports:
+        - name: grpc
+          containerPort: 8088
+        - name: admin-http
+          containerPort: 9998
+        resources:
+          requests:
+            cpu: 100m
+            memory: 50Mi
+      volumes:
+      - name: prometheus-config
+        configMap:
+          name: linkerd-prometheus-config
+      - name: prometheus-data
+        emptyDir: {}
+      serviceAccountName: linkerd-viz

@@ -1,0 +1,53 @@
+---
+# overlays/production/minio-bucket-job-patch.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-buckets-init
+spec:
+  template:
+    spec:
+      containers:
+      - name: bucket-creator
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo "Waiting for MinIO server to be ready..."
+            until mc config host add flexwiz http://minio:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD; do
+              echo "Waiting for MinIO service..."
+              sleep 5
+            done
+
+            # Create public bucket if it doesn't exist
+            if ! mc ls flexwiz/public >/dev/null 2>&1; then
+              echo "Creating public bucket..."
+              mc mb flexwiz/public
+              echo "Setting bucket policy for public..."
+              mc policy set download flexwiz/public
+              echo "Setting lifecycle policy for public..."
+              mc ilm add --expiry-days 365 flexwiz/public
+            else
+              echo "public bucket already exists."
+            fi
+
+            # Create images bucket if it doesn't exist
+            if ! mc ls flexwiz/images >/dev/null 2>&1; then
+              echo "Creating images bucket..."
+              mc mb flexwiz/images
+              echo "Setting bucket policy for images..."
+              mc policy set download flexwiz/images
+              echo "Setting lifecycle policy for images..."
+              mc ilm add --expiry-days 180 flexwiz/images
+            else
+              echo "images bucket already exists."
+            fi
+
+            # Create backups bucket if it doesn't exist
+            if ! mc ls flexwiz/backups >/dev/null 2>&1; then
+              echo "Creating backups bucket..."
+              mc mb flexwiz/backups
+              echo "Setting bucket policy for backups..."
+              mc policy set private flexwiz/backups
+            else
+              echo "backups bucket already exists."
+            fi

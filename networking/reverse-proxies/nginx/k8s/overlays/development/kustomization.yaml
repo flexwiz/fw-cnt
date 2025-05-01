@@ -1,0 +1,34 @@
+# nginx/k8s/overlays/development/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: development
+
+resources:
+- ../../base
+# - sealed-tls-cert.yaml
+
+patches:
+- path: patches/deployment.yaml
+- path: patches/service.yaml
+
+images:
+- name: nginx
+  newTag: "v1.9.4"
+
+configMapGenerator:
+- name: nginx-configuration
+  behavior: merge
+  literals:
+  - enable-modsecurity="false"
+  - enable-owasp-core-rules="false"
+
+# secretGenerator:
+# - envs:
+#   - ../../.env.production
+#   name: nginx-credentials
+#   type: Opaque

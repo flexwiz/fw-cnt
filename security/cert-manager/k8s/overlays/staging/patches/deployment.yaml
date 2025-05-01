@@ -1,0 +1,39 @@
+# cert-manager/k8s/overlays/staging/patches/deployment.yaml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: cert-manager
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 300m
+            memory: 384Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-manager-webhook
+  namespace: cert-manager
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: cert-manager-webhook
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 300m
+            memory: 384Mi

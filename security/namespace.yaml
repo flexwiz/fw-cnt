@@ -1,0 +1,13 @@
+# security/namespace.yaml
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fw-security
+  labels:
+    flexwiz.io/tier: security
+    istio-injection: enabled    # Avoid injection if Istio is also present
+    linkerd.io/inject: enabled  # Avoid injection if Linkerd is also present
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

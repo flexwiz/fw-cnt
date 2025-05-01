@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG MAVEN_VERSION=3.8.4-openjdk-11-slim
-ARG KEYCLOAK_VERSION=26.1.4
+ARG KEYCLOAK_VERSION=26.2.0
 
 ###
 ### Stage 1: Build Keycloak extension

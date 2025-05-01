@@ -36,30 +36,27 @@ This project provides a complete infrastructure setup for running any Cloud Nati
 The deployment architecture follows this approach with isolation in dedicated namespace:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                  Kubernetes Cluster                     │
-│                                                         │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐  │
-│  │ api-gateway │    │  security   │    │ analytics   │  │
-│  │ Namespace   │    │  Namespace  │    │ Namespace   │  │
-│  │             │    │             │    │             │  │
-│  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │  │
-│  │ |Krakend  │ │    │ |Keycloak │ │    │ │Metabase │ │  │
-│  │ │  Pod    │ │    │ │  Pod    │ │    │ │  Pod    │ │  │
-│  │ └─────────┘ │    │ └─────────┘ │    │ └─────────┘ │  │
-│  │             │    │             │    │             │  │
-│  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │  │
-│  │ │Database │ │    │ │Database │ │    │ │Database │ │  │
-│  │ │  Pod    │ │    │ │  Pod    │ │    │ │  Pod    │ │  │
-│  │ └─────────┘ │    │ └─────────┘ │    │ └─────────┘ │  │
-│  │             │    │             │    │             │  │
-│  │ ┌─────────┐ │    │ ┌─────────┐ │    │ ┌─────────┐ │  │
-│  │ │Ingress  │ │    │ │Ingress  │ │    │ │Ingress  │ │  │
-│  │ │         │ │    │ │         │ │    │ │         │ │  │
-│  │ └─────────┘ │    │ └─────────┘ │    │ └─────────┘ │  │
-│  └─────────────┘    └─────────────┘    └─────────────┘  │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                          Kubernetes Cluster                     │
+│                                                                 │
+│  ┌─────────────┐    ┌───────────────┐    ┌───────────────────┐  │
+│  │  fw-data    │    │ fw-networking │    │    fw-security    │  │
+│  │  namespace  │    │  namespace    │    │     namespace     │  │
+│  │             │    │               │    │                   │  │
+│  │ ┌─────────┐ │    │ ┌─────────┐   │    │ ┌───────────────┐ │  │
+│  │ | metabase│ │    | | traefik │   │    │ | cert-manager  │ │  │
+│  │ │  pod    │ │    │ │   pod   │   │    │ │      pod      │ │  │
+│  │ └─────────┘ │    │ └─────────┘   │    │ └───────────────┘ │  │
+│  │ ┌─────────┐ │    │ ┌─────────┐   │    │ ┌───────────────┐ │  │
+│  │ | postgres│ │    │ | linkerd │   │    │ | sealed-secret │ │  │
+│  │ │  pod    │ │    │ │   pod   │   │    │ │      pod      │ │  │
+│  │ └─────────┘ │    │ └─────────┘   │    │ └───────────────┘ │  │
+│  │ ┌─────────┐ │    │ ┌─────────┐   │    │ ┌───────────────┐ │  │
+│  │ |  redis  │ │    │ |  xxxxx  │   │    │ |   keycloak    │ │  │
+│  │ │  pod    │ │    │ │   pod   │   │    │ │      pod      │ │  │
+│  │ └─────────┘ │    │ └─────────┘   │    │ └───────────────┘ │  │
+|  └─────────────┘    └───────────────┘    └───────────────────┘  |
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ## 📋 Prerequisites
@@ -75,6 +72,24 @@ Before starting, ensure you have the following tools installed:
 - [Kubeseal (0.29.x or later)](https://github.com/bitnami-labs/sealed-secrets)
 - Git (2.30.x or later)
 - Access to a Kubernetes cluster (local or remote)
+
+## Components
+
+### Traefik
+
+[Traefik](https://traefik.io/) is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy. It integrates with your existing infrastructure components and configures itself automatically and dynamically.
+
+### Skaffold
+
+[Skaffold](https://skaffold.dev/) handles the workflow for building, pushing, and deploying your application, and provides building blocks for creating CI/CD pipelines.
+
+### Kustomize
+
+[Kustomize](https://kustomize.io/) lets you customize raw, template-free YAML files for multiple purposes, leaving the original YAML untouched and usable as-is.
+
+### Sealed Secrets
+
+[Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) allows you to encrypt your secrets into SealedSecrets, which is safe to store even in public repositories.
 
 ## 📁 Project Structure
 
@@ -169,16 +184,16 @@ This will create the required hosts in the `/etc/hosts`.
 First deploy the Sealed Secrets controller:
 
 ```bash
-# Deploy to your local development environnement
-skaffold run -p local -m sealed-secrets
+# Deploy to your development environnement
+skaffold run -p development -m sealed-secrets
 ```
 
 See [Sealed Secrets](./security/sealed-secrets/README.md) documentation for more details
 
-Deploy another module (for example: Krakend) to your Kubernetes cluster :
+Deploy another module (for example: krakend) to your Kubernetes cluster :
 
 ```bash
-skaffold dev -p local -m krakend
+skaffold dev -p development -m krakend
 ```
 
 This command will:
@@ -198,7 +213,8 @@ kubectl port-forward -n krakend svc/<krakend> 8180:80
 
 **Reserved ports:**
 
-- `8080`: Ingress controler web UI
+- `8080`: Ingress controler (Traefik, Nginx, ...)
+- `8081`: Ingress controler web UI
 - `8180`: API Gateway (Krakend, Kong, ...)
 - `8280`: Authentication/authorization tools (Keycloak)
 - `8380`: Service mesh web UI
@@ -220,9 +236,9 @@ requires:
 
 ## 🚢 Deployment
 
-### Manual Deployment
+### Manual deployment
 
-Deploy to a specific environment using Skaffold:
+#### Deploy to a specific environment using Skaffold
 
 ```bash
 # Deploy to development environnement
@@ -235,7 +251,23 @@ skaffold run -p staging -m [component1],[component2],...
 skaffold run -p production -m [component1],[component2],...
 ```
 
-### CI/CD Integration
+#### Deploy with kubectl
+
+You can also deploy using kubectl and kustomize directly:
+
+```bash
+# Deploy to development
+kubectl apply -k </component-directory>/k8s/overlays/development/
+
+# Deploy to staging
+kubectl apply -k </component-directory>/k8s/overlays/staging/
+
+# Deploy to production
+kubectl apply -k </component-directory>/k8s/overlays/production/
+```
+
+
+### CI/CD integration
 
 This repository includes GitHub Actions workflows for automated deployments for each component:
 
@@ -271,6 +303,12 @@ Production environment is configured with Horizontal Pod Autoscaling (HPA) based
 ## 🔍 Troubleshooting
 
 See the documentation of the dedicated component inside their directory.
+
+### Common Issues
+
+1. **TLS Certificate Issues**: Check sealed secrets and certificate validity
+2. **Resource Constraints**: Verify resource requests and limits
+3. **Connection Issues**: Check Nginx configuration in ConfigMap
 
 ## 🤝 Contributing
 

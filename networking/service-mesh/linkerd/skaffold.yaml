@@ -1,0 +1,52 @@
+# linkerd/skaffold.yaml
+---
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: linkerd
+
+# Environments: local, development, staging, production
+profiles:
+
+  - name: local
+    deploy: &deploy
+      kubeContext: minikube
+      kubectl: {}
+    manifests: &manifests
+      kustomize:
+        paths:
+          - ./k8s/overlays/development
+    portForward: &portForward
+      - resourceType: service
+        resourceName: linkerd
+        namespace: linkerd
+        port: 8084
+        localPort: 8280
+
+  - name: gcp
+    deploy:
+      kubeContext: europe-west9-b_flexwiz-europe-west9-b_fw-k8s-development-cluster
+      kubectl: {}
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: development
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward
+
+  - name: staging
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+    portForward: *portForward
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
+    portForward: *portForward

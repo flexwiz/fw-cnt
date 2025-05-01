@@ -1,0 +1,18 @@
+# cert-manager/k8s/overlays/production/ingress-traefik.yaml
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cert-manager-traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: Host(`cert-manager.flexwiz.io`)
+    kind: Rule
+    services:
+    - name: cert-manager
+      port: 9402
+  tls:
+    certResolver: default
+    options: {}

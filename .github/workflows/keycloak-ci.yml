@@ -29,7 +29,7 @@ on:
 # Environment variables available to all jobs and steps in this workflow
 env:
   SOURCE_DIR: ./security/keycloak
-  KEYCLOAK_VERSION: 26.1.4 # see Dockerfile
+  KEYCLOAK_VERSION: 26.2.0 # see Dockerfile
   DOCKER_REGISTRY: ${{ vars.DOCKERHUB_REGISTRY }}
   DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}

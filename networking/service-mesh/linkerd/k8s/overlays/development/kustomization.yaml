@@ -1,0 +1,25 @@
+# linkerd/k8s/overlays/development/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - includeSelectors: true
+    pairs:
+      flexwiz.io/env: development
+
+resources:
+  - ../../base
+
+patches:
+  - path: patches/deployment.yaml
+
+# images:
+#   - name: linkerd/linkerd2
+#     newTag: "stable-2.14.1"
+
+# secretGenerator:
+# - name: linkerd-secrets
+#   envs:
+#   - ../../.env.developement
+#   type: Opaque

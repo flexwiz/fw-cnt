@@ -1,0 +1,14 @@
+# minio/k8s/base/certificate.yaml
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert
+spec:
+  secretName: minio-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+  - minio.flexwiz.io
+  - minio-console.flexwiz.io

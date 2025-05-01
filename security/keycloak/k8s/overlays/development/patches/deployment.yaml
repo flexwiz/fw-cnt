@@ -10,6 +10,7 @@ spec:
     spec:
       containers:
       - name: keycloak
+        args: ["start-dev"]
         resources:
           requests:
             cpu: 500m

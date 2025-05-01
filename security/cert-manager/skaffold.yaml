@@ -3,18 +3,43 @@ kind: Config
 metadata:
   name: cert-manager
 
+# Environments: development, staging, production
 profiles:
-  - name: minikube
-    activation:
-      - kubeContext: minikube
+  - name: development
+    build:
+      tagPolicy:
+        sha256: {}
     deploy: &deploy
       kubectl: {}
-    manifests: &manifests
-      rawYaml:
-        - ./k8s/*.yaml
+      kubeContext: minikube
+    manifests:
+      # rawYaml:
+      #   - ./k8s/*.yaml
+      kustomize:
+        paths:
+          - k8s/overlays/development
+          # - helm/overlays/development
+    portForward: &portForward
+      - resourceType: service
+        resourceName: cert-manager
+        namespace: cert-manager
+        port: 9402
+        localPort: 9402
 
-  - name: gcp
-    activation:
-      - kubeContext: gke_ntdt_europe-west9-b_k8s-development-cluster
+  - name: staging
     deploy: *deploy
-    manifests: *manifests
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/staging
+          # - ./helm/overlays/staging
+    portForward: *portForward
+
+  - name: production
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/production
+          # - ./helm/overlays/production
+    portForward: *portForward

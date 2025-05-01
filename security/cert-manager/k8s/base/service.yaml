@@ -1,0 +1,27 @@
+# cert-manager/k8s/base/cert-manager/service.yaml
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cert-manager
+spec:
+  selector:
+    app: cert-manager
+  ports:
+  - name: http
+    port: 9402
+    targetPort: 9402
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cert-manager-webhook
+spec:
+  selector:
+    app: webhook
+  ports:
+  - name: https
+    port: 443
+    targetPort: 10250
+    protocol: TCP

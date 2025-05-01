@@ -1,0 +1,23 @@
+# postgresql/k8s/overlays/development/kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+- includeSelectors: true
+  pairs:
+    flexwiz.io/env: development
+
+resources:
+- ../../base
+- sealed-secrets.yaml
+
+patches:
+  - path: patches/statefulset.yaml
+  - path: patches/pvc.yaml
+
+# secretGenerator:
+# - name: postgresql-secrets
+#   envs:
+#   - ../../.env.development
+#   type: Opaque

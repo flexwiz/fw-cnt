@@ -1,0 +1,15 @@
+---
+# minio/k8s/overlays/staging/cronjob-buckets-backup.yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-aws-backup
+spec:
+  schedule: "0 1 * * 1,4"  # Run twice weekly (Monday and Thursday) at 1:00 AM for staging
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-gcs-backup
+spec:
+  schedule: "0 3 * * 1,4"  # Run twice weekly (Monday and Thursday) at 3:00 AM for staging

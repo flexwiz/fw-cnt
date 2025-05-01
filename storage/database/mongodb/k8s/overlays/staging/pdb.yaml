@@ -1,0 +1,11 @@
+# mongodb/k8s/overlays/production/pdb.yaml
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: mongodb-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      flexwiz.io/app: mongodb

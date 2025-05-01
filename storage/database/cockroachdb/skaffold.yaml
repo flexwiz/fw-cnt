@@ -1,0 +1,51 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: cockroachdb
+
+profiles:
+  - name: minikube
+    activation:
+      - kubeContext: minikube
+    # build:
+    #   tagPolicy:
+    #     sha256: {}
+    #   artifacts:
+    #     - image: cockroachdb
+    #       context: .
+    #       docker:
+    #         dockerfile: Dockerfile
+    #         target: development
+    #   local:
+    #     useBuildkit: true
+    #     concurrency: 0
+    deploy: &deploy
+      kubectl: {}
+    manifests: &manifests
+      rawYaml:
+        - ./k8s/*.yaml
+    portForward: &portForward
+      - resourceType: service
+        resourceName: cockroachdb
+        port: 8080
+        localPort: 8080
+
+  - name: gcp
+    activation:
+      - kubeContext: gke_flexwiz_europe-west9-b_fw-k8s-development-cluster
+    # build:
+    #   tagPolicy:
+    #     sha256: {}
+    #   googleCloudBuild:
+    #     workerPool: projects/flexwiz/locations/europe-west9/workerPools/worker-development-pool
+    #     projectId: flexwiz
+    #     concurrency: 0
+    #   artifacts:
+    #     - image: cockroachdb
+    #       kaniko:
+    #         dockerfile: Dockerfile
+    #         target: development
+    #         cache: {}
+    deploy: *deploy
+    manifests: *manifests
+    portForward: *portForward

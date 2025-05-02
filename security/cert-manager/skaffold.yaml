@@ -5,7 +5,7 @@ metadata:
 
 # Environments: development, staging, production
 profiles:
-  - name: development
+  - name: local
     build:
       tagPolicy:
         sha256: {}
@@ -13,8 +13,6 @@ profiles:
       kubectl: {}
       kubeContext: minikube
     manifests:
-      # rawYaml:
-      #   - ./k8s/*.yaml
       kustomize:
         paths:
           - k8s/overlays/development
@@ -25,6 +23,15 @@ profiles:
         namespace: cert-manager
         port: 9402
         localPort: 9402
+
+  - name: development
+    deploy: *deploy
+    manifests:
+      kustomize:
+        paths:
+          - ./k8s/overlays/development
+          # - ./helm/overlays/staging
+    portForward: *portForward
 
   - name: staging
     deploy: *deploy

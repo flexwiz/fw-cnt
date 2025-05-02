@@ -10,10 +10,27 @@ labels:
 
 resources:
 - ../../base
+- cert-config.yaml
 - ingress-traefik.yaml
 
 patches:
 - path: patches/deployment.yaml
+
+# Enable debug mode and more verbose logging for development
+configMapGenerator:
+  - name: cert-manager-config
+    literals:
+      - LOG_LEVEL=debug
+      - FEATURE_GATES=AdditionalCertificateOutputFormats=true
+
+# Override images for development if necessary
+images:
+  - name: quay.io/jetstack/cert-manager-controller
+    newTag: v1.13.3
+  - name: quay.io/jetstack/cert-manager-webhook
+    newTag: v1.13.3
+  - name: quay.io/jetstack/cert-manager-cainjector
+    newTag: v1.13.3
 
 # secretGenerator:
 # - name: cert-manager-secrets

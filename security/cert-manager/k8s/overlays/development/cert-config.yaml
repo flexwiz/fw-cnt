@@ -1,0 +1,42 @@
+# cert-manager/k8s/overlays/development/cert-config.yaml
+# Development environment certificate configuration
+# Using self-signed certificates for local development
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: selfsigned-issuer
+spec:
+  selfSigned: {}
+---
+# Default certificate for development
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dev-wildcard-cert
+spec:
+  secretName: dev-wildcard-tls
+  commonName: "*.example.dev"
+  dnsNames:
+  - "*.example.dev"
+  - "example.dev"
+  issuerRef:
+    name: selfsigned-issuer
+    kind: ClusterIssuer
+  duration: 2160h # 90 days
+  renewBefore: 360h # 15 days
+# ---
+# # Example application certificate (to demonstrate usage)
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: dev-app-cert
+#   namespace: default
+# spec:
+#   secretName: dev-app-tls
+#   commonName: "app.example.dev"
+#   dnsNames:
+#   - "app.example.dev"
+#   issuerRef:
+#     name: selfsigned-issuer
+#     kind: ClusterIssuer

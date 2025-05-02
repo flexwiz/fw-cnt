@@ -40,8 +40,6 @@ Before starting, ensure you have installed all tools mentioned in the [main docu
 
 ## 🚀 Getting start
 
-## Setup Instructions
-
 ### 1. Initial Setup
 
 1. Read the setup step from the [main documentation](../../../README.md#setup-environment-variables) of this repository

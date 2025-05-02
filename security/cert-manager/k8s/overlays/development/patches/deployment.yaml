@@ -15,8 +15,14 @@ spec:
             cpu: 50m
             memory: 64Mi
           limits:
-            cpu: 200m
-            memory: 256Mi
+            cpu: 100m
+            memory: 128Mi
+        args:
+        - --v=3  # Increased verbosity for development
+        - --cluster-resource-namespace=$(POD_NAMESPACE)
+        - --leader-election-namespace=kube-system
+        - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.13.2
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,7 +37,26 @@ spec:
         resources:
           requests:
             cpu: 50m
-            memory: 64Mi
+            memory: 32Mi
           limits:
-            cpu: 200m
-            memory: 256Mi
+            cpu: 100m
+            memory: 64Mi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-manager-cainjector
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: cert-manager-cainjector
+        resources:
+          requests:
+            cpu: 50m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 64Mi

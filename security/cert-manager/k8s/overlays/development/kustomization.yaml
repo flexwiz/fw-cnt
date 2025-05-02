@@ -3,20 +3,42 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# namePrefix: dev-
+
 labels:
 - includeSelectors: true
   pairs:
+    flexwiz.io/version: "v1.13.3"
     flexwiz.io/env: development
 
 resources:
 - ../../base
-- ingress-nginx.yaml
+- cert-config.yaml
+# - ingress-nginx.yaml
 
 patches:
 - path: patches/deployment.yaml
 
-# secretGenerator:
-# - name: cert-manager-secrets
-#   envs:
-#   - ../../.env.development
-#   type: Opaque
+replicas:
+- name: cert-manager
+  count: 1
+- name: cert-manager-webhook
+  count: 1
+- name: cert-manager-cainjector
+  count: 1
+
+# Enable debug mode and more verbose logging for development
+configMapGenerator:
+  - name: cert-manager-config
+    literals:
+      - LOG_LEVEL=debug
+      - FEATURE_GATES=AdditionalCertificateOutputFormats=true
+
+# Override images for development if necessary
+images:
+  - name: quay.io/jetstack/cert-manager-controller
+    newTag: v1.13.3
+  - name: quay.io/jetstack/cert-manager-webhook
+    newTag: v1.13.3
+  - name: quay.io/jetstack/cert-manager-cainjector
+    newTag: v1.13.3

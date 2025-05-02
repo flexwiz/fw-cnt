@@ -1,0 +1,14 @@
+# cert-manager/k8s/base/resource-quota.yaml
+---
+# Resource quotas to prevent resource exhaustion
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cert-manager-resource-quota
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi

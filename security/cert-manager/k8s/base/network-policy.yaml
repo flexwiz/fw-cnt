@@ -1,0 +1,156 @@
+# cert-manager/k8s/base/network-policy.yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cert-manager-allow
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cert-manager
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow Prometheus scraping
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: monitoring
+      podSelector:
+        matchLabels:
+          flexwiz.io/app: prometheus
+    ports:
+    - protocol: TCP
+      port: 9402
+  # Allow access from API server
+  - from:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 6080
+  egress:
+  # Allow DNS lookups
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow access to API server
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cert-manager-webhook-allow
+spec:
+  podSelector:
+    matchLabels:
+      flexwiz.io/app: webhook
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow access from API server
+  - from:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 10250
+  - from:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cert-manager
+    ports:
+    - protocol: TCP
+      port: 10250
+  egress:
+  # Allow DNS lookups
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow access to API server
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 443
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cert-manager-cainjector-allow
+spec:
+  podSelector:
+    matchLabels:
+      flexwiz.io/app: cainjector
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow access from API server for health checks
+  - from:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 6080
+  egress:
+  # Allow DNS lookups
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # Allow access to API server
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-apiserver
+    ports:
+    - protocol: TCP
+      port: 443

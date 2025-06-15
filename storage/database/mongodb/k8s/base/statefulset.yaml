@@ -48,24 +48,24 @@ spec:
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
-        readinessProbe:
-          exec:
-            command:
-            - mongo
-            - --eval
-            - "db.adminCommand('ping')"
-          initialDelaySeconds: 5
-          periodSeconds: 10
-          timeoutSeconds: 5
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - mongo
+        #     - --eval
+        #     - "db.adminCommand('ping')"
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        #   timeoutSeconds: 5
         volumeMounts:
         - name: mongodb-data
           mountPath: /data/db
-        # - name: mongodb-config
-        #   mountPath: /config
+        - name: mongodb-config
+          mountPath: /config
       volumes:
-      # - name: mongodb-config
-      #   configMap:
-      #     name: mongodb-config
+      - name: mongodb-config
+        configMap:
+          name: mongodb-config
       - name: mongodb-data
         persistentVolumeClaim:
           claimName: mongodb-pvc

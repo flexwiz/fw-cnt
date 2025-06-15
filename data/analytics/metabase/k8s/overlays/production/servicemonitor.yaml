@@ -11,7 +11,7 @@ spec:
       flexwiz.io/app: metabase
   namespaceSelector:
     matchNames:
-    - fw-analytics
+    - fw-data
   endpoints:
   - port: http
     interval: 30s

@@ -57,7 +57,7 @@ spec:
               name: metabase-secrets
               key: password
         - name: MB_DB_HOST
-          value: "postgresql.fw-databases.svc.cluster.local"
+          value: "postgresql.fw-storage.svc.cluster.local"
         - name: JAVA_OPTS
           valueFrom:
             configMapKeyRef:

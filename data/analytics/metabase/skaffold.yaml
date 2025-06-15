@@ -38,7 +38,7 @@ profiles:
     portForward: &portForward
       - resourceType: service
         resourceName: metabase
-        namespace: fw-analytics
+        namespace: fw-data
         port: 80
         localPort: 3000
 

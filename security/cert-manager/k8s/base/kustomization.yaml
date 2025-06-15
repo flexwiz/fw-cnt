@@ -10,13 +10,23 @@ labels:
     flexwiz.io/tier: security
     flexwiz.io/type: tls-certificates
     flexwiz.io/app: cert-manager
-    flexwiz.io/version: "v1.13.1"
+    flexwiz.io/version: "v1.13.2"
 
 resources:
-  - namespace.yaml
   - crds.yaml
+  # - https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
   - deployment.yaml
   - rbac.yaml
   - service.yaml
-  - webhook-config.yaml
-  # -secrets.yaml
+  #- webhook-config.yaml
+  - network-policy.yaml
+  - pod-security-policy.yaml
+  - resource-quota.yaml
+
+images:
+  - name: quay.io/jetstack/cert-manager-controller
+    newTag: v1.13.2
+  - name: quay.io/jetstack/cert-manager-webhook
+    newTag: v1.13.2
+  - name: quay.io/jetstack/cert-manager-cainjector
+    newTag: v1.13.2

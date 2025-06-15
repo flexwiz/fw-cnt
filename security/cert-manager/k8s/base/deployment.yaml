@@ -1,389 +1,267 @@
 # cert-manager/k8s/base/cert-manager/deployment.yaml
 ---
-# # cert-manager controller Deployment
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: cert-manager
-#   labels:
-#     flexwiz.io/app: cert-manager
-# spec:
-#   replicas: 2
-#   selector:
-#     matchLabels:
-#       flexwiz.io/app: cert-manager
-#   strategy:
-#     type: RollingUpdate
-#     rollingUpdate:
-#       maxSurge: 1
-#       maxUnavailable: 0
-#   template:
-#     metadata:
-#       labels:
-#         flexwiz.io/app: cert-manager
-#       annotations:
-#         prometheus.io/path: /metrics
-#         prometheus.io/scrape: "true"
-#         prometheus.io/port: "9402"
-#     spec:
-#       serviceAccountName: cert-manager
-#       securityContext:
-#         runAsNonRoot: true
-#         fsGroup: 1001
-#       containers:
-#         - name: cert-manager
-#           image: quay.io/jetstack/cert-manager-controller:v1.13.1
-#           imagePullPolicy: IfNotPresent
-#           args:
-#             - --v=2
-#             - --cluster-resource-namespace=$(POD_NAMESPACE)
-#             - --leader-election-namespace=kube-system
-#             - --acme-http01-solver-image=quay.io/jetstack/cert-manager-acmesolver:v1.13.1
-#           ports:
-#             - containerPort: 9402
-#               name: metrics
-#               protocol: TCP
-#           securityContext:
-#             allowPrivilegeEscalation: false
-#             readOnlyRootFilesystem: true
-#             runAsNonRoot: true
-#             capabilities:
-#               drop:
-#                 - ALL
-#           env:
-#             - name: POD_NAMESPACE
-#               valueFrom:
-#                 fieldRef:
-#                   fieldPath: metadata.namespace
-#           resources:
-#             requests:
-#               cpu: 100m
-#               memory: 128Mi
-#             limits:
-#               cpu: 500m
-#               memory: 512Mi
-#           livenessProbe:
-#             httpGet:
-#               path: /livez
-#               port: 6080
-#               scheme: HTTP
-#             initialDelaySeconds: 30
-#             periodSeconds: 10
-#             timeoutSeconds: 5
-#             successThreshold: 1
-#             failureThreshold: 3
-#           readinessProbe:
-#             httpGet:
-#               path: /healthz
-#               port: 6080
-#               scheme: HTTP
-#             initialDelaySeconds: 10
-#             periodSeconds: 10
-#             timeoutSeconds: 5
-#             successThreshold: 1
-#             failureThreshold: 3
-#       nodeSelector:
-#         kubernetes.io/os: linux
-#       affinity:
-#         podAntiAffinity:
-#           preferredDuringSchedulingIgnoredDuringExecution:
-#             - weight: 100
-#               podAffinityTerm:
-#                 labelSelector:
-#                   matchExpressions:
-#                     - key: app
-#                       operator: In
-#                       values:
-#                         - cert-manager
-#                 topologyKey: kubernetes.io/hostname
-#       tolerations:
-#         - key: CriticalAddonsOnly
-#           operator: Exists
-#         - effect: NoSchedule
-#           key: node-role.kubernetes.io/master
-#           operator: Exists
-#         - effect: NoSchedule
-#           key: node-role.kubernetes.io/control-plane
-#           operator: Exists
-
-# ---
-# # cert-manager-webhook Deployment
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: cert-manager-webhook
-#   labels:
-#     flexwiz.io/app: webhook
-# spec:
-#   replicas: 2
-#   selector:
-#     matchLabels:
-#       flexwiz.io/app: webhook
-#   strategy:
-#     type: RollingUpdate
-#     rollingUpdate:
-#       maxSurge: 1
-#       maxUnavailable: 0
-#   template:
-#     metadata:
-#       labels:
-#         flexwiz.io/app: webhook
-#       annotations:
-#         prometheus.io/path: /metrics
-#         prometheus.io/scrape: "true"
-#         prometheus.io/port: "9402"
-#     spec:
-#       serviceAccountName: cert-manager
-#       securityContext:
-#         runAsNonRoot: true
-#         fsGroup: 1001
-#       containers:
-#         - name: cert-manager-webhook
-#           image: quay.io/jetstack/cert-manager-webhook:v1.13.1
-#           imagePullPolicy: IfNotPresent
-#           args:
-#             - --v=2
-#             - --secure-port=10250
-#             - --dynamic-serving-ca-secret-namespace=$(POD_NAMESPACE)
-#             - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
-#             - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc
-#           ports:
-#             - name: https
-#               protocol: TCP
-#               containerPort: 10250
-#             - containerPort: 9402
-#               name: metrics
-#               protocol: TCP
-#           livenessProbe:
-#             httpGet:
-#               path: /livez
-#               port: 6080
-#               scheme: HTTP
-#             initialDelaySeconds: 60
-#             periodSeconds: 10
-#             timeoutSeconds: 5
-#             successThreshold: 1
-#             failureThreshold: 3
-#           readinessProbe:
-#             httpGet:
-#               path: /healthz
-#               port: 6080
-#               scheme: HTTP
-#             initialDelaySeconds: 5
-#             periodSeconds: 5
-#             timeoutSeconds: 5
-#             successThreshold: 1
-#             failureThreshold: 3
-#           env:
-#             - name: POD_NAMESPACE
-#               valueFrom:
-#                 fieldRef:
-#                   fieldPath: metadata.namespace
-#           securityContext:
-#             allowPrivilegeEscalation: false
-#             readOnlyRootFilesystem: true
-#             runAsNonRoot: true
-#             capabilities:
-#               drop:
-#                 - ALL
-#           resources:
-#             requests:
-#               cpu: 100m
-#               memory: 64Mi
-#             limits:
-#               cpu: 200m
-#               memory: 128Mi
-#       nodeSelector:
-#         kubernetes.io/os: linux
-#       affinity:
-#         podAntiAffinity:
-#           preferredDuringSchedulingIgnoredDuringExecution:
-#             - weight: 100
-#               podAffinityTerm:
-#                 labelSelector:
-#                   matchExpressions:
-#                     - key: app
-#                       operator: In
-#                       values:
-#                         - webhook
-#                 topologyKey: kubernetes.io/hostname
-#       tolerations:
-#         - key: CriticalAddonsOnly
-#           operator: Exists
-#         - effect: NoSchedule
-#           key: node-role.kubernetes.io/master
-#           operator: Exists
-#         - effect: NoSchedule
-#           key: node-role.kubernetes.io/control-plane
-#           operator: Exists
-
-# ---
-# # cert-manager-cainjector Deployment
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: cert-manager-cainjector
-#   labels:
-#     flexwiz.io/app: cainjector
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       flexwiz.io/app: cainjector
-#   strategy:
-#     type: RollingUpdate
-#     rollingUpdate:
-#       maxSurge: 1
-#       maxUnavailable: 0
-#   template:
-#     metadata:
-#       labels:
-#         flexwiz.io/app: cainjector
-#     spec:
-#       serviceAccountName: cert-manager
-#       securityContext:
-#         runAsNonRoot: true
-#         fsGroup: 1001
-#       containers:
-#         - name: cert-manager-cainjector
-#           image: quay.io/jetstack/cert-manager-cainjector:v1.13.1
-#           imagePullPolicy: IfNotPresent
-#           args:
-#             - --v=2
-#             - --leader-election-namespace=kube-system
-#           env:
-#             - name: POD_NAMESPACE
-#               valueFrom:
-#                 fieldRef:
-#                   fieldPath: metadata.namespace
-#           securityContext:
-#             allowPrivilegeEscalation: false
-#             readOnlyRootFilesystem: true
-#             runAsNonRoot: true
-#             capabilities:
-#               drop:
-#                 - ALL
-#           resources:
-#             requests:
-#               cpu: 100m
-#               memory: 128Mi
-#             limits:
-#               cpu: 300m
-#               memory: 256Mi
-#       nodeSelector:
-#         kubernetes.io/os: linux
-#       tolerations:
-#         - key: CriticalAddonsOnly
-#           operator: Exists
-#         - effect: NoSchedule
-#           key: node-role.kubernetes.io/master
-#           operator: Exists
-#         - effect: NoSchedule
-#           key: node-role.kubernetes.io/control-plane
-#           operator: Exists
-# ---
-
+---
+# Cert-Manager Controller Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cert-manager
   labels:
     flexwiz.io/app: cert-manager
+    app.kubernetes.io/name: cert-manager
+    app.kubernetes.io/component: controller
 spec:
   replicas: 1
   selector:
     matchLabels:
       flexwiz.io/app: cert-manager
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       labels:
         flexwiz.io/app: cert-manager
+        app.kubernetes.io/name: cert-manager
+        app.kubernetes.io/component: controller
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9402"
     spec:
       serviceAccountName: cert-manager
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
-      - name: cert-manager
-        image: quay.io/jetstack/cert-manager-controller:v1.13.1
-        args:
-        - --v=2
-        - --cluster-resource-namespace=$(POD_NAMESPACE)
-        - --leader-election-namespace=kube-system
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
+        - name: cert-manager
+          image: quay.io/jetstack/cert-manager-controller:v1.13.2
+          imagePullPolicy: IfNotPresent
+          args:
+          - --v=2
+          - --cluster-resource-namespace=$(POD_NAMESPACE)
+          - --leader-election-namespace=kube-system
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          ports:
+          - containerPort: 9402
+            name: metrics
+            protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 6080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 6080
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+          - name: tmp
+            mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - cert-manager
+              topologyKey: kubernetes.io/hostname
+
 ---
+# Cert-Manager Webhook Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cert-manager-webhook
   labels:
     flexwiz.io/app: webhook
+    app.kubernetes.io/name: webhook
+    app.kubernetes.io/component: webhook
 spec:
   replicas: 1
   selector:
     matchLabels:
       flexwiz.io/app: webhook
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       labels:
         flexwiz.io/app: webhook
+        app.kubernetes.io/name: webhook
+        app.kubernetes.io/component: webhook
     spec:
-      serviceAccountName: cert-manager
+      serviceAccountName: cert-manager-webhook
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: cert-manager-webhook
-        image: quay.io/jetstack/cert-manager-webhook:v1.13.1
+        image: quay.io/jetstack/cert-manager-webhook:v1.13.2
+        imagePullPolicy: IfNotPresent
         args:
         - --v=2
         - --secure-port=10250
         - --dynamic-serving-ca-secret-namespace=$(POD_NAMESPACE)
         - --dynamic-serving-ca-secret-name=cert-manager-webhook-ca
+        - --dynamic-serving-dns-names=cert-manager-webhook,cert-manager-webhook.cert-manager,cert-manager-webhook.cert-manager.svc
         env:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        ports:
+        - name: https
+          containerPort: 10250
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        livenessProbe:
+          httpGet:
+            path: /livez
+            port: 6080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 6080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
         resources:
           requests:
             cpu: 100m
-            memory: 128Mi
+            memory: 64Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 200m
+            memory: 128Mi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux
+
 ---
+# Cert-Manager CA Injector Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cert-manager-cainjector
   labels:
     flexwiz.io/app: cainjector
+    app.kubernetes.io/name: cainjector
+    app.kubernetes.io/component: cainjector
 spec:
   replicas: 1
   selector:
     matchLabels:
       flexwiz.io/app: cainjector
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       labels:
         flexwiz.io/app: cainjector
+        app.kubernetes.io/name: cainjector
+        app.kubernetes.io/component: cainjector
     spec:
-      serviceAccountName: cert-manager
+      serviceAccountName: cert-manager-cainjector
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: cert-manager-cainjector
-        image: quay.io/jetstack/cert-manager-cainjector:v1.13.1
+        image: quay.io/jetstack/cert-manager-cainjector:v1.13.2
+        imagePullPolicy: IfNotPresent
         args:
         - --v=2
+        - --leader-election-namespace=kube-system
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
         resources:
           requests:
             cpu: 100m
-            memory: 128Mi
+            memory: 64Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 300m
+            memory: 128Mi
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: tmp
+        emptyDir: {}
+      nodeSelector:
+        kubernetes.io/os: linux

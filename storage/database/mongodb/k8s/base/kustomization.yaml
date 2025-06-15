@@ -13,7 +13,6 @@ labels:
       flexwiz.io/version: "8.0.8"
 
 resources:
-  - namespace.yaml
   - configmap.yaml
   - pvc.yaml
   - statefulset.yaml
